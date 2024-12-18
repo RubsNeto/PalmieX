@@ -1,0 +1,172 @@
+/* Resetando margin e padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Fonte padrão */
+body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    font-size: 20px;
+}
+
+/* Estilo para o container principal */
+.ordem {
+    margin: 1.5em 0em 0em 1.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Estilo para a ordem de serviço */
+h4.OrdemServico {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0;
+}
+
+h4 {
+    margin-top: 1em;
+    font-weight: 100;
+}
+
+/* Estilo aprimorado para os inputs */
+input {
+    margin-top: 0.7em;
+    padding: 0.8em;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Estilo para quando o input estiver focado */
+input:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+
+/* Para inputs de texto mais largos */
+input[type="text"] {
+    padding-left: 1em;
+}
+
+/* Estilo para os inputs de código e vendedor */
+input.codVendedor {
+    width: 100px;
+}
+
+input.vendedor {
+    width: 250px;
+}
+
+/* Melhorar o foco para campos específicos */
+input.codVendedor:focus,
+input.vendedor:focus {
+    border-color: #2a9d8f;
+    box-shadow: 0 0 8px rgba(42, 157, 143, 0.4);
+}
+
+/* Container para a ficha */
+.ficha {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container para a linha1 */
+.linha1 {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1em;
+    align-items: flex-start;
+}
+
+/* Primeira coluna de informações */
+.info-coluna1 {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5em;
+    align-items: flex-start;
+}
+
+h5 {
+    margin-top: 1.1em;
+    font-size: 20px;
+}
+
+h5.valorTotal {
+    font-size: 60px;
+    margin-top: 0.2em;
+}
+
+h5.pares {
+    font-size: 40px;
+    margin-left: 1em;
+    margin-top: 0.0001em;
+}
+
+/* Estilo para a seção de pedidos */
+.pedidos {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    margin: 0em 0.5em 0.5em 0.5em;
+}
+
+/* Container para os botões */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+/* Estilo para os botões */
+.botao-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Estilo dos botões */
+.botao {
+    width: 50px;
+    height: 50px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.numero {
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Estilo para quando o mouse passa por cima do botão */
+.botao:hover {
+    background-color: #45a049;
+}
+
+
+.realizarPedido{
+    font-size: 15px;
+    margin-top: 1em;
+    background-color: green;
+    color: white;
+    padding: 1.2em;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+}

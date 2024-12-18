@@ -1,0 +1,53 @@
+/* Resetando a margem e o padding de todos os elementos */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --main_color: rgb(19, 93, 26);
+}
+
+html, body {
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;  /* Alinha os itens no topo da tela */
+    height: 100%; /* Faz o body ocupar toda a altura da tela */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    display: flex; /* Cria o layout flex */
+    justify-content: flex-start; /* Alinha os itens à esquerda */
+    align-items: flex-start; /* Alinha os itens ao topo */
+    gap: 20px;  /* Cria um espaçamento entre o menu e o texto */
+}
+
+.menu {
+    width: 12em; /* Define a largura do menu */
+    height: 46.15em;
+    background: linear-gradient(135deg, #017A39, #01A44D); /* Cor de fundo do menu */
+    color: white; /* Cor do texto */
+    padding: 20px; /* Espaçamento interno do menu */
+}
+
+h4{
+    font-size: 30px;
+    margin-bottom: 0.5em;
+}
+
+a{
+    text-decoration: none;
+    color: white;   
+    font-size: 17px;
+}
+
+.logo{
+    margin-top: 35em;
+}
+
+.sub_menu h5 {
+    margin-bottom: 10px; /* Espaço entre os itens do submenu */
+}
+
