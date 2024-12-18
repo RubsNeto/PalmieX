@@ -1,0 +1,198 @@
+/* Resetando a margem e o padding de todos os elementos */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --main_color: rgb(19, 93, 26);
+}
+
+/* Estilizando o html e body para garantir que ambos compartilhem o mesmo fundo */
+html, body {
+    height: 100%; /* Garantir que ambos ocupem 100% da altura */
+    width: 100%;  /* Garantir que ambos ocupem 100% da largura */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(120deg, #e3ffe4, #d7ffd9);
+    background-size: 200% 200%; /* Tamanho maior do gradiente para permitir movimento */
+    animation: moveGradient 10s linear infinite; /* Animação para mover o gradiente */
+    overflow: hidden; /* Impede rolagem indesejada */
+}
+
+/* Animação para mover o gradiente diagonalmente de cima para baixo */
+@keyframes moveGradient {
+    0% {
+        background-position: 0% 0%; /* Inicia na parte superior esquerda */
+    }
+    100% {
+        background-position: 100% 100%; /* Finaliza na parte inferior direita */
+    }
+}
+
+/* Container centralizado com gradiente */
+.central {
+    color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 18em;
+    max-width: 900px;
+    height: 50vh;
+    background: linear-gradient(120deg, #8cff7d, #8afe7b); 
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Impede que o conteúdo transborde da área */
+    transform: scale(0.9);
+    animation: slideIn 0.6s ease-out forwards;
+}
+
+/* Animação de slideIn para o container */
+@keyframes slideIn {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Estilizando a imagem */
+.img_login {
+    background-size: cover;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    height: 100px;
+    margin-bottom: 1em;
+    transform: rotateY(180deg);
+    animation: rotateIn 0.8s ease-out forwards;
+}
+
+/* Animação para a imagem de login */
+@keyframes rotateIn {
+    0% {
+        transform: rotateY(180deg);
+        opacity: 0;
+    }
+    100% {
+        transform: rotateY(0);
+        opacity: 1;
+    }
+}
+
+/* Formulário de login */
+.login {
+    color: rgb(19, 93, 26);
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    height: 100%;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* Animação de fadeInUp para o formulário */
+@keyframes fadeInUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Título do formulário */
+h4 {
+    margin-bottom: 20px;
+    color: rgb(19, 93, 26);
+    font-size: 24px;
+    text-align: center;
+    font-weight: bold;
+    animation: fadeInUp 1s ease-out;
+}
+
+/* Estilos para os campos de input */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid var(--main_color);
+    border-radius: 8px;
+    background-color: transparent; /* Fundo transparente */
+    color: var(--main_color);
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    animation: fadeInLeft 0.5s ease-out;
+}
+
+/* Animação de fadeInLeft para os campos de input */
+@keyframes fadeInLeft {
+    0% {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+input:focus {
+    border-color: #0e6100; /* Cor da borda no foco */
+    box-shadow: 0 0 5px rgba(4, 79, 0, 0.5); /* Sombra suave no foco */
+}
+
+/* Estilo para o botão de submit */
+button {
+    padding: 12px;
+    width: 100%;
+    background: linear-gradient(rgb(21, 102, 29), rgb(17, 84, 23)); 
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease-in-out, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Efeitos no hover e foco do botão */
+button:hover {
+    background: linear-gradient(rgb(22, 127, 35), rgb(16, 95, 23));
+    filter: brightness(1.1);
+    box-shadow: 0 0 20px rgb(89, 231, 81);
+    transform: translateY(-5px); /* Efeito de elevação */
+}
+
+/* Efeito de foco suave no botão */
+button:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(89, 231, 81, 0.7);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .central {
+        flex-direction: column; /* Colocar a imagem e o formulário em coluna em telas menores */
+        height: auto;
+    }
+
+    .login {
+        width: 100%;
+        padding: 30px;
+    }
+}
