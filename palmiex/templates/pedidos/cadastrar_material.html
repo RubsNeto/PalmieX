@@ -1,0 +1,22 @@
+<!-- templates/pedidos/cadastrar_material.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Material</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"> <!-- Se você tiver um CSS customizado -->
+</head>
+<body>
+    <div class="container">
+        <h2>Cadastrar Material</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }} <!-- Exibe os campos do formulário -->
+            <button type="submit">Cadastrar Material</button>
+        </form>
+        <a href="{% url 'listar_materials' %}">Voltar para a lista de materiais</a>
+    </div>
+</body>
+</html>

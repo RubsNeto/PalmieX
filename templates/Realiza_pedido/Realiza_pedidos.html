@@ -324,5 +324,34 @@
 
         
     </div>
+
+    <script>
+        document.querySelector('.codVendedor').addEventListener('input', function() {
+            var codigo = this.value;
+            fetch(`/buscar-vendedor/?codigo=${codigo}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.nome) {
+                        document.querySelector('.vendedor').value = data.nome;
+                    } else {
+                        alert(data.erro);
+                    }
+                });
+        });
+    
+        document.querySelector('.referencia').addEventListener('input', function() {
+            var referencia = this.value;
+            fetch(`/buscar-material/?referencia=${referencia}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.tamanho) {
+                        document.querySelector('.material').value = `Tamanho ${data.tamanho}`;
+                    } else {
+                        alert(data.erro);
+                    }
+                });
+        });
+    </script>
+    
 </body>
 </html>
