@@ -1,0 +1,237 @@
+/* Resetando margin e padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilo para o container principal */
+.ordem {
+    margin: 1.5em 0em 0em 1.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Estilo para a ordem de serviço */
+h4.OrdemServico {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.campo {
+    margin-top: 1em;
+    font-weight: 100;
+}
+
+.valor-positivo .botao {
+    font-weight: bold;           /* texto em negrito */
+    background-color: #164d19;   /* verde mais escuro */
+}
+
+.valor-positivo .botao:hover {
+    background-color: #0f3d0f;   /* verde mais claro */
+}
+
+
+/* Estilo aprimorado para os inputs */
+input {
+    cursor: text;
+    margin-top: 0.7em;
+    padding: 0.8em;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+
+input[type="text"] {
+    padding-left: 1em;
+}
+
+input.codVendedor {
+    width: 100px;
+}
+
+input.vendedor {
+    width: 250px;
+}
+
+input.codVendedor:focus,
+input.vendedor:focus {
+    border-color: #2a9d8f;
+    box-shadow: 0 0 8px rgba(42, 157, 143, 0.4);
+}
+
+/* Container para a ficha */
+.ficha {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container para a linha1 */
+.linha1 {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1em;
+    align-items: flex-start;
+}
+
+span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.total {
+    margin-left: 2em;
+    margin-top: 0.55em;
+    font-size: 30px;
+}
+
+h5.valorTotal {
+    font-size: 50px;
+    align-self: flex-start;
+}
+
+h5.pares {
+    font-size: 30px;
+    margin-left: 1em;
+    margin-top: 0.0001em;
+}
+
+/* Estilo para a seção de pedidos */
+.pedidos {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    margin: 0em 0.5em 0.5em 0em;
+}
+
+/* Container para os botões */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-bottom: 1em;
+}
+
+/* Cada conjunto (botão + número) em coluna */
+.botao-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* Botão em cima, número embaixo */
+    align-items: center;
+    gap: 0.5em; /* espaço vertical entre o botão e o número */
+}
+
+/* Estilo dos botões */
+.botao , .adicionarPedido, .removerPedido, .adicionarInfantil{
+    width: 40px;
+    height: 40px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.adicionarInfantil{
+    background-color: rgb(20, 20, 138);
+}
+
+.maisEmenos{
+    margin-left: 0.172em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.5em;
+}
+
+.removerPedido{
+    background-color: rgb(255, 0, 0);
+}
+
+
+.numero {
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Estilo para quando o mouse passa por cima do botão */
+.botao:hover {
+    background-color: #45a049;
+}
+
+.botoesComando {
+    position: fixed;              /* Fixa a div na tela */
+    bottom: 0;                    /* Posiciona na parte inferior */
+    left: 0;                      /* Alinha à esquerda */
+    width: 100%;                  /* Ocupa toda a largura da tela */
+    padding: 1em;                 /* Espaçamento interno */
+    background-color: green;    /* Cor de fundo existente */
+    display: flex;                /* Flexbox para alinhamento */
+    flex-direction: row;          /* Alinha os botões em linha */
+    justify-content: left; /* Espaço entre os botões */
+    gap: 1em;                     /* Espaçamento entre os botões */
+    box-sizing: border-box;       /* Inclui padding no cálculo de largura */
+    z-index: 1000;                /* Garante que fique acima de outros elementos */
+}
+
+/* Estilos existentes para os botões */
+.realizarPedido, .clienteloja {
+    font-size: 18px;
+    background-color: green;
+    color: white;
+    padding: 1em;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;              /* Adiciona cursor pointer para melhorar a UX */
+    transition: background-color 0.3s; /* Transição suave para hover */
+}
+
+.realizarPedido:hover, .clienteloja:hover {
+    background-color: #006400;    /* Verde mais escuro no hover */
+}
+
+.clienteloja {
+    background-color: rgb(255, 234, 0);
+    color: black;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

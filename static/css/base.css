@@ -1,0 +1,61 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --main_color: rgb(19, 93, 26);
+}
+
+/* Remova as configurações de display e justify/align do html, body */
+html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* O container principal é flex */
+.container {
+    display: flex; 
+
+    /* Opcional: se quiser que o menu fique no topo e o conteúdo também:
+       align-items: flex-start;
+    */
+}
+
+/* Menu fixo à esquerda */
+.menu {
+    width: 10em; 
+    background: linear-gradient(135deg, #017A39, #01A44D); 
+    color: white; 
+    padding: 20px; 
+    flex-shrink: 0; /* Impede o menu de encolher */
+}
+
+/* A área de conteúdo deve expandir para o restante da tela */
+.test {
+    flex: 1; 
+    /* Opcional: se quiser organizar melhor o conteúdo dentro de test, 
+       pode adicionar display:flex e flex-direction:column aqui */
+}
+
+/* Títulos, links e logo conforme já estavam */
+.titulo {
+    font-size: 30px;
+    margin-bottom: 0.5em;
+}
+
+.sub_menu a {
+    text-decoration: none;
+    color: white;   
+    font-size: 17px;
+}
+
+.logo {
+    margin-top: 34.7em;
+}
+
+.sub_menu h5 {
+    margin-bottom: 10px;
+}

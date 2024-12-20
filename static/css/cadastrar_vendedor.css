@@ -9,6 +9,7 @@ form {
     margin-bottom: 20px;
 }
 
+
 form label {
     display: block;
     font-weight: bold;
@@ -23,7 +24,7 @@ form input[type="text"], form input[type="number"] {
     border-radius: 3px;
 }
 
-.botao {
+.botao{
     margin-top: 15px;
     padding: 10px 15px;
     background: #4CAF50;

@@ -10,9 +10,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     # Login e Logout
+    path('', views.home, name='index'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     
+    
+    path('base/',views.base,name='base'),
+    path('realiza-pedidos/', views.realiza_pedidos, name='realiza_pedidos'),
     path('cadastrar-vendedor/', views.cadastrar_vendedor, name='cadastrar_vendedor'),
     path('cadastrar-material/', views.cadastrar_material, name='cadastrar_material'),
     path('cadastrar-pedido/', views.cadastrar_pedido, name='cadastrar_pedido'),

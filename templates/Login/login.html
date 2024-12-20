@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -5,13 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página de Login</title>
     <!-- Link para o arquivo CSS -->
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 
 <body>
-
-
-    <img src="/Login/R.png" class="img_login">
+    <img src="{% static '/img/R.png' %}" class="img_login">
     <div class="central">
         <div class="login">
             <h4>Faça o login</h4>

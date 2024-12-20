@@ -5,25 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Página de Login{% endblock title %}</title>
-    <!-- Link para o arquivo CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- CSS base -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <!-- Bloco para CSS extra -->
+    {% block extra_css %}{% endblock extra_css %}
 </head>
 <body>
     <div class="container">
         <div class="menu">
-            <h4>Pedidos</h4>
+            <h4 class="titulo">Pedidos</h4>
             <div class="sub_menu">
-                <a href="www.google.com">Realizar pedido</a>
-                <a href="www.google.com">Produção</a><br> 
-                <a href="www.google.com">Finalizados</a>
+                <a href="www.google.com" tabindex='999'>Realizar pedido</a>
+                <a href="www.google.com" tabindex='999'>Produção</a><br> 
+                <a href="www.google.com" tabindex='999'>Finalizados</a>
             </div>
             <img class="logo" src="{% static 'imagens/logo.svg' %}" alt="Logo">
         </div>
 
         <div class="test">
-            {% block content %}
-            <!-- Conteúdo específico de cada página será inserido aqui -->
-            {% endblock content %}
+            {% block content %}{% endblock content %}
         </div>
     </div>
 </body>

@@ -3,6 +3,11 @@ from django.http import JsonResponse
 from .models import Vendedor, Material, Pedido, PedidoItem
 from .forms import VendedorForm, MaterialForm, PedidoForm, PedidoItemForm
 
+def realiza_pedidos(request):
+    numeros = range(1, 18)  # de 1 a 17
+    return render(request, 'realiza_pedidos.html', {'numeros': numeros})
+
+
 # View para cadastrar vendedores
 def cadastrar_vendedor(request):
     if request.method == 'POST':
@@ -73,4 +78,11 @@ def buscar_material(request):
 def listar_vendedores(request):
     vendedores = Vendedor.objects.all()
     return render(request, 'pedidos/listar_vendedores.html', {'vendedores': vendedores})
+
+
+def home(request):
+    return render(request, 'Login/login.html', {})
+
+def base(request):
+    return render(request, 'base.html',{})
 
