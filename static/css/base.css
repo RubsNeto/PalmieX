@@ -26,6 +26,8 @@ html, body {
 
 /* Menu fixo à esquerda */
 .menu {
+    position: absolute;              /* Mantém os botões fixos ao rolar */
+    z-index: 1000;  
     width: 10em; 
     background: linear-gradient(135deg, #017A39, #01A44D); 
     color: white; 
@@ -33,11 +35,10 @@ html, body {
     flex-shrink: 0; /* Impede o menu de encolher */
 }
 
-/* A área de conteúdo deve expandir para o restante da tela */
 .test {
-    flex: 1; 
-    /* Opcional: se quiser organizar melhor o conteúdo dentro de test, 
-       pode adicionar display:flex e flex-direction:column aqui */
+    flex: 1; /* Permite que o conteúdo preencha o restante da tela */
+    margin-left: 10em; /* Espaço igual à largura do menu */
+    padding: 20px; /* Opcional: para espaçamento interno */
 }
 
 /* Títulos, links e logo conforme já estavam */
@@ -53,8 +54,11 @@ html, body {
 }
 
 .logo {
-    margin-top: 34.7em;
+    margin-top: 27.51em;
+    width: 3em;
 }
+
+
 
 .sub_menu h5 {
     margin-bottom: 10px;

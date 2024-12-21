@@ -5,13 +5,29 @@
     box-sizing: border-box;
 }
 
+:root {
+    --main_color: rgb(19, 93, 26);
+}
+
 /* Estilo para o container principal */
 .ordem {
-    margin: 1.5em 0em 0em 1.5em;
+    margin: 1em;
+    overflow-y: auto;              /* Adiciona rolagem vertical quando necessário */
+    height: calc(100vh - 80px);    /* Define altura responsiva com base na viewport */
+    padding-bottom: 80px;          /* Garante espaço para os botões fixos */
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
 }
+
+.fixa {
+    position: sticky;  /* Ou use 'fixed' se quiser que fique sempre no topo */
+    top: 0;            /* Fixa no topo da tela */
+    z-index: 100;      /* Garante que fique acima de outros elementos */
+    background-color: white; /* Fundo branco para destacar */
+    padding: 1em;      /* Espaçamento interno */
+    
+}
+
 
 /* Estilo para a ordem de serviço */
 h4.OrdemServico {
@@ -103,10 +119,13 @@ span {
 h5.valorTotal {
     font-size: 50px;
     align-self: flex-start;
+    color: #169122;
+    text-decoration: underline;
 }
 
-h5.pares {
-    font-size: 30px;
+h5.pares {  
+    
+    font-size: 35px;
     margin-left: 1em;
     margin-top: 0.0001em;
 }
@@ -138,8 +157,8 @@ h5.pares {
 
 /* Estilo dos botões */
 .botao , .adicionarPedido, .removerPedido, .adicionarInfantil{
-    width: 40px;
-    height: 40px;
+    width: 49px;
+    height: 49px;
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -177,19 +196,21 @@ h5.pares {
 }
 
 .botoesComando {
-    position: fixed;              /* Fixa a div na tela */
-    bottom: 0;                    /* Posiciona na parte inferior */
-    left: 0;                      /* Alinha à esquerda */
-    width: 100%;                  /* Ocupa toda a largura da tela */
-    padding: 1em;                 /* Espaçamento interno */
-    background-color: green;    /* Cor de fundo existente */
-    display: flex;                /* Flexbox para alinhamento */
-    flex-direction: row;          /* Alinha os botões em linha */
-    justify-content: left; /* Espaço entre os botões */
-    gap: 1em;                     /* Espaçamento entre os botões */
-    box-sizing: border-box;       /* Inclui padding no cálculo de largura */
-    z-index: 1000;                /* Garante que fique acima de outros elementos */
+    position: absolute;              /* Mantém os botões fixos ao rolar */
+    bottom: 0;                     /* Alinha à parte inferior */
+    left: 0;                       /* Alinha à esquerda */
+    width: 100%;                   /* Ocupa toda a largura */
+    padding: 1em;                  /* Espaçamento interno */
+    display: flex;                 /* Flex container */
+    flex-direction: row;           /* Botões em linha */
+    justify-content: flex-end;     /* Alinha os botões à direita */
+    gap: 1em;                      /* Espaçamento entre botões */
+    box-sizing: border-box;        /* Inclui padding no cálculo de largura */
+    z-index: 100;                 /* Certifica-se de que fique acima de outros elementos */
+    background-color: white;
+    border-top: 1px solid #ccc;    /* Linha de separação */
 }
+
 
 /* Estilos existentes para os botões */
 .realizarPedido, .clienteloja {
@@ -213,6 +234,9 @@ h5.pares {
     color: black;
 }
 
+.logo{
+    width: 100px;
+}
 
 
 

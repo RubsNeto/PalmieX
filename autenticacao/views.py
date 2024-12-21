@@ -1,38 +1,26 @@
+# autenticacao/views.py
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
-# View para login personalizado
-def user_login(request):
+def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')  # Campo padrão
+        password = request.POST.get('password')    # Campo padrão
         user = authenticate(request, username=username, password=password)
-        
         if user is not None:
             login(request, user)
-            messages.success(request, "Login bem-sucedido!")
-            return redirect('home')  # Página inicial ou a página desejada após login
+            return redirect('realiza_pedidos')  # Redireciona para 'realiza_pedidos' após o login
         else:
-            messages.error(request, "Credenciais inválidas.")
-    return render(request, 'Login/Login.html')
+            messages.error(request, 'Usuário ou senha inválidos.')
+    return render(request, 'registration/login.html')  # Renderiza o template de login
 
-# View para logout
-def user_logout(request):
+def logout_view(request):
     logout(request)
-    messages.success(request, "Você saiu com sucesso.")
-    return redirect('login')  # Redireciona para a página de login
+    return redirect('login')  # Redireciona para a página de login após logout
 
-# View para registro de usuário
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Conta criada com sucesso!")
-            return redirect('login')
-    else:
-        form = UserCreationForm()
-    
-    return render(request, 'accounts/register.html', {'form': form})
+@login_required
+def home_view(request):
+    return render(request, 'realiza_pedidos.html')

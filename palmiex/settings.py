@@ -18,18 +18,26 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-# Application definition
+# palmiex/settings.py
+# palmiex/settings.py
+
+LOGIN_REDIRECT_URL = '/realiza_pedidos/'  # Redireciona para 'realiza_pedidos' após o login
+LOGIN_URL = '/login/'  # Alinha com a rota definida no urls.py
+LOGOUT_REDIRECT_URL = '/login/'  # Opcional: Redireciona para a página de login após o logout
+AUTH_USER_MODEL = 'auth.User'
+
+
+
+
 INSTALLED_APPS = [
+    'autenticacao',
+    'pedidos',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Suas apps
-    'autenticacao',
-    'pedidos',
 ]
 
 MIDDLEWARE = [
@@ -92,6 +100,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
 
 # Internationalization
 LANGUAGE_CODE = 'pt-br'
