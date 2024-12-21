@@ -12,15 +12,18 @@
 </head>
 <body>
     <div class="container">
-        <div class="menu">
-            <h4 class="titulo">Pedidos</h4>
-            <div class="sub_menu">
-                <a href="www.google.com" tabindex='999'>Realizar pedido</a>
-                <a href="www.google.com" tabindex='999'>Produção</a><br> 
-                <a href="www.google.com" tabindex='999'>Finalizados</a>
+        <nav class="menu">
+            <div class="menu-content">
+                <h4 class="titulo">Pedidos</h4>
+                <div class="sub_menu">
+                    <a href="https://www.google.com" tabindex='999'>Realizar pedido</a>
+                    <a href="https://www.google.com" tabindex='999'>Produção</a>
+                    <a href="https://www.google.com" tabindex='999'>Finalizados</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                </div>
             </div>
             <img class="logo" src="{% static 'img/Logo_palmiex.png' %}" alt="Logo">
-        </div>
+        </nav>
 
         <div class="test">
             {% block content %}{% endblock content %}

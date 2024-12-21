@@ -9,39 +9,41 @@
     --main_color: rgb(19, 93, 26);
 }
 
-/* Remova as configurações de display e justify/align do html, body */
+/* Configurações básicas */
 html, body {
     height: 100%;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* O container principal é flex */
 .container {
-    display: flex; 
-
-    /* Opcional: se quiser que o menu fique no topo e o conteúdo também:
-       align-items: flex-start;
-    */
+    display: flex;
 }
 
 /* Menu fixo à esquerda */
 .menu {
-    position: absolute;              /* Mantém os botões fixos ao rolar */
-    z-index: 1000;  
+    position: fixed;                 /* Mantém o menu fixo na tela */
+    top: 0;                          /* Alinha ao topo */
+    left: 0;                         /* Alinha à esquerda */
     width: 10em; 
+    height: 100vh;                   /* Ocupa toda a altura da viewport */
     background: linear-gradient(135deg, #017A39, #01A44D); 
     color: white; 
     padding: 20px; 
-    flex-shrink: 0; /* Impede o menu de encolher */
+    display: flex;                   /* Utiliza Flexbox */
+    flex-direction: column;          /* Direção vertical */
+    justify-content: space-between;  /* Espaça o conteúdo entre topo e base */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Opcional: sombra para destaque */
+    z-index: 1000;
 }
 
-.test {
-    flex: 1; /* Permite que o conteúdo preencha o restante da tela */
-    margin-left: 10em; /* Espaço igual à largura do menu */
-    padding: 20px; /* Opcional: para espaçamento interno */
+
+/* Conteúdo do menu */
+.menu-content {
+    display: flex;
+    flex-direction: column;
 }
 
-/* Títulos, links e logo conforme já estavam */
+/* Títulos e links */
 .titulo {
     font-size: 30px;
     margin-bottom: 0.5em;
@@ -51,15 +53,26 @@ html, body {
     text-decoration: none;
     color: white;   
     font-size: 17px;
+    margin-bottom: 1em; /* Espaçamento entre os links */
 }
 
+.sub_menu a:hover {
+    color: #f0f0f0;
+    text-decoration: underline;
+}
+
+/* Logo no final do menu */
 .logo {
-    margin-top: 27.51em;
     width: 3em;
+    /* Centraliza a logo horizontalmente */
+    align-self: center;
+    margin-top: auto; /* Garante que a logo fique no final */
 }
 
-
-
-.sub_menu h5 {
-    margin-bottom: 10px;
+/* Conteúdo principal */
+.test {
+    flex: 1; 
+    margin-left: 10em; /* Espaço igual à largura do menu */
+    padding: 20px; /* Espaçamento interno */
+    min-height: 100vh; /* Garante altura mínima */
 }

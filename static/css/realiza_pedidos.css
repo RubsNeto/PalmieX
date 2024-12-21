@@ -24,8 +24,7 @@
     top: 0;            /* Fixa no topo da tela */
     z-index: 100;      /* Garante que fique acima de outros elementos */
     background-color: white; /* Fundo branco para destacar */
-    padding: 1em;      /* Espaçamento interno */
-    
+    border-bottom: 1px solid #ccc; /* Linha de separação */
 }
 
 
@@ -166,9 +165,22 @@ h5.pares {
     font-size: 18px;
 }
 
-.adicionarInfantil{
-    background-color: rgb(20, 20, 138);
+.botao{
+    border: 1px solid #0a7b17;
 }
+
+.adicionarPedido:hover{
+    background-color: #2c9e30;
+}
+
+.adicionarInfantil{
+    background-color: #1313a7;
+}
+
+.adicionarInfantil:hover{
+    background-color: #0d0d85;
+}
+
 
 .maisEmenos{
     margin-left: 0.172em;
@@ -180,9 +192,12 @@ h5.pares {
 }
 
 .removerPedido{
-    background-color: rgb(255, 0, 0);
+    background-color: #ff0000;
 }
 
+.removerPedido:hover{
+    background-color: #e50000;
+}
 
 .numero {
     font-size: 20px;
@@ -225,13 +240,17 @@ h5.pares {
     transition: background-color 0.3s; /* Transição suave para hover */
 }
 
-.realizarPedido:hover, .clienteloja:hover {
+.realizarPedido:hover:hover {
     background-color: #006400;    /* Verde mais escuro no hover */
 }
 
 .clienteloja {
-    background-color: rgb(255, 234, 0);
+    
+    background-color: rgb(255, 207, 34);
     color: black;
+}
+.clienteloja:hover {
+    background-color: rgb(255, 234, 0);
 }
 
 .logo{

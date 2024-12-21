@@ -85,6 +85,7 @@ h2 {
     left: 15px;
     transform: translateY(-50%);
     color: var(--primary-color);
+    cursor: pointer;
 }
 
 .input-group input {
@@ -97,7 +98,10 @@ h2 {
     font-size: 16px;
     outline: none;
     transition: border-color 0.3s, box-shadow 0.3s;
+    cursor: text;
 }
+
+
 
 .input-group input:focus {
     border-color: var(--accent-color);
