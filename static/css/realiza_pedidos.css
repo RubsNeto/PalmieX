@@ -52,7 +52,7 @@ h4.OrdemServico {
 
 /* Estilo aprimorado para os inputs */
 input {
-    cursor: text;
+    cursor: pointer;
     margin-top: 0.7em;
     padding: 0.8em;
     width: 100%;
@@ -122,9 +122,8 @@ h5.valorTotal {
     text-decoration: underline;
 }
 
-h5.pares {  
-    
-    font-size: 35px;
+h5.pares { 
+    font-size: 28px;
     margin-left: 1em;
     margin-top: 0.0001em;
 }
@@ -230,7 +229,7 @@ h5.pares {
 /* Estilos existentes para os botões */
 .realizarPedido, .clienteloja {
     font-size: 18px;
-    background-color: green;
+    background-color: rgb(1, 172, 1);
     color: white;
     padding: 1em;
     text-decoration: none;
@@ -244,6 +243,7 @@ h5.pares {
     background-color: #006400;    /* Verde mais escuro no hover */
 }
 
+
 .clienteloja {
     
     background-color: rgb(255, 207, 34);
@@ -252,29 +252,3 @@ h5.pares {
 .clienteloja:hover {
     background-color: rgb(255, 234, 0);
 }
-
-.logo{
-    width: 100px;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

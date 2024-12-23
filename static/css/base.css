@@ -43,6 +43,10 @@ html, body {
     flex-direction: column;
 }
 
+.gestao{
+    margin-top: 1em;
+}
+
 /* Títulos e links */
 .titulo {
     font-size: 30px;
@@ -75,4 +79,8 @@ html, body {
     margin-left: 10em; /* Espaço igual à largura do menu */
     padding: 20px; /* Espaçamento interno */
     min-height: 100vh; /* Garante altura mínima */
+}
+
+.logo{
+    width: 100px;
 }

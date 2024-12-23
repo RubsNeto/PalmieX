@@ -1,0 +1,60 @@
+<!-- produto/templates/produto/lista_produtos.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Produtos{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/produto/listar_produtos.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+
+    <h2>Produtos</h2>
+    <!-- Exibir mensagens de sucesso ou erro -->
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <table class="produtos-table">
+        <thead>
+            <tr class="cabecalho">
+                <th>Nome</th>
+                <th>Referência</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+                <tr id="produto-{{ produto.pk }}">
+                    <td class="nome_produto">{{ produto.nome }}</td>
+                    <td>{{ produto.codigo }}</td>
+                    <td>
+                        <div class="acoes">
+                            <a href="{% url 'produto:editar_produto' produto.pk %}" class="btn btn-secondary">
+                                <img class="edit" src="{% static 'img/edit.svg' %}" alt="Editar">
+                            </a>
+                            <!-- Botão para deletar o produto via AJAX -->
+                            <button type="button" class="btn btn-danger delete-button" data-id="{{ produto.pk }}">
+                                <img class="delete" src="{% static 'img/trash.svg' %}" alt="Deletar">
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">Nenhum produto cadastrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>    
+    </table>
+
+    <div class="botoesComando">
+        <a href="{% url 'produto:criar_produto' %}" class="btn btn-primary adicionarProduto">Adicionar Produto</a>
+    </div>
+
+    <script src="{% static 'js/deletar_produto.js' %}"></script>
+{% endblock %}

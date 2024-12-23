@@ -1,0 +1,172 @@
+/* form_vendedor.css */
+
+/* ================================
+   1. Container Principal
+   ================================ */
+   .form-container {
+    display: flex;                     /* Define como Flex container */
+    flex-direction: row;              /* Alinha os itens em linha */
+    align-items: flex-start;          /* Alinha verticalmente ao início */
+    justify-content: center;          /* Centraliza horizontalmente */
+    width: 100%;                       /* Ocupa toda a largura disponível */
+    padding: 20px;                     /* Espaçamento interno */
+    box-sizing: border-box;           /* Inclui padding no cálculo de largura */
+}
+
+/* ================================
+   2. Seção da Imagem
+   ================================ */
+.image-section {
+    flex: 2;                           /* Ocupa aproximadamente 60% do container */
+    margin-right: 20px;                /* Espaçamento entre imagem e formulário */
+}
+
+.desenho {
+    width: 81%;                       /* Ocupa toda a largura da seção da imagem */
+    height: auto;                      /* Mantém a proporção da imagem */
+    display: block;                    /* Remove espaços em torno da imagem */
+}
+
+/* ================================
+   3. Seção do Formulário
+   ================================ */
+.form-section {
+    flex: 1;                           /* Ocupa aproximadamente 40% do container */
+    padding: 30px;                     /* Espaçamento interno */
+}
+
+/* ================================
+   4. Botões de Comando
+   ================================ */
+.botoesComando {
+    display: flex;                     /* Flex container */
+    flex-direction: row;               /* Botões em linha */
+    gap: 10px;                         /* Espaçamento entre os botões */
+    margin-top: 20px;                  /* Espaçamento acima dos botões */
+}
+
+/* Botão Salvar */
+.btn-success {
+    background-color: rgb(1, 172, 1);
+    padding: 10px 20px;                /* Espaçamento interno */
+    border: none;                      /* Remove bordas padrão */
+    border-radius: 5px;                /* Bordas arredondadas */
+    color: white;                      /* Cor do texto */
+    cursor: pointer;                   /* Cursor pointer ao passar o mouse */
+    text-decoration: none;             /* Remove sublinhado */
+    font-size: 16px;                   /* Tamanho da fonte */
+    transition: background-color 0.3s; /* Transição suave para hover */
+}
+
+.btn-success:hover {
+    background-color: rgb(1, 119, 1);
+}
+
+/* Botão Cancelar */
+.btn-link {
+    background: none;
+    color: gray;
+    text-decoration: underline;
+    padding: 10px 20px;                /* Espaçamento interno */
+    font-size: 16px;                   /* Tamanho da fonte */
+    cursor: pointer;                   /* Cursor pointer ao passar o mouse */
+}
+
+.btn-link:hover {
+    color: #0a7b17;
+    text-decoration: none;
+}
+
+/* ================================
+   5. Título do Formulário
+   ================================ */
+.form-section h2 {
+    text-align: left;               /* Alinha o título à esquerda */
+    margin-bottom: 20px;            /* Espaçamento abaixo do título */
+    color: #0a7b17;                 /* Cor do texto */
+    font-family: 'Arial', sans-serif; /* Fonte personalizada */
+    font-size: 28px;                /* Tamanho da fonte */
+}
+
+/* ================================
+   6. Grupos de Formulário
+   ================================ */
+.form-group {
+    margin-bottom: 20px;              /* Espaçamento entre os grupos */
+}
+
+.form-group label {
+    display: block;                    /* Exibe como bloco */
+    margin-bottom: 5px;                /* Espaçamento abaixo do label */
+    font-weight: bold;                 /* Texto em negrito */
+    color: #333333;                    /* Cor do texto */
+    font-size: 16px;                   /* Tamanho da fonte */
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;                       /* Ocupa toda a largura do contêiner */
+    padding: 10px 15px;                /* Espaçamento interno */
+    border: 1px solid #cccccc;         /* Borda cinza clara */
+    border-radius: 4px;                /* Bordas arredondadas */
+    font-size: 16px;                   /* Tamanho da fonte */
+    box-sizing: border-box;            /* Inclui padding e border na largura */
+    transition: border-color 0.3s;     /* Transição suave na cor da borda */
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #28a745;             /* Cor da borda ao focar */
+    outline: none;                     /* Remove outline padrão */
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); /* Sombra verde suave */
+}
+
+/* ================================
+   7. Responsividade
+   ================================ */
+@media (max-width: 900px) {
+    .form-container {
+        flex-direction: column;          /* Empilha as seções verticalmente */
+        align-items: center;              /* Alinha os itens ao centro */
+    }
+
+    .image-section {
+        margin-right: 0;                  /* Remove margem direita */
+        margin-bottom: 20px;               /* Adiciona margem abaixo */
+    }
+
+    .form-section {
+        padding: 20px;                    /* Espaçamento interno reduzido */
+    }
+
+    .desenho {
+        max-width: 100%;                  /* Remove a largura máxima */
+    }
+}
+
+@media (max-width: 600px) {
+    .form-section h2 {
+        font-size: 24px;                 /* Tamanho de fonte reduzido */
+    }
+
+    .form-group label,
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 14px;                 /* Tamanho da fonte reduzido */
+    }
+
+    .botoesComando {
+        flex-direction: column;          /* Empilha os botões verticalmente */
+        align-items: flex-start;         /* Alinha os botões à esquerda */
+        gap: 10px;                        /* Espaçamento entre os botões */
+    }
+
+    .btn-success,
+    .btn-link {
+        width: 100%;                      /* Botões ocupam toda a largura */
+        text-align: center;               /* Centraliza o texto */
+    }
+}

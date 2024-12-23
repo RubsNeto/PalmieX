@@ -1,0 +1,63 @@
+<!-- vendedor/templates/vendedor/lista_vendedores.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Vendedores{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/vendedores/listar_vendedores.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+
+    <h2>Vendedores</h2>
+    <!-- Exibir mensagens de sucesso ou erro -->
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <table class="vendedores-table">
+        <thead>
+            <tr class="cabecalho">
+                <th>Nome</th>
+                <th>Código</th>
+                <th>Data de Nascimento</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vendedor in vendedores %}
+                <tr>
+                    <td class="nome_vendedor">{{ vendedor.nome }}</td>
+                    <td>{{ vendedor.codigo }}</td>
+                    <td>{{ vendedor.data_nascimento }}</td>
+                    <td>
+                        <div class="acoes">
+                            <a href="{% url 'vendedor:editar_vendedor' vendedor.pk %}" class="btn btn-secondary">
+                                <img class="edit" src="{% static 'img/edit.svg' %}" alt="Editar">
+                            </a>
+                            <!-- Formulário para deletar o vendedor -->
+                            <form action="{% url 'vendedor:deletar_vendedor' vendedor.pk %}" method="post" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja deletar este vendedor?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger" title="Deletar">
+                                    <img class="delete" src="{% static 'img/trash.svg' %}" alt="Deletar">
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">Nenhum vendedor cadastrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>    
+    </table>
+
+    <div class="botoesComando">
+        <a href="{% url 'vendedor:criar_vendedor' %}" class="btn btn-primary adicionarVendedor">Adicionar Vendedor</a>
+    </div>
+{% endblock %}

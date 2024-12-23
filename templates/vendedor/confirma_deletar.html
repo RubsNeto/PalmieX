@@ -1,0 +1,15 @@
+<!-- vendedor/templates/vendedor/confirma_deletar.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Deletar Vendedor{% endblock %}
+
+{% block content %}
+    <h2>Deletar Vendedor</h2>
+    <p>Tem certeza que deseja deletar "{{ vendedor.nome }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirmar</button>
+        <a href="{% url 'vendedor:lista_vendedores' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

@@ -1,0 +1,41 @@
+<!-- vendedor/templates/vendedor/form_vendedor.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Informações do Vendedor{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/vendedores/form_vendedor.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+    <div class="form-container">
+        <!-- Seção do Formulário -->
+        <div class="form-section">
+            <h2>Informações do Vendedor</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.nome.label_tag }}
+                    {{ form.nome }}
+                </div>
+                <div class="form-group">
+                    {{ form.data_nascimento.label_tag }}
+                    {{ form.data_nascimento }}
+                </div>
+                <div class="form-group">
+                    {{ form.codigo.label_tag }}
+                    {{ form.codigo }}
+                </div>
+                <div class="botoesComando">
+                    <button type="submit" class="btn btn-success botao">Salvar</button>
+                    <a href="{% url 'vendedor:lista_vendedores' %}" class="btn btn-link botao">Cancelar</a>
+                </div>
+            </form>
+        </div>
+        <!-- Seção da Imagem -->
+        <div class="image-section">
+            <img src="{% static 'img/desenho_vendas.svg' %}" class="desenho" alt="Desenho de Vendas">
+        </div>
+    </div>
+{% endblock %}

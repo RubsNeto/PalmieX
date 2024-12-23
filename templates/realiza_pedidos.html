@@ -8,142 +8,114 @@
 
 {% block content %}
 <div class="ordem">
+    <!-- Seção de Informações do Cliente -->
     <div class="ficha fixa">
         <h4 class="OrdemServico">Ordem de serviço</h4>
         <div class="linha1">
             <span class="campo">Cliente</span>
-            <input type="text" class="cliente" tabindex="1">
+            <input type="text" class="cliente">
 
             <span class="campo">Código</span>
-            <input type="text" class="codVendedor" tabindex="2">
+            <input type="text" class="codVendedor">
 
             <span class="campo">Vendedor</span>
-            <input type="text" class="vendedor" tabindex="3">
+            <input type="text" class="vendedor">
 
             <h5 class="total"><b>TOTAL:</b></h5>
-            <h5 class="valorTotal"><b></b></h5>
+            <h5 class="valorTotal"><b>0</b></h5>
         </div>
     </div>
-    
 
-    <!-- Pedido inicial -->
+    <!-- Pedido Inicial -->
     <div class="pedido-item">
         <div class="pedidos">
             <span class="campo">Referência:</span>
-            <input type="text" class="referencia" tabindex="4">
+            <input type="text" class="referencia">
 
             <span class="campo">Material</span>
-            <input type="text" class="material" tabindex="5">
+            <input type="text" class="material">
 
             <div class="maisEmenos">
-                <button type="button" class="adicionarPedido" tabindex="6">+</button>
-                <button type="button" class="removerPedido" tabindex="7">-</button>
-                <!-- Botão Inf Adicionado -->
-                <button type="button" class="adicionarInfantil" id="botaoInf" tabindex="8">Inf</button>
+                <button type="button" class="adicionarPedido">+</button>
+                <button type="button" class="removerPedido">-</button>
+                <button type="button" class="adicionarInfantil">Inf</button>
                 <h5 class="pares">Pares: <b class="paresValor">0</b></h5>
             </div>
         </div>
 
-        <div class="container containerQuadradinhos" id="containerQuadradinhos">
-            <!-- Quadradinhos Iniciais (15 a 31) -->
-
-            <!-- Tamanho 1 -->
+        <div class="container containerQuadradinhos">
+            <!-- Quadradinhos Iniciais (30 a 43) -->
             <div class="botao-container">
-                <button class="botao" tabindex="-1">30</button>
-                <div class="numero" contenteditable="true" tabindex="17" aria-label="Número 9"></div>
-                </div>
-                
-                <!-- Tamanho 10 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">31</button>
-                    <div class="numero" contenteditable="true" tabindex="18" aria-label="Número 10"></div>
-                </div>
-                
-                <!-- Tamanho 11 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">32</button>
-                    <div class="numero" contenteditable="true" tabindex="19" aria-label="Número 11"></div>
-                </div>
-                
-                <!-- Tamanho 12 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">33</button>
-                    <div class="numero" contenteditable="true" tabindex="20" aria-label="Número 12"></div>
-                </div>
-                
-                <!-- Tamanho 13 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">34</button>
-                    <div class="numero" contenteditable="true" tabindex="21" aria-label="Número 13"></div>
-                </div>
-                
-                <!-- Tamanho 14 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">35</button>
-                    <div class="numero" contenteditable="true" tabindex="22" aria-label="Número 14"></div>
-                </div>
-                
-                <!-- Tamanho 15 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">36</button>
-                    <div class="numero" contenteditable="true" tabindex="23" aria-label="Número 15"></div>
-                </div>
-                
-                <!-- Tamanho 16 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">37</button>
-                    <div class="numero" contenteditable="true" tabindex="24" aria-label="Número 16"></div>
-                </div>
-                
-                <!-- Tamanho 17 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">38</button>
-                    <div class="numero" contenteditable="true" tabindex="25" aria-label="Número 17"></div>
-                </div>
-                
-                <!-- Tamanho 18 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">39</button>
-                    <div class="numero" contenteditable="true" tabindex="26" aria-label="Número 18"></div>
-                </div>
-                
-                <!-- Tamanho 19 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">40</button>
-                    <div class="numero" contenteditable="true" tabindex="27" aria-label="Número 19"></div>
-                </div>
-                
-                <!-- Tamanho 20 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">41</button>
-                    <div class="numero" contenteditable="true" tabindex="28" aria-label="Número 20"></div>
-                </div>
-                
-                <!-- Tamanho 21 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">42</button>
-                    <div class="numero" contenteditable="true" tabindex="29" aria-label="Número 21"></div>
-                </div>
-                
-                <!-- Tamanho 22 -->
-                <div class="botao-container">
-                    <button class="botao" tabindex="-1">43</button>
-                    <div class="numero" contenteditable="true" tabindex="30" aria-label="Número 22"></div>
-                </div>
-
-                
+                <button class="botao">30</button>
+                <div class="numero" contenteditable="true" aria-label="Número 30"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">31</button>
+                <div class="numero" contenteditable="true" aria-label="Número 31"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">32</button>
+                <div class="numero" contenteditable="true" aria-label="Número 32"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">33</button>
+                <div class="numero" contenteditable="true" aria-label="Número 33"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">34</button>
+                <div class="numero" contenteditable="true" aria-label="Número 34"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">35</button>
+                <div class="numero" contenteditable="true" aria-label="Número 35"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">36</button>
+                <div class="numero" contenteditable="true" aria-label="Número 36"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">37</button>
+                <div class="numero" contenteditable="true" aria-label="Número 37"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">38</button>
+                <div class="numero" contenteditable="true" aria-label="Número 38"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">39</button>
+                <div class="numero" contenteditable="true" aria-label="Número 39"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">40</button>
+                <div class="numero" contenteditable="true" aria-label="Número 40"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">41</button>
+                <div class="numero" contenteditable="true" aria-label="Número 41"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">42</button>
+                <div class="numero" contenteditable="true" aria-label="Número 42"></div>
+            </div>
+            <div class="botao-container">
+                <button class="botao">43</button>
+                <div class="numero" contenteditable="true" aria-label="Número 43"></div>
+            </div>
         </div>
     </div>
 
-    <!-- Contêiner para novos pedidos -->
+    <!-- Contêiner para Novos Pedidos -->
     <div class="lista-pedidos"></div>
+
+    <!-- Botões de Comando -->
     <div class="botoesComando">
-        <button type="button" class="realizarPedido" tabindex="42">Realizar pedido</button>
-        <button type="button" class="clienteloja" tabindex="42">Cliente em loja</button>  
+        <button type="button" class="clienteloja">Cliente em loja</button>
+        <button type="button" class="realizarPedido">Realizar pedido</button>
     </div>
     
 </div>
 
+<!-- Inclusão do JavaScript -->
 <script src="{% static 'js/realiza_pedidos.js' %}"></script>
 
 {% endblock %}

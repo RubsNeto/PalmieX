@@ -16,10 +16,16 @@
             <div class="menu-content">
                 <h4 class="titulo">Pedidos</h4>
                 <div class="sub_menu">
-                    <a href="https://www.google.com" tabindex='999'>Realizar pedido</a>
-                    <a href="https://www.google.com" tabindex='999'>Produção</a>
-                    <a href="https://www.google.com" tabindex='999'>Finalizados</a>
-                    <a href="{% url 'logout' %}">Logout</a>
+                    <a href="{% url 'realiza_pedidos' %}" tabindex='-1'>Realizar pedido</a>
+                    <a href="https://www.google.com" tabindex='-1'>Produção</a>
+                    <a href="https://www.google.com" tabindex='-1'>Finalizados</a>
+                </div>
+
+                <h4 class="titulo gestao">Gestão</h4>
+                <div class="sub_menu">
+                    <a href="{% url 'vendedor:lista_vendedores' %}" tabindex='-1'>Vendedor</a>
+                    <a href="{% url 'produtos:lista_produtos' %}" tabindex='-1'>produtos</a>
+                    <a href="{% url 'logout' %}" tabindex='-1'>Logout</a>
                 </div>
             </div>
             <img class="logo" src="{% static 'img/Logo_palmiex.png' %}" alt="Logo">

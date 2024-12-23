@@ -1,3 +1,73 @@
+let proximoTabindex = 1;
+
+function reorganizarTabindex() {
+    let proximoTabindex = 1;
+
+    // Cliente, código do vendedor, vendedor
+    const cliente = document.querySelector('.cliente');
+    if (cliente) cliente.setAttribute('tabindex', proximoTabindex++);
+
+    const codVendedor = document.querySelector('.codVendedor');
+    if (codVendedor) codVendedor.setAttribute('tabindex', proximoTabindex++);
+
+    const vendedor = document.querySelector('.vendedor');
+    if (vendedor) vendedor.setAttribute('tabindex', proximoTabindex++);
+
+    // Percorre todos os pedidos
+    const pedidos = document.querySelectorAll('.pedido-item');
+    pedidos.forEach(pedido => {
+        // Referência e material
+        const referencia = pedido.querySelector('.referencia');
+        if (referencia) referencia.setAttribute('tabindex', proximoTabindex++);
+
+        const material = pedido.querySelector('.material');
+        if (material) material.setAttribute('tabindex', proximoTabindex++);
+
+
+        const botoesFocaveis = pedido.querySelectorAll('.adicionarPedido, .removerPedido, .adicionarInfantil');
+        botoesFocaveis.forEach(botao => {
+            botao.setAttribute('tabindex', proximoTabindex++); 
+        });
+
+        const botoesNaoFocaveis = pedido.querySelectorAll('.botao');
+        botoesNaoFocaveis.forEach(botao => {
+            botao.setAttribute('tabindex', -1); 
+        });
+
+        // Números (quadradinhos)
+        // Ordena os inputs de .numero com base no número do botão associado
+        const numeros = Array.from(pedido.querySelectorAll('.numero')).sort((a, b) => {
+            const numA = parseInt(a.previousElementSibling.textContent.trim(), 10);
+            const numB = parseInt(b.previousElementSibling.textContent.trim(), 10);
+            return numA - numB;
+        });
+        numeros.forEach(numero => {
+            numero.setAttribute('tabindex', proximoTabindex++);
+        });
+    });
+}
+
+
+// Função auxiliar para criar botões com tabindex=-1 (não focáveis)
+function criarBotao(texto) {
+    const botao = document.createElement('button');
+    botao.className = 'botao';
+    botao.textContent = texto;
+    botao.setAttribute('tabindex', -1); // Botões não focáveis via tab
+    return botao;
+}
+
+// Função auxiliar para criar div.numero com tabindex
+function criarNumeroDiv(num) {
+    const numeroDiv = document.createElement('div');
+    numeroDiv.className = 'numero';
+    numeroDiv.setAttribute('contenteditable', 'true');
+    numeroDiv.setAttribute('aria-label', `Número ${num}`);
+    numeroDiv.setAttribute('tabindex', proximoTabindex++); // Atribui tabindex sequencial
+    numeroDiv.textContent = ''; // Mantém o div.numero vazio
+    return numeroDiv;
+}
+
 // Função para atualizar o total de pares de um único pedido
 function atualizarParesPedido(pedidoItem) {
     const numeros = pedidoItem.querySelectorAll('.numero');
@@ -84,6 +154,83 @@ function atualizarEstiloValor(botaoContainer, valor) {
     }
 }
 
+function adicionarFuncionalidadesInf(pedidoItem) {
+    const botaoInf = pedidoItem.querySelector('.adicionarInfantil');
+    const containerQuadradinhos = pedidoItem.querySelector('.containerQuadradinhos');
+    
+    if (botaoInf && containerQuadradinhos) {
+        // Flag para evitar múltiplos cliques adicionando os mesmos botões
+        let infAdicionado = false;
+    
+        botaoInf.addEventListener('click', () => {
+            if (infAdicionado) {
+                alert('Os botões de 15 a 29 já foram adicionados para este pedido.');
+                return;
+            }
+    
+            const inicio = 29;
+            const fim = 15;
+    
+            for (let num = inicio; num >= fim; num--) {
+                // Verifica se o botão já existe
+                const existe = Array.from(containerQuadradinhos.querySelectorAll('.botao')).some(botao => parseInt(botao.textContent) === num);
+                if (existe) continue; // Pula se o botão já existir
+
+                // Cria o container do quadradinho
+                const botaoContainer = document.createElement('div');
+                botaoContainer.className = 'botao-container';
+
+                // Cria o botão
+                const botao = criarBotao(num);
+                
+                // Cria o campo de escrita (div.numero)
+                const numeroDiv = criarNumeroDiv(num);
+                // Já atribuímos tabindex na criação (não é necessário, pois reorganizarTabindex irá ajustar)
+
+                // Adiciona o botão e o div.numero ao container
+                botaoContainer.appendChild(botao);
+                botaoContainer.appendChild(numeroDiv);
+
+                // Adiciona o container ao container principal
+                containerQuadradinhos.insertBefore(botaoContainer, containerQuadradinhos.firstChild); // Insere no início para manter a ordem
+
+                // Adiciona evento de incremento ao novo botão
+                botao.addEventListener('click', () => {
+                    let valor = parseInt(numeroDiv.textContent.trim(), 10) || 0;
+                    valor += 1;
+                    atualizarEstiloValor(botaoContainer, valor);
+                    atualizarTotalGlobal();
+                });
+
+                // Adiciona evento de input ao novo campo numero
+                numeroDiv.addEventListener('input', () => {
+                    let valor = parseInt(numeroDiv.textContent.trim(), 10);
+                    if (isNaN(valor)) {
+                        valor = 0; 
+                    }
+
+                    // Aplica a lógica de esconder zero
+                    atualizarEstiloValor(numeroDiv.parentElement, valor);
+                    atualizarTotalGlobal();
+                });
+            }
+
+            // Alterar o tamanho de todos os botões
+            const botoes = containerQuadradinhos.querySelectorAll('.botao');
+            botoes.forEach(botao => {
+                botao.style.width = '40px';
+                botao.style.height = '40px';
+            });
+
+            // Atualiza a flag para evitar duplicações
+            infAdicionado = true;
+
+            // Reorganiza os tabindex após adicionar novos quadradinhos
+            reorganizarTabindex();
+        });
+    }
+}
+
 // Função para adicionar eventos a um pedido específico
 function adicionarEventosPedido(pedidoItem) {
     // Incremento ao clicar no botão
@@ -152,13 +299,13 @@ function adicionarEventosPedido(pedidoItem) {
                     </div>
                 </div>
                 <div class="container containerQuadradinhos">
-                    <!-- Quadradinhos Iniciais (15 a 43) -->
+                    <!-- Quadradinhos Iniciais (30 a 43) -->
                     ${[...Array(14).keys()].map(i => {
                         const num = i + 30;
                         return `
                         <div class="botao-container">
-                            <button class="botao">${num}</button>
-                            <div class="numero" contenteditable="true"></div>
+                            <button class="botao" tabindex="-1">${num}</button>
+                            <div class="numero" contenteditable="true" aria-label="Número ${num}"></div>
                         </div>`;
                     }).join('')}
                     
@@ -167,6 +314,11 @@ function adicionarEventosPedido(pedidoItem) {
 
             lista.appendChild(novoPedido);
             adicionarEventosPedido(novoPedido);
+            adicionarFuncionalidadesInf(novoPedido);
+
+            // Reorganiza todos os tabindex globalmente
+            reorganizarTabindex();
+
             atualizarTotalGlobal();
         });
     }
@@ -190,92 +342,7 @@ function adicionarEventosPedido(pedidoItem) {
     }
 
     // Adicionar funcionalidades para o botão Inf dentro deste pedido
-    const botaoInf = pedidoItem.querySelector('.adicionarInfantil');
-    const containerQuadradinhos = pedidoItem.querySelector('.containerQuadradinhos');
-    
-    if (botaoInf && containerQuadradinhos) {
-        // Flag para evitar múltiplos cliques adicionando os mesmos botões
-        let infAdicionado = false;
-    
-        botaoInf.addEventListener('click', () => {
-
-    
-            if (infAdicionado) {
-                alert('Os botões de 15 a 29 já foram adicionados para este pedido.');
-                return;
-            }
-    
-            const inicio = 29;
-            const fim = 15;
-            let proximoTabindexNumero = containerQuadradinhos.querySelectorAll('.numero').length + 1;
-    
-            for (let num = inicio; num >= fim; num--) {
-                // Verifica se o botão já existe
-                const existe = Array.from(containerQuadradinhos.querySelectorAll('.botao')).some(botao => parseInt(botao.textContent) === num);
-                if (existe) continue; // Pula se o botão já existir
-    
-                // Cria o container do quadradinho
-                const botaoContainer = document.createElement('div');
-                botaoContainer.className = 'botao-container';
-    
-                // Cria o botão
-                const botao = document.createElement('button');
-                botao.className = 'botao';
-                botao.textContent = num;
-                botao.setAttribute('tabindex', -1);
-                
-    
-                // Cria o campo de escrita (div.numero)
-                const numeroDiv = document.createElement('div');
-                numeroDiv.className = 'numero';
-                numeroDiv.setAttribute('contenteditable', 'true');
-                numeroDiv.setAttribute('tabindex', proximoTabindexNumero);
-                numeroDiv.setAttribute('aria-label', `Número ${num}`);
-                numeroDiv.textContent = ''; // Mantém o div.numero vazio
-    
-                // Adiciona o botão e o div.numero ao container
-                botaoContainer.appendChild(botao);
-                botaoContainer.appendChild(numeroDiv);
-    
-                // Adiciona o container ao container principal
-                containerQuadradinhos.insertBefore(botaoContainer, containerQuadradinhos.firstChild); // Insere no início para manter a ordem
-    
-                // Adiciona evento de incremento ao novo botão
-                botao.addEventListener('click', () => {
-                    let valor = parseInt(numeroDiv.textContent.trim(), 10) || 0;
-                    valor += 1;
-                    atualizarEstiloValor(botaoContainer, valor);
-                    atualizarTotalGlobal();
-                });
-    
-                // Adiciona evento de input ao novo campo numero
-                numeroDiv.addEventListener('input', () => {
-                    let valor = parseInt(numeroDiv.textContent.trim(), 10);
-                    if (isNaN(valor)) {
-                        valor = 0; 
-                    }
-    
-                    // Aplica a lógica de esconder zero
-                    atualizarEstiloValor(botaoContainer, valor);
-                    atualizarTotalGlobal();
-                });
-            }
-
-            // Selecionar todos os botões dentro do container
-            const botoes = containerQuadradinhos.querySelectorAll('.botao');
-
-            // Alterar o tamanho de todos os botões
-            botoes.forEach(botao => {
-                botao.style.width = '40px';
-                botao.style.height = '40px';
-            });
-    
-            // Atualiza a flag para evitar duplicações
-            infAdicionado = true;
-        });
-    }
-    
-
+    adicionarFuncionalidadesInf(pedidoItem);
 }
 
 // Adicionar eventos ao pedido inicial
@@ -332,7 +399,8 @@ if (realizarPedidoBtn) {
     });
 }
 
-// Atualizar o total global assim que a página carrega
+// Função para inicializar tabindex e atualizar total
 document.addEventListener('DOMContentLoaded', () => {
+    reorganizarTabindex();
     atualizarTotalGlobal();
 });
