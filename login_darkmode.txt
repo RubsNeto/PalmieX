@@ -5,14 +5,33 @@
     box-sizing: border-box;
 }
 
-:root {
-    --primary-color: #2E8B57; /* Verde médio */
+/*:root {
+    --primary-color: #2E8B57; /* Verde médio 
     --secondary-color: #ffffff;
-    --accent-color: #66CDAA; /* Verde água clara */
+    --accent-color: #66CDAA; /* Verde água clara 
     --font-family: 'Roboto', sans-serif;
+}*/
+
+:root {
+    --primary-color: #06EC82; /* Verde água clara */
+    --secondary-color: #201B2C; /* Cinza muito escuro */
+    --accent-color: #06EC82; /* Verde médio */
+    --font-family: 'Roboto', sans-serif;
+    --background-gradient: linear-gradient(45deg, #201B2C, #201B2C);
+    --container-bg: #2F2942;
+    --text-color: #FFFFFF;
+    --input-bg: #2E2E2E;
+    --input-border: #06EC82;
+    --input-text: #FFFFFF;
+    --link-color: #06EC82;
+    --link-hover: #06EC82;
+    --button-bg: #06EC82;
+    --button-hover-bg: #06EC82;
+    --button-text: #1E1E1E;
+    --shadow-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Estilizando o body com um fundo verde colorido e animado */
+/* Estilizando o body com um fundo escuro e animado */
 body {
     height: 100vh;
     width: 100%;
@@ -20,13 +39,14 @@ body {
     justify-content: center;
     align-items: center;
     font-family: var(--font-family);
-    background-color: #2E8B57;
+    background-image: var(--background-gradient);
     background-size: 800% 800%;
     animation: gradientAnimation 20s ease infinite;
     overflow: hidden;
+    color: var(--text-color);
 }
 
-/* Animação do fundo com múltiplos tons de verde */
+/* Animação do fundo */
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
     25% { background-position: 50% 100%; }
@@ -37,10 +57,10 @@ body {
 
 /* Container principal */
 .container {
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--container-bg);
     padding: 40px;
     border-radius: 20px;
-    box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+    box-shadow: 0 12px 24px var(--shadow-color);
     max-width: 400px;
     width: 90%;
     text-align: center;
@@ -91,17 +111,19 @@ h2 {
 .input-group input {
     width: 100%;
     padding: 12px 12px 12px 40px;
-    border: 2px solid var(--primary-color);
+    border: 2px solid var(--input-border);
     border-radius: 25px;
-    background-color: transparent;
-    color: #333;
+    background-color: var(--input-bg);
+    color: var(--input-text);
     font-size: 16px;
     outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
     cursor: text;
 }
 
-
+.input-group input::placeholder {
+    color: #AAAAAA;
+}
 
 .input-group input:focus {
     border-color: var(--accent-color);
@@ -114,37 +136,37 @@ button {
     padding: 12px;
     border: none;
     border-radius: 25px;
-    background: var(--primary-color);
-    color: var(--secondary-color);
+    background: var(--button-bg);
+    color: var(--button-text);
     font-size: 18px;
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 6px 12px var(--shadow-color);
 }
 
 button:hover {
-    background: var(--accent-color);
+    background: var(--button-hover-bg);
     transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.35);
 }
 
 /* Link de cadastro */
 .signup-link {
     margin-top: 15px;
     font-size: 14px;
-    color: #555;
+    color: #CCCCCC;
 }
 
 .signup-link a {
-    color: var(--primary-color);
+    color: var(--link-color);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s;
 }
 
 .signup-link a:hover {
-    color: var(--accent-color);
+    color: var(--link-hover);
 }
 
 /* Responsividade */
