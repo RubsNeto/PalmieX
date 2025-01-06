@@ -1,41 +1,51 @@
+/***********************************************************
+ *  realiza_pedidos.js
+ ***********************************************************/
+
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.key === 'Enter') {
+        const botao = document.getElementById('realizarPedido');
+        botao.click();
+    }
+});
+
 let proximoTabindex = 1;
 
+/**
+ * Reorganiza os tabindex de todos os campos e botões da tela
+ */
 function reorganizarTabindex() {
     let proximoTabindex = 1;
-
-    // Cliente, código do vendedor, vendedor
+    // Cliente, código, vendedor
     const cliente = document.querySelector('.cliente');
     if (cliente) cliente.setAttribute('tabindex', proximoTabindex++);
-
     const codVendedor = document.querySelector('.codVendedor');
     if (codVendedor) codVendedor.setAttribute('tabindex', proximoTabindex++);
-
     const vendedor = document.querySelector('.vendedor');
     if (vendedor) vendedor.setAttribute('tabindex', proximoTabindex++);
 
-    // Percorre todos os pedidos
+    // Todos os pedidos
     const pedidos = document.querySelectorAll('.pedido-item');
     pedidos.forEach(pedido => {
-        // Referência e material
+        // Referência e Material
         const referencia = pedido.querySelector('.referencia');
         if (referencia) referencia.setAttribute('tabindex', proximoTabindex++);
-
         const material = pedido.querySelector('.material');
         if (material) material.setAttribute('tabindex', proximoTabindex++);
 
-
+        // Botões (+, -, Inf)
         const botoesFocaveis = pedido.querySelectorAll('.adicionarPedido, .removerPedido, .adicionarInfantil');
         botoesFocaveis.forEach(botao => {
-            botao.setAttribute('tabindex', proximoTabindex++); 
+            botao.setAttribute('tabindex', proximoTabindex++);
         });
 
+        // Botões de tamanho não devem ser focados
         const botoesNaoFocaveis = pedido.querySelectorAll('.botao');
         botoesNaoFocaveis.forEach(botao => {
-            botao.setAttribute('tabindex', -1); 
+            botao.setAttribute('tabindex', -1);
         });
 
-        // Números (quadradinhos)
-        // Ordena os inputs de .numero com base no número do botão associado
+        // Inputs de quantidade (.numero)
         const numeros = Array.from(pedido.querySelectorAll('.numero')).sort((a, b) => {
             const numA = parseInt(a.previousElementSibling.textContent.trim(), 10);
             const numB = parseInt(b.previousElementSibling.textContent.trim(), 10);
@@ -47,28 +57,39 @@ function reorganizarTabindex() {
     });
 }
 
+function reconstruirBotoes(pedidoItem, infAtivo) {
+    const containerQuadradinhos = pedidoItem.querySelector('.containerQuadradinhos');
+    if (!containerQuadradinhos) return;
+    
+    // Limpa tudo
+    containerQuadradinhos.innerHTML = '';
 
-// Função auxiliar para criar botões com tabindex=-1 (não focáveis)
-function criarBotao(texto) {
-    const botao = document.createElement('button');
-    botao.className = 'botao';
-    botao.textContent = texto;
-    botao.setAttribute('tabindex', -1); // Botões não focáveis via tab
-    return botao;
+    // Se infAtivo = true => 15..43, senão => 30..43
+    const inicio = infAtivo ? 15 : 30;
+    const fim   = 43;
+
+    for (let num = inicio; num <= fim; num++) {
+        criarInserirBotao(containerQuadradinhos, num, false); 
+        // false => insere no final, então fica na ordem crescente
+    }
+    
+    // Se for infantil, redimensiona para ex.: 30×30
+    // Senão, redimensiona para 50×50
+    if (infAtivo) {
+        redimensionarBotoes(containerQuadradinhos, '40px', '40px');
+    } else {
+        redimensionarBotoes(containerQuadradinhos, '50px', '50px');
+    }
+
+    // Por fim, reorganiza a tabulação e atualiza o total
+    reorganizarTabindex();
+    atualizarTotalGlobal();
 }
 
-// Função auxiliar para criar div.numero com tabindex
-function criarNumeroDiv(num) {
-    const numeroDiv = document.createElement('div');
-    numeroDiv.className = 'numero';
-    numeroDiv.setAttribute('contenteditable', 'true');
-    numeroDiv.setAttribute('aria-label', `Número ${num}`);
-    numeroDiv.setAttribute('tabindex', proximoTabindex++); // Atribui tabindex sequencial
-    numeroDiv.textContent = ''; // Mantém o div.numero vazio
-    return numeroDiv;
-}
 
-// Função para atualizar o total de pares de um único pedido
+/**
+ * Atualiza o total de pares de UM pedido
+ */
 function atualizarParesPedido(pedidoItem) {
     const numeros = pedidoItem.querySelectorAll('.numero');
     let soma = 0;
@@ -83,206 +104,228 @@ function atualizarParesPedido(pedidoItem) {
     return soma;
 }
 
-// Função para atualizar o total global de todos os pedidos
+/**
+ * Atualiza o total global de pares (somando todos os pedidos).
+ */
 function atualizarTotalGlobal() {
     const pedidoItens = document.querySelectorAll('.pedido-item');
     let somaGlobal = 0;
     pedidoItens.forEach(pedido => {
         somaGlobal += atualizarParesPedido(pedido);
     });
+
     const valorTotalElem = document.querySelector('.valorTotal b');
     if (valorTotalElem) {
         valorTotalElem.textContent = somaGlobal;
     }
 }
 
-// Função para coletar dados de todos os pedidos (para realizar pedido)
-function coletarDadosPedidos() {
-    const dados = {};
-
-    const clienteInput = document.querySelector('.cliente');
-    const codVendedorInput = document.querySelector('.codVendedor');
-    const vendedorInput = document.querySelector('.vendedor');
-
-    dados.cliente = clienteInput ? clienteInput.value : '';
-    dados.codigoVendedor = codVendedorInput ? codVendedorInput.value : '';
-    dados.vendedor = vendedorInput ? vendedorInput.value : '';
-    dados.pedidos = [];
-
-    const pedidoItens = document.querySelectorAll('.pedido-item');
-    pedidoItens.forEach(pedido => {
-        const referencia = pedido.querySelector('.referencia') ? pedido.querySelector('.referencia').value : '';
-        const material = pedido.querySelector('.material') ? pedido.querySelector('.material').value : '';
-
-        const tamanhos = {};
-        const botaoContainers = pedido.querySelectorAll('.botao-container');
-        botaoContainers.forEach((bc) => {
-            const botao = bc.querySelector('.botao');
-            const numeroDiv = bc.querySelector('.numero');
-            if (botao && numeroDiv) {
-                const tamanho = botao.textContent.trim();
-                const valor = parseInt(numeroDiv.textContent.trim(), 10) || 0;
-                // Somente adiciona ao objeto se valor > 0, já que não queremos zeros
-                if (valor > 0) {
-                    tamanhos[tamanho] = valor;
-                }
-            }
-        });
-
-        dados.pedidos.push({
-            referencia: referencia,
-            material: material,
-            tamanhos: tamanhos
-        });
-    });
-
-    return dados;
-}
-
-// Função para aplicar estilo e mostrar/esconder zero
+/**
+ * Se o valor > 0, mostra no quadradinho. Se valor = 0, limpa.
+ */
 function atualizarEstiloValor(botaoContainer, valor) {
     const numeroDiv = botaoContainer.querySelector('.numero');
-
     if (valor > 0) {
-        // Exibe o valor
         numeroDiv.textContent = valor;
         botaoContainer.classList.add('valor-positivo');
     } else {
-        // Se valor = 0, não mostra nada (string vazia)
         numeroDiv.textContent = '';
         botaoContainer.classList.remove('valor-positivo');
     }
 }
 
-function adicionarFuncionalidadesInf(pedidoItem) {
-    const botaoInf = pedidoItem.querySelector('.adicionarInfantil');
-    const containerQuadradinhos = pedidoItem.querySelector('.containerQuadradinhos');
-    
-    if (botaoInf && containerQuadradinhos) {
-        // Flag para evitar múltiplos cliques adicionando os mesmos botões
-        let infAdicionado = false;
-    
-        botaoInf.addEventListener('click', () => {
-            if (infAdicionado) {
-                alert('Os botões de 15 a 29 já foram adicionados para este pedido.');
-                return;
-            }
-    
-            const inicio = 29;
-            const fim = 15;
-    
-            for (let num = inicio; num >= fim; num--) {
-                // Verifica se o botão já existe
-                const existe = Array.from(containerQuadradinhos.querySelectorAll('.botao')).some(botao => parseInt(botao.textContent) === num);
-                if (existe) continue; // Pula se o botão já existir
+/**
+ * Remove do container todos os botões cujo número esteja na faixa [inicio, fim]
+ */
+function removerBotoesFaixa(container, inicio, fim) {
+    const todosContainers = container.querySelectorAll('.botao-container');
+    todosContainers.forEach(bc => {
+        const botao = bc.querySelector('.botao');
+        if (!botao) return;
+        const numero = parseInt(botao.textContent.trim(), 10);
+        if (numero >= inicio && numero <= fim) {
+            bc.remove();
+        }
+    });
+}
 
-                // Cria o container do quadradinho
-                const botaoContainer = document.createElement('div');
-                botaoContainer.className = 'botao-container';
+/**
+ * Cria um botão "botao" com tabindex=-1
+ */
+function criarBotao(numero) {
+    const btn = document.createElement('button');
+    btn.classList.add('botao');
+    btn.textContent = numero;
+    btn.setAttribute('tabindex', -1);
+    return btn;
+}
 
-                // Cria o botão
-                const botao = criarBotao(num);
-                
-                // Cria o campo de escrita (div.numero)
-                const numeroDiv = criarNumeroDiv(num);
-                // Já atribuímos tabindex na criação (não é necessário, pois reorganizarTabindex irá ajustar)
+/**
+ * Cria a div.numero com contenteditable
+ */
+function criarNumeroDiv(numero) {
+    const numeroDiv = document.createElement('div');
+    numeroDiv.classList.add('numero');
+    numeroDiv.setAttribute('contenteditable', 'true');
+    numeroDiv.setAttribute('aria-label', `Número ${numero}`);
+    numeroDiv.setAttribute('tabindex', proximoTabindex++);
+    return numeroDiv;
+}
 
-                // Adiciona o botão e o div.numero ao container
-                botaoContainer.appendChild(botao);
-                botaoContainer.appendChild(numeroDiv);
+/**
+ * Cria (botão + div.numero) e insere no container
+ */
+function criarInserirBotao(container, numero, inserirNoInicio = false) {
+    const botaoContainer = document.createElement('div');
+    botaoContainer.classList.add('botao-container');
 
-                // Adiciona o container ao container principal
-                containerQuadradinhos.insertBefore(botaoContainer, containerQuadradinhos.firstChild); // Insere no início para manter a ordem
+    const botao = criarBotao(numero);
+    const numeroDiv = criarNumeroDiv(numero);
 
-                // Adiciona evento de incremento ao novo botão
-                botao.addEventListener('click', () => {
-                    let valor = parseInt(numeroDiv.textContent.trim(), 10) || 0;
-                    valor += 1;
-                    atualizarEstiloValor(botaoContainer, valor);
-                    atualizarTotalGlobal();
-                });
+    // Clique => incrementa
+    botao.addEventListener('click', () => {
+        let val = parseInt(numeroDiv.textContent.trim(), 10) || 0;
+        val += 1;
+        atualizarEstiloValor(botaoContainer, val);
+        atualizarTotalGlobal();
+    });
 
-                // Adiciona evento de input ao novo campo numero
-                numeroDiv.addEventListener('input', () => {
-                    let valor = parseInt(numeroDiv.textContent.trim(), 10);
-                    if (isNaN(valor)) {
-                        valor = 0; 
-                    }
+    // Input manual
+    numeroDiv.addEventListener('input', () => {
+        let val = parseInt(numeroDiv.textContent.trim(), 10);
+        if (isNaN(val)) val = 0;
+        atualizarEstiloValor(botaoContainer, val);
+        atualizarTotalGlobal();
+    });
 
-                    // Aplica a lógica de esconder zero
-                    atualizarEstiloValor(numeroDiv.parentElement, valor);
-                    atualizarTotalGlobal();
-                });
-            }
+    botaoContainer.appendChild(botao);
+    botaoContainer.appendChild(numeroDiv);
 
-            // Alterar o tamanho de todos os botões
-            const botoes = containerQuadradinhos.querySelectorAll('.botao');
-            botoes.forEach(botao => {
-                botao.style.width = '40px';
-                botao.style.height = '40px';
-            });
-
-            // Atualiza a flag para evitar duplicações
-            infAdicionado = true;
-
-            // Reorganiza os tabindex após adicionar novos quadradinhos
-            reorganizarTabindex();
-        });
+    if (inserirNoInicio) {
+        container.insertBefore(botaoContainer, container.firstChild);
+    } else {
+        container.appendChild(botaoContainer);
     }
 }
 
-// Função para adicionar eventos a um pedido específico
+/**
+ * Redimensiona TODOS os botões de um container para (largura x altura).
+ */
+function redimensionarBotoes(container, largura, altura) {
+    const botoes = container.querySelectorAll('.botao');
+    botoes.forEach(botao => {
+        botao.style.width = largura;
+        botao.style.height = altura;
+    });
+}
+
+/**
+ * Cria (30..43) no container, se não existirem,
+ * e redimensiona para, por exemplo, 50x50 (adulto grande).
+ */
+function criarBotoesAdulto(container) {
+    for (let num = 30; num <= 43; num++) {
+        const jaExiste = Array.from(container.querySelectorAll('.botao'))
+            .some(bt => parseInt(bt.textContent, 10) === num);
+        if (!jaExiste) {
+            criarInserirBotao(container, num, false);
+        }
+    }
+    redimensionarBotoes(container, '50px', '50px');
+
+    reorganizarTabindex();
+}
+
+/**
+ * Cria (15..29) no container, se não existirem,
+ * normalmente redimensionando tudo para algo menor (ex.: 40x40).
+ */
+function criarBotoesInfantil(container) {
+    for (let num = 15; num <= 29; num++) {
+        const jaExiste = Array.from(container.querySelectorAll('.botao'))
+            .some(bt => parseInt(bt.textContent, 10) === num);
+        if (!jaExiste) {
+            criarInserirBotao(container, num, true);
+        }
+    }
+
+    reorganizarTabindex();
+}
+
+/**
+ * Toggle do botão Inf do pedido:
+ * - Se não tem infantil, adiciona 15..29 e redimensiona para 40x40
+ * - Se já tem, remove 15..29 e volta adultos para 50x50
+ */
+function adicionarFuncionalidadesInf(pedidoItem) {
+    const botaoInf = pedidoItem.querySelector('.adicionarInfantil');
+    if (!botaoInf) return;
+
+    // Começa sem infantil
+    pedidoItem.dataset.infAtivo = "false";
+
+    botaoInf.addEventListener('click', () => {
+        const infAtivo = (pedidoItem.dataset.infAtivo === "true");
+        // Se estava false, passa a true, e vice-versa
+        const novoEstado = !infAtivo;
+        pedidoItem.dataset.infAtivo = novoEstado ? "true" : "false";
+
+        // Reconstrói do zero em ordem
+        reconstruirBotoes(pedidoItem, novoEstado);
+    });
+}
+
+/**
+ * Adiciona todos os eventos de um pedido
+ */
 function adicionarEventosPedido(pedidoItem) {
-    // Incremento ao clicar no botão
+    // Primeiro, configura o toggle Inf (TEM que ser feito só 1x)
+    adicionarFuncionalidadesInf(pedidoItem);
+
+    // Se houver botões já no HTML, garante clique => incrementa
     const botoes = pedidoItem.querySelectorAll('.botao');
     botoes.forEach(botao => {
         botao.addEventListener('click', () => {
             const botaoContainer = botao.parentElement;
             const numeroDiv = botaoContainer.querySelector('.numero');
             let valor = parseInt(numeroDiv.textContent.trim(), 10) || 0;
-            valor += 1;
-
+            valor++;
             atualizarEstiloValor(botaoContainer, valor);
             atualizarTotalGlobal();
         });
     });
 
-    // Edição manual do valor
+    // Edição manual
     const numeros = pedidoItem.querySelectorAll('.numero');
     numeros.forEach(num => {
         num.addEventListener('input', () => {
-            let valor = parseInt(num.textContent.trim(), 10);
-            if (isNaN(valor)) {
-                valor = 0; 
-            }
-
-            // Aplica a lógica de esconder zero
-            atualizarEstiloValor(num.parentElement, valor);
+            let val = parseInt(num.textContent.trim(), 10);
+            if (isNaN(val)) val = 0;
+            atualizarEstiloValor(num.parentElement, val);
             atualizarTotalGlobal();
         });
     });
 
-    // Remover pedido
+    // Botão remover ( - )
     const removerBtn = pedidoItem.querySelector('.removerPedido');
     if (removerBtn) {
         removerBtn.addEventListener('click', () => {
-            if (confirm("Deseja realmente remover este pedido?")) {
+            if (confirm("Deseja remover este pedido?")) {
                 pedidoItem.remove();
                 atualizarTotalGlobal();
             }
         });
     }
 
-    // Adicionar novo pedido
+    // Botão adicionar pedido ( + )
     const adicionarBtn = pedidoItem.querySelector('.adicionarPedido');
     if (adicionarBtn) {
         adicionarBtn.addEventListener('click', () => {
             const lista = document.querySelector('.lista-pedidos');
-
             const novoPedido = document.createElement('div');
             novoPedido.classList.add('pedido-item');
 
-            // HTML do novo pedido com +, -, e Inf
+            // Estrutura do novo pedido
             novoPedido.innerHTML = `
                 <div class="pedidos">
                     <span class="campo">Referência:</span>
@@ -295,112 +338,172 @@ function adicionarEventosPedido(pedidoItem) {
                         <button type="button" class="adicionarPedido">+</button>
                         <button type="button" class="removerPedido">-</button>
                         <button type="button" class="adicionarInfantil">Inf</button>
-                        <h5 class="pares">Pares: <b class="paresValor">0</b></h5>   
+                        <h5 class="pares">Pares: <b class="paresValor">0</b></h5>
                     </div>
                 </div>
-                <div class="container containerQuadradinhos">
-                    <!-- Quadradinhos Iniciais (30 a 43) -->
-                    ${[...Array(14).keys()].map(i => {
-                        const num = i + 30;
-                        return `
-                        <div class="botao-container">
-                            <button class="botao" tabindex="-1">${num}</button>
-                            <div class="numero" contenteditable="true" aria-label="Número ${num}"></div>
-                        </div>`;
-                    }).join('')}
-                    
-                </div>
+                <div class="container containerQuadradinhos"></div>
             `;
 
+            // Coloca no DOM
             lista.appendChild(novoPedido);
+
+            // Cria adulto 30..43 no novo pedido
+            const containerQuadradinhos = novoPedido.querySelector('.containerQuadradinhos');
+            criarBotoesAdulto(containerQuadradinhos);
+
+            // Adiciona eventos no novo pedido
             adicionarEventosPedido(novoPedido);
-            adicionarFuncionalidadesInf(novoPedido);
 
-            // Reorganiza todos os tabindex globalmente
             reorganizarTabindex();
-
             atualizarTotalGlobal();
         });
     }
 
-    // Buscar material ao mudar referência
+    // Busca material ao digitar referência
     const referenciaInput = pedidoItem.querySelector('.referencia');
     const materialInput = pedidoItem.querySelector('.material');
     if (referenciaInput && materialInput) {
         referenciaInput.addEventListener('input', function() {
             const referencia = this.value;
-            fetch(`/buscar-material/?referencia=${encodeURIComponent(referencia)}`)
+            fetch(`/buscar-produto/?codigo=${encodeURIComponent(referencia)}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.tamanho) {
-                        materialInput.value = `Tamanho ${data.tamanho}`;
-                    } else {
-                        alert(data.erro);
+                    if (data.nome) {
+                        materialInput.value = data.nome;
                     }
+                })
+                .catch(err => {
+                    console.error("Erro ao buscar material:", err);
+                });
+        });
+    }
+}
+
+/**
+ * Coleta dados de todos os pedidos para POST
+ */
+function coletarDadosPedidos() {
+    const dados = {};
+    dados.cliente = document.querySelector('.cliente')?.value || '';
+    dados.codigoVendedor = document.querySelector('.codVendedor')?.value || '';
+    dados.vendedor = document.querySelector('.vendedor')?.value || '';
+    
+    dados.itens = [];
+
+    const pedidoItens = document.querySelectorAll('.pedido-item');
+    pedidoItens.forEach(pedido => {
+        const referencia = pedido.querySelector('.referencia')?.value || '';
+        const material = pedido.querySelector('.material')?.value || '';
+
+        // Coletar as quantidades (tamanhos)
+        const tamanhos = {};
+        const botaoContainers = pedido.querySelectorAll('.botao-container');
+        botaoContainers.forEach(bc => {
+            const btn = bc.querySelector('.botao');
+            const numeroDiv = bc.querySelector('.numero');
+            if (btn && numeroDiv) {
+                const tam = btn.textContent.trim();
+                const val = parseInt(numeroDiv.textContent.trim(), 10) || 0;
+                if (val > 0) {
+                    tamanhos[tam] = val;
+                }
+            }
+        });
+
+        dados.itens.push({
+            referencia: referencia,
+            material: material,
+            tamanhos: tamanhos
+        });
+    });
+
+    return dados;
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  
+
+/**
+ * Ao carregar a página
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    // Para cada pedido-item existente (inclusive o inicial), cria adulto 30..43 e adiciona eventos
+    document.querySelectorAll('.pedido-item').forEach(pedido => {
+        const containerQuadradinhos = pedido.querySelector('.containerQuadradinhos');
+        if (containerQuadradinhos) {
+            criarBotoesAdulto(containerQuadradinhos);
+        }
+        adicionarEventosPedido(pedido);
+    });
+
+    // Busca vendedor ao digitar código
+    const codVendedorInput = document.querySelector('.codVendedor');
+    const vendedorInput = document.querySelector('.vendedor');
+
+    if (codVendedorInput && vendedorInput) {
+        codVendedorInput.addEventListener('input', function() {
+            const codigo = this.value;
+            fetch(`/buscar-vendedor/?codigo=${encodeURIComponent(codigo)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.nome) {
+                        vendedorInput.value = data.nome;
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro ao buscar vendedor:", err);
                 });
         });
     }
 
-    // Adicionar funcionalidades para o botão Inf dentro deste pedido
-    adicionarFuncionalidadesInf(pedidoItem);
-}
+    // Botão "Realizar pedido"
+    const realizarPedidoBtn = document.querySelector('.realizarPedido');
+    const csrftoken = getCookie('csrftoken'); // se Django estiver usando o nome padrão
+    if (realizarPedidoBtn) {
+        realizarPedidoBtn.addEventListener('click', () => {
+            const dados = coletarDadosPedidos();
 
-// Adicionar eventos ao pedido inicial
-document.querySelectorAll('.pedido-item').forEach(pedido => {
-    adicionarEventosPedido(pedido);
-});
-
-// Buscar vendedor ao alterar o código do vendedor
-const codVendedorInput = document.querySelector('.codVendedor');
-const vendedorInput = document.querySelector('.vendedor');
-if (codVendedorInput && vendedorInput) {
-    codVendedorInput.addEventListener('input', function() {
-        const codigo = this.value;
-        fetch(`/buscar-vendedor/?codigo=${encodeURIComponent(codigo)}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.nome) {
-                    vendedorInput.value = data.nome;
-                } else {
-                    alert(data.erro);
+            fetch('/realizar-pedido', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken    
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao realizar pedido');
                 }
+                return response.json();
+            })
+            .then(data => {
+                alert('Pedido realizado com sucesso!');
+                console.log('Resposta do servidor:', data);
+                // Se quiser limpar a tela, faça algo aqui (opcional)
+            })
+            .catch(err => {
+                alert('Ocorreu um erro ao realizar o pedido');
+                console.error(err);
             });
-    });
-}
-
-// Ao clicar em "Realizar pedido"
-const realizarPedidoBtn = document.querySelector('.realizarPedido');
-if (realizarPedidoBtn) {
-    realizarPedidoBtn.addEventListener('click', () => {
-        const dados = coletarDadosPedidos();
-
-        fetch('/realizar-pedido', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dados)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro ao realizar pedido');
-            }
-            return response.json();
-        })
-        .then(data => {
-            alert('Pedido realizado com sucesso!');
-            console.log('Resposta do servidor:', data);
-            // Caso deseje, limpar campos após o pedido
-        })
-        .catch(err => {
-            alert('Ocorreu um erro ao realizar o pedido');
-            console.error(err);
         });
-    });
-}
+    }
 
-// Função para inicializar tabindex e atualizar total
-document.addEventListener('DOMContentLoaded', () => {
+    // Reorganiza tab e atualiza total
     reorganizarTabindex();
     atualizarTotalGlobal();
 });

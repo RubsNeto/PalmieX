@@ -1,0 +1,126 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+  }
+
+  body {
+    background-color: #f9f9f9;
+    padding: 20px;
+    color: #333;
+  }
+
+  h1 {
+    margin-bottom: 20px;
+    color: #036d4c; /* Verde escuro */
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* Barra de busca */
+  .search-bar {
+    margin-bottom: 20px;
+  }
+  .search-bar input {
+    width: 100%;
+    max-width: 350px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .search-bar input::placeholder {
+    color: #999;
+  }
+
+  /* Tabela de Produção */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    margin-bottom: 40px;
+  }
+  thead tr {
+    background-color: #e8e8e8;
+  }
+  thead th {
+    text-align: left;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  tbody tr {
+    transition: background 0.2s;
+  }
+  tbody tr:hover {
+    background-color: #fafafa;
+  }
+  tbody td {
+    padding: 12px 10px;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+  }
+
+  /* Botão de imprimir (coluna extra) */
+  .btn-imprimir {
+    background-color: #04622f;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .btn-imprimir:hover {
+    background-color: #02451f;
+  }
+
+  /* ESTILOS POR STATUS (cores das linhas) */
+  /* Exemplo de cor “verde” para concluído */
+  tr.concluido td {
+    color: #028900;  /* texto verde escuro */
+  }
+  tr.concluido {
+    border: 2px solid #028900;
+    background-color: #ddffdd;
+  }
+
+  /* Exemplo de cor “verde” para producao */
+  tr.producao td {
+    color: #036d4c;
+  }
+  tr.producao {
+    border: 2px solid #036d4c;
+    background-color: #e6fff0;
+  }
+
+  /* Exemplo de cor “laranja” para (E)Produção */
+  tr.eProducao td {
+    color: #c7750b;
+  }
+  tr.eProducao {
+    border: 2px solid #c7750b;
+    background-color: #fff3e0;
+  }
+
+  /* Exemplo de cor “laranja” para (E)Espera */
+  tr.eEspera td {
+    color: #c7750b;
+  }
+  tr.eEspera {
+    border: 2px solid #c7750b;
+    background-color: #fff3e0;
+  }
+
+  /* Exemplo de cor “cinza” para espera */
+  tr.espera td {
+    color: #666;
+  }
+  tr.espera {
+    border: 2px solid #999;
+    background-color: #f2f2f2;
+  }

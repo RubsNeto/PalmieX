@@ -1,18 +1,7 @@
 from django.db import models
+from vendedor.models import Vendedor
+from produto.models import Produto
 
-class Vendedor(models.Model):
-    codigo = models.CharField(max_length=20, unique=True)
-    nome = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.nome
-
-class Material(models.Model):
-    nome = models.CharField(max_length=100)
-    tamanho_pe = models.IntegerField()  # Tamanho do pé (ex: 36, 37, etc.)
-
-    def __str__(self):
-        return f"{self.nome} - Tamanho {self.tamanho_pe}"
 
 class Pedido(models.Model):
     cliente = models.CharField(max_length=100)
@@ -21,12 +10,15 @@ class Pedido(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
-        return f"Pedido {self.id} - {self.cliente}"
+        return f"Pedido #{self.pk} - Cliente: {self.cliente}"
+
 
 class PedidoItem(models.Model):
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
-    material = models.ForeignKey(Material, on_delete=models.CASCADE)
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens')
+    Produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
+    tamanho = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.quantidade} x {self.material.nome} (Tamanho {self.material.tamanho_pe})"
+        return f"{self.quantidade}x {self.Produto} (Tamanho {self.tamanho})"
+

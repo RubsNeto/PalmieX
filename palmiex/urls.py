@@ -13,19 +13,21 @@ urlpatterns = [
     path('login/', autenticacao_views.login_view, name='login'),
     path('logout/', autenticacao_views.logout_view, name='logout'),
 
-    # Outras URLs
+    # URLs Principal
     path('', pedidos_views.realiza_pedidos, name='index'),
     path('realiza_pedidos/', pedidos_views.realiza_pedidos, name='realiza_pedidos'),
-    path('cadastrar-material/', pedidos_views.cadastrar_material, name='cadastrar_material'),
-    path('cadastrar-pedido/', pedidos_views.cadastrar_pedido, name='cadastrar_pedido'),
-    path('adicionar-item-pedido/<int:pedido_id>/', pedidos_views.adicionar_item_pedido, name='adicionar_item_pedido'),
-    path('buscar-material/', pedidos_views.buscar_material, name='buscar_material'),
+    path('producao/', pedidos_views.producao, name='producao'),
     
     #vendedor
     path('vendedores/', include('vendedor.urls', namespace='vendedor')),
     
     #vendedor
     path('produto/', include('produto.urls', namespace='produtos')),
+    
+    #Buscas de vendedor e material
+    path('buscar-vendedor/', pedidos_views.buscar_vendedor, name='buscar_vendedor'),
+    path('buscar-produto/', pedidos_views.buscar_produto, name='buscar_material'),
+    path('realizar-pedido', pedidos_views.realizar_pedido, name='realizar_pedido'),
 ]
 
 # Servir arquivos estáticos e de mídia durante o desenvolvimento

@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .models import Vendedor, Material, Pedido, PedidoItem
-from .forms import VendedorForm, MaterialForm, PedidoForm, PedidoItemForm
+from .models import Vendedor, Produto, Pedido, PedidoItem
 from django.contrib.auth.decorators import login_required
 
 
@@ -11,76 +10,104 @@ def realiza_pedidos(request):
     return render(request, 'realiza_pedidos.html', {'numeros': numeros})
 
 
-# View para cadastrar vendedores
-def cadastrar_vendedor(request):
-    if request.method == 'POST':
-        form = VendedorForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('listar_vendedores')
-    else:
-        form = VendedorForm()
-    return render(request, 'pedidos/cadastrar_vendedor.html', {'form': form})
+@login_required
+def producao(request):
+    object_list = Pedido.objects.all()
+    return render(request, 'producao/producao.html')
 
-# View para cadastrar materiais
-def cadastrar_material(request):
-    if request.method == 'POST':
-        form = MaterialForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('listar_materials')
-    else:
-        form = MaterialForm()
-    return render(request, 'pedidos/cadastrar_material.html', {'form': form})
 
-# View para cadastrar pedidos
-def cadastrar_pedido(request):
-    if request.method == 'POST':
-        form = PedidoForm(request.POST)
-        if form.is_valid():
-            pedido = form.save()
-            # Aqui você pode processar o pedido e os itens
-            return redirect('listar_pedidos')
-    else:
-        form = PedidoForm()
-    return render(request, 'pedidos/cadastrar_pedido.html', {'form': form})
 
-# View para adicionar itens no pedido
-def adicionar_item_pedido(request, pedido_id):
-    pedido = Pedido.objects.get(id=pedido_id)
-    if request.method == 'POST':
-        form = PedidoItemForm(request.POST)
-        if form.is_valid():
-            item = form.save(commit=False)
-            item.pedido = pedido
-            item.save()
-            return redirect('visualizar_pedido', pedido_id=pedido.id)
-    else:
-        form = PedidoItemForm()
-    return render(request, 'pedidos/adicionar_item_pedido.html', {'form': form, 'pedido': pedido})
 
-# Buscar vendedor pelo código
+
+#---------------------------------Vendedor---------------------------------
+
+import json
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET, require_POST
+from django.shortcuts import get_object_or_404
+
+from .models import Vendedor, Produto, Pedido, PedidoItem
+
+@require_GET
 def buscar_vendedor(request):
     codigo = request.GET.get('codigo', '')
+    if not codigo:
+        return JsonResponse({'erro': 'Código do vendedor não informado.'}, status=400)
+
     try:
         vendedor = Vendedor.objects.get(codigo=codigo)
         return JsonResponse({'nome': vendedor.nome})
     except Vendedor.DoesNotExist:
-        return JsonResponse({'erro': 'Vendedor não encontrado'})
+        return JsonResponse({'erro': 'Vendedor não encontrado.'}, status=404)
 
-# Buscar material pelo código
-def buscar_material(request):
-    referencia = request.GET.get('referencia', '')
-    try:
-        material = Material.objects.get(nome=referencia)
-        return JsonResponse({'tamanho': material.tamanho_pe})
-    except Material.DoesNotExist:
-        return JsonResponse({'erro': 'Material não encontrado'})
+@require_GET
+def buscar_produto(request):
+    codigo = request.GET.get('codigo', '')
+    if not codigo:
+        return JsonResponse({'erro': 'Código não informado.'}, status=400)
+    
+    # Busque o produto com base em "codigo".
+    # Se no modelo o campo é "referencia",
+    # mas você está querendo filtrar pelo valor digitado,
+    # faça:
+    produto_obj = Produto.objects.filter(codigo=codigo).first()
+    if not produto_obj:
+        return JsonResponse({'erro': 'Produto não encontrado.'}, status=404)
+
+    return JsonResponse({
+        'nome': produto_obj.nome,
+        'codigo': produto_obj.codigo
+    })
 
 
-def listar_vendedores(request):
-    vendedores = Vendedor.objects.all()
-    return render(request, 'pedidos/listar_vendedores.html', {'vendedores': vendedores})
+import json
+from django.http import JsonResponse
+from .models import Vendedor, Produto, Pedido, PedidoItem
 
+def realizar_pedido(request):
+    if request.method != 'POST':
+        return JsonResponse({'erro': 'Método inválido (use POST)'}, status=405)
+    
+    body = json.loads(request.body or '{}')
 
+    cliente = body.get('cliente', '').strip()
+    codigo_vendedor = body.get('codigoVendedor', '').strip()
+    vendedor_nome = body.get('vendedor', '').strip()
+    
+    # Busca ou cria o vendedor
+    vendedor, _ = Vendedor.objects.get_or_create(
+        codigo=codigo_vendedor,
+        defaults={'nome': vendedor_nome}
+    )
 
+    # Cria o pedido
+    pedido = Pedido.objects.create(
+        cliente=cliente,
+        vendedor=vendedor
+    )
+
+    itens = body.get('itens', [])
+    for item in itens:
+        referencia = item.get('referencia', '').strip()
+        nome_produto = item.get('material', '').strip()
+        tamanhos = item.get('tamanhos', {})
+
+        if not referencia:
+            continue
+        
+        for tamanho, qtd in tamanhos.items():
+            if not qtd or qtd <= 0:
+                continue
+            
+            produto, _ = Produto.objects.get_or_create(
+                codigo=referencia,
+                defaults={'nome': nome_produto}
+            )
+            PedidoItem.objects.create(
+                pedido=pedido,
+                Produto=produto,
+                quantidade=qtd,
+                tamanho=tamanho
+            )
+    
+    return JsonResponse({'mensagem': 'Pedido criado com sucesso!', 'pedido_id': pedido.pk})
