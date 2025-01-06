@@ -1,126 +1,483 @@
+/* pedidos/static/css/producao.css */
+
+/* Reset básico para garantir consistência entre navegadores */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --main_color: rgb(19, 93, 26);
+  --hover_color: rgba(18, 141, 30, 0.8);
+  --background_color: #f5f5f5;
+  --border_color: #ddd;
+  --text_color: #333;
+  --header_background: #f0f0f0;
+  --button_background: var(--hover_color);
+  --button_hover: var(--main_color);
+}
+
+/* Container Principal */
+.container-pedidos {
+  margin: 1em;
+}
+
+thead{
+  background: linear-gradient(150deg, #017A39, #01A44D);
+}
+
+
+th{
+  color: white;
+}
+
+
+/* Título */
+.container-pedidos h1 {
+  text-align: left;
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  color: var(--text_color);
+}
+
+.cliente{
+  color: var(--main_color);
+  font-size: 15px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Tabela de Pedidos */
+.pedidos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pedidos-table thead {
+  background-color: var(--header_background);
+}
+
+.pedidos-table th, .pedidos-table td {
+  padding: 12px 15px;
+  border: 1px solid var(--border_color);
+  text-align: left;
+  font-size: 1rem;
+}
+
+.pedidos-table th {
+  font-weight: bold;
+}
+
+.pedidos-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.pedidos-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Botão Detalhes */
+.ver-detalhes {
+  padding: 8px 16px;
+  background-color: var(--button_background);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.ver-detalhes:hover {
+  background-color: var(--button_hover);
+}
+
+.ver-detalhes:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+/* Linha de Detalhes */
+.detalhes-row td {
+  background-color: #fff;
+  padding: 15px;
+}
+
+.itens-do-pedido {
+  margin-top: 10px;
+}
+
+.itens-do-pedido p {
+  margin-bottom: 10px;
+  color: var(--text_color);
+  font-size: 1.1rem;
+}
+
+.itens-do-pedido table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.itens-do-pedido th, .itens-do-pedido td {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.itens-do-pedido th {
+  background-color: var(--header_background);
+  color: var(--text_color);
+}
+
+.itens-do-pedido tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.itens-do-pedido tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+  .container-pedidos {
+    padding: 15px;
   }
 
-  body {
-    background-color: #f9f9f9;
-    padding: 20px;
-    color: #333;
+  .container-pedidos h1 {
+    font-size: 2rem;
   }
 
-  h1 {
-    margin-bottom: 20px;
-    color: #036d4c; /* Verde escuro */
+  .pedidos-table th, .pedidos-table td {
+    padding: 10px 12px;
+    font-size: 0.95rem;
   }
 
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
+  .ver-detalhes {
+    padding: 6px 12px;
+    font-size: 0.8rem;
   }
 
-  /* Barra de busca */
-  .search-bar {
-    margin-bottom: 20px;
+  .itens-do-pedido p {
+    font-size: 1rem;
   }
-  .search-bar input {
+
+  .itens-do-pedido table, 
+  .itens-do-pedido th, 
+  .itens-do-pedido td {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pedidos-table thead {
+    display: none;
+  }
+
+  .pedidos-table, 
+  .pedidos-table tbody, 
+  .pedidos-table tr, 
+  .pedidos-table td {
+    display: block;
     width: 100%;
-    max-width: 350px;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
+  }
+
+  .pedidos-table tr {
+    margin-bottom: 15px;
+    border: 1px solid var(--border_color);
     border-radius: 6px;
-    font-size: 14px;
-  }
-  .search-bar input::placeholder {
-    color: #999;
+    overflow: hidden;
   }
 
-  /* Tabela de Produção */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #ccc;
-    margin-bottom: 40px;
-  }
-  thead tr {
-    background-color: #e8e8e8;
-  }
-  thead th {
-    text-align: left;
-    padding: 10px;
-    font-weight: bold;
-    font-size: 14px;
-  }
-  tbody tr {
-    transition: background 0.2s;
-  }
-  tbody tr:hover {
-    background-color: #fafafa;
-  }
-  tbody td {
-    padding: 12px 10px;
-    font-size: 14px;
-    border-bottom: 1px solid #eee;
-  }
-
-  /* Botão de imprimir (coluna extra) */
-  .btn-imprimir {
-    background-color: #04622f;
-    color: #fff;
+  .pedidos-table td {
     border: none;
+    padding: 10px 15px;
+    position: relative;
+  }
+
+  .pedidos-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: var(--text_color);
+  }
+
+  .ver-detalhes {
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+    margin-top: 10px;
+  }
+
+  .detalhes-row td {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-pedidos {
+    padding: 10px;
+  }
+
+  .container-pedidos h1 {
+    font-size: 1.8rem;
+  }
+
+  .ver-detalhes {
     padding: 6px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
-  }
-  .btn-imprimir:hover {
-    background-color: #02451f;
+    font-size: 0.8rem;
   }
 
-  /* ESTILOS POR STATUS (cores das linhas) */
-  /* Exemplo de cor “verde” para concluído */
-  tr.concluido td {
-    color: #028900;  /* texto verde escuro */
-  }
-  tr.concluido {
-    border: 2px solid #028900;
-    background-color: #ddffdd;
+  .itens-do-pedido p {
+    font-size: 0.95rem;
   }
 
-  /* Exemplo de cor “verde” para producao */
-  tr.producao td {
-    color: #036d4c;
+  .itens-do-pedido table, 
+  .itens-do-pedido th, 
+  .itens-do-pedido td {
+    font-size: 0.85rem;
+    padding: 6px 8px;
   }
-  tr.producao {
-    border: 2px solid #036d4c;
-    background-color: #e6fff0;
+}
+
+
+/*# ---------------------------------------------------------------------------------*/
+
+
+
+/* Animações para pedidos/static/css/producao.css */
+
+/* Fade-in para a tabela e título ao carregar */
+.container-pedidos {
+  margin: 1em;
+  animation: fadeIn 1s ease-in-out;
+}
+
+h1 {
+  animation: slideDown 1s ease-in-out;
+}
+
+/* Transição suave para hover nas linhas da tabela */
+.pedidos-table tbody tr {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+/* Botão de detalhes com efeito de "pulsar" */
+.ver-detalhes {
+  padding: 8px 16px;
+  background-color: var(--button_background);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.ver-detalhes:hover {
+  background-color: var(--button_hover);
+  transform: scale(1.05);
+}
+
+/* Fade-in nos detalhes do pedido ao abrir */
+.detalhes-row {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Animações para os ícones e botões */
+.ver-detalhes:active {
+  animation: buttonPress 0.2s ease-in-out;
+}
+
+/* Keyframes para as animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes buttonPress {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.95);
+  }
+}
+
+
+/* pedidos/static/css/producao.css */
+
+/* ... Seu CSS existente ... */
+
+/* Estilos para o Modal */
+.modal {
+  display: none; /* Oculto por padrão */
+  position: fixed; /* Fica fixo na tela */
+  z-index: 1000; /* Fica acima de outros elementos */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* Habilita scroll se necessário */
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+  animation: fadeIn 0.3s;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto; /* 10% do topo e centralizado horizontalmente */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Largura do modal */
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  position: relative;
+  animation: slideDown 0.3s;
+}
+
+/* Botão de Fechar */
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-50px); }
+  to { transform: translateY(0); }
+}
+
+/* Estilos para a Tabela de Itens no Modal */
+.itens-do-pedido-modal table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.itens-do-pedido-modal th, .itens-do-pedido-modal td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.itens-do-pedido-modal th {
+  background-color: var(--header_background);
+  color: var(--text_color);
+}
+
+.itens-do-pedido-modal tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.itens-do-pedido-modal tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Responsividade para o Modal */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    margin: 20% auto;
   }
 
-  /* Exemplo de cor “laranja” para (E)Produção */
-  tr.eProducao td {
-    color: #c7750b;
+  .itens-do-pedido-modal th, .itens-do-pedido-modal td {
+    font-size: 0.9rem;
+    padding: 8px;
   }
-  tr.eProducao {
-    border: 2px solid #c7750b;
-    background-color: #fff3e0;
-  }
+}
 
-  /* Exemplo de cor “laranja” para (E)Espera */
-  tr.eEspera td {
-    color: #c7750b;
-  }
-  tr.eEspera {
-    border: 2px solid #c7750b;
-    background-color: #fff3e0;
-  }
 
-  /* Exemplo de cor “cinza” para espera */
-  tr.espera td {
-    color: #666;
-  }
-  tr.espera {
-    border: 2px solid #999;
-    background-color: #f2f2f2;
-  }
+
+/* pedidos/static/css/producao/producao.css */
+
+/* ... Seu CSS existente ... */
+
+/* Estilos para os Botões de Alteração de Status no Modal */
+.botoes-status {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.alterar-status {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.alterar-status:hover {
+  background-color: #0056b3;
+}
+
+.alterar-status:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+/* Botão Específico para 'Pedido Finalizado' */
+.alterar-status[data-novo-status="Pedido Finalizado"] {
+  background-color: #28a745;
+}
+
+.alterar-status[data-novo-status="Pedido Finalizado"]:hover {
+  background-color: #1e7e34;
+}
+

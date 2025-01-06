@@ -16,8 +16,8 @@
             <div class="menu-content">
                 <h4 class="titulo">Pedidos</h4>
                 <div class="sub_menu">
-                    <a href="{% url 'realiza_pedidos' %}" tabindex='-1'>Realizar pedido</a>
-                    <a href="https://www.google.com" tabindex='-1'>Produção</a>
+                    <a href="{% url 'pedidos:realiza_pedidos' %}" tabindex='-1'>Realizar pedido</a>
+                    <a href="{% url 'pedidos:producao' %}" tabindex='-1'>Produção</a>
                     <a href="https://www.google.com" tabindex='-1'>Finalizados</a>
                 </div>
 
@@ -35,5 +35,7 @@
             {% block content %}{% endblock content %}
         </div>
     </div>
+
+{% block extra_js %}{% endblock extra_js %}
 </body>
 </html>

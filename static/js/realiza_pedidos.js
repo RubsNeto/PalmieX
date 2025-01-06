@@ -86,7 +86,6 @@ function reconstruirBotoes(pedidoItem, infAtivo) {
     atualizarTotalGlobal();
 }
 
-
 /**
  * Atualiza o total de pares de UM pedido
  */
@@ -329,10 +328,10 @@ function adicionarEventosPedido(pedidoItem) {
             novoPedido.innerHTML = `
                 <div class="pedidos">
                     <span class="campo">Referência:</span>
-                    <input type="text" class="referencia">
+                    <input type="text" class="referencia" name="referencia">
 
                     <span class="campo">Material:</span>
-                    <input type="text" class="material">
+                    <input type="text" class="material" name="material" readonly>
 
                     <div class="maisEmenos">
                         <button type="button" class="adicionarPedido">+</button>
@@ -434,8 +433,7 @@ function getCookie(name) {
       }
     }
     return cookieValue;
-  }
-  
+}
 
 /**
  * Ao carregar a página
@@ -472,12 +470,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Botão "Realizar pedido"
     const realizarPedidoBtn = document.querySelector('.realizarPedido');
-    const csrftoken = getCookie('csrftoken'); // se Django estiver usando o nome padrão
+    const csrftoken = getCookie('csrftoken'); // Se Django estiver usando o nome padrão
     if (realizarPedidoBtn) {
         realizarPedidoBtn.addEventListener('click', () => {
             const dados = coletarDadosPedidos();
 
-            fetch('/realizar-pedido', {
+            // Validação antes de enviar
+            if (!dados.cliente) {
+                alert('Por favor, preencha o campo "Cliente".');
+                return;
+            }
+            if (!dados.codigoVendedor || !dados.vendedor) {
+                alert('Por favor, preencha os campos "Código do Vendedor" e "Vendedor".');
+                return;
+            }
+            if (dados.itens.length === 0) {
+                alert('Por favor, adicione pelo menos um item ao pedido.');
+                return;
+            }
+
+            fetch('/realizar-pedido/', {  // Certifique-se de que a URL tem a barra final
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -487,18 +499,23 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Erro ao realizar pedido');
+                    return response.json().then(data => { throw data; });
                 }
                 return response.json();
             })
             .then(data => {
                 alert('Pedido realizado com sucesso!');
                 console.log('Resposta do servidor:', data);
-                // Se quiser limpar a tela, faça algo aqui (opcional)
+                // Opcional: Redirecionar ou limpar o formulário
+                window.location.href = '/producao/';
             })
             .catch(err => {
-                alert('Ocorreu um erro ao realizar o pedido');
                 console.error(err);
+                if (err.erro) {
+                    alert(`Erro: ${err.erro}`);
+                } else {
+                    alert('Ocorreu um erro ao realizar o pedido.');
+                }
             });
         });
     }

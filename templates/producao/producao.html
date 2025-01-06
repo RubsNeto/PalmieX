@@ -1,3 +1,5 @@
+<!-- pedidos/templates/producao/producao.html -->
+
 {% extends 'base.html' %}
 {% load static %}
 
@@ -8,82 +10,57 @@
 {% endblock extra_css %}
 
 {% block content %}
+<div class="container-pedidos">
+  <h1>Produção</h1>
 
-<h5>Produção</h5>
+  {% if pedidos %}
+  <table class="pedidos-table">
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>ID Pedido</th>
+        <th>Data</th>
+        <th>Hora</th>
+        <th>Status</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pedido in pedidos %}
+      <tr class="pedido-resumo" data-pedido-id="{{ pedido.id }}">
+        <td class="cliente">{{ pedido.cliente }}</td>
+        <td>{{ pedido.id }}</td>
+        <td>{{ pedido.data|date:"d/m/Y" }}</td>
+        <td>{{ pedido.data|date:"H:i" }}</td>
+        <td class="status-pedido">{{ pedido.status }}</td>
+        <td>
+          <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}">Detalhes</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>Nenhum pedido encontrado.</p>
+  {% endif %}
+</div>
 
-  <div class="container">
-    <h1>Produção</h1>
-    
-    <div class="search-bar">
-      <input type="text" placeholder="Buscar - Vendedor - pedido">
+<!-- Estrutura do Modal -->
+<div id="detalhesModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button">&times;</span>
+    <div class="itens-do-pedido-modal">
+      <!-- Os detalhes do pedido serão inseridos aqui via JavaScript -->
     </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Cliente</th>
-          <th>Pedido</th>
-          <th>Data</th>
-          <th>Hora</th>
-          <th>Status</th>
-          <th></th> <!-- para botão imprimir -->
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Exemplo de linha “concluido” -->
-        <tr class="concluido">
-          <td>Maria de lourdes da silva</td>
-          <td>35987</td>
-          <td>17/12/2024</td>
-          <td>09:10</td>
-          <td>Concluído</td>
-          <td><button class="btn-imprimir">Imprimir</button></td>
-        </tr>
-        
-        <!-- Exemplo de linha “producao” -->
-        <tr class="producao">
-          <td>Maria de lourdes da silva</td>
-          <td>35987</td>
-          <td>17/12/2024</td>
-          <td>11:10</td>
-          <td>Produção</td>
-          <td><button class="btn-imprimir">Imprimir</button></td>
-        </tr>
-
-        <!-- Exemplo de linha “eProducao” (E)Produção -->
-        <tr class="eProducao">
-          <td>Maria de lourdes da silva</td>
-          <td>35987</td>
-          <td>17/12/2024</td>
-          <td>11:40</td>
-          <td>(E)Produção</td>
-          <td><button class="btn-imprimir">Imprimir</button></td>
-        </tr>
-
-        <!-- Exemplo de linha “eEspera” (E)Espera -->
-        <tr class="eEspera">
-          <td>Maria de lourdes da silva</td>
-          <td>35987</td>
-          <td>16/12/2024</td>
-          <td>16:10</td>
-          <td>(E)Espera</td>
-          <td><button class="btn-imprimir">Imprimir</button></td>
-        </tr>
-
-        <!-- Exemplo de linha “espera” -->
-        <tr class="espera">
-          <td>Maria de lourdes da silva</td>
-          <td>35987</td>
-          <td>16/12/2024</td>
-          <td>16:10</td>
-          <td>Espera</td>
-          <td><button class="btn-imprimir">Imprimir</button></td>
-        </tr>
-
-        <!-- repita mais linhas conforme necessário -->
-      </tbody>
-    </table>
+    <!-- Novos Botões para Alterar Status -->
+    <div class="botoes-status">
+      <button type="button" class="alterar-status" data-novo-status="Em Produção">Marcar como Em Produção</button>
+      <button type="button" class="alterar-status" data-novo-status="Pedido Finalizado">Marcar como Finalizado</button>
+    </div>
   </div>
+</div>
+{% endblock content %}
 
-
-{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/producao.js' %}"></script>
+{% endblock extra_js %}
