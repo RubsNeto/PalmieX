@@ -3,6 +3,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from pedidos import views
 from django.contrib.auth.decorators import login_required
 
 def login_view(request):
@@ -12,7 +13,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('realiza_pedidos')  # Redireciona para 'realiza_pedidos' após o login
+            return redirect('pedidos:realiza_pedidos')  # Redireciona para 'realiza_pedidos' após o login
         else:
             messages.error(request, 'Usuário ou senha inválidos.')
     return render(request, 'registration/login.html')  # Renderiza o template de login

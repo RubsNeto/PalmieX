@@ -22,6 +22,19 @@ def producao(request):
     pedidos = Pedido.objects.prefetch_related('itens__produto').all()
     return render(request, 'producao/producao.html', {'pedidos': pedidos})
 
+
+
+
+#------------------impressao-------------------
+
+@login_required
+def imprimir_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    return render(request, 'pedidos/imprimir.html', {'pedido': pedido})
+
+
+
+
 @require_GET
 @login_required
 def pedido_itens_api(request, pedido_id):
@@ -45,7 +58,7 @@ def pedido_itens_api(request, pedido_id):
         "vendedor_nome": pedido.vendedor.nome,
         "vendedor_codigo": pedido.vendedor.codigo,
         "data": data_local.strftime("%d/%m/%Y"),
-        "hora": data_local.strftime("%H:%M"),  # Hora no fuso horário local
+        "hora": data_local.strftime("%H:%M"),  
         "status": pedido.status,
         "itens": []
     }
@@ -149,16 +162,11 @@ def realizar_pedido(request):
 
                 PedidoItem.objects.create(
                     pedido=pedido,
-                    Produto=produto,
+                    produto=produto,
                     quantidade=qtd,
                     tamanho=tamanho
                 )
                 logger.info(f"PedidoItem criado: {Produto} - Quantidade={qtd}, Tamanho={tamanho}")
-
-        # Atualizar o total do pedido (opcional)
-        # Exemplo: Supondo que cada produto tenha um preço, você pode calcular o total aqui.
-        # pedido.total = calcular_total(pedido.itens.all())
-        # pedido.save()
 
         return JsonResponse({'mensagem': 'Pedido criado com sucesso!', 'pedido_id': pedido.pk})
 

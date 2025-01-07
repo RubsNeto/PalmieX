@@ -1,0 +1,46 @@
+{% load static %}
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Imprimir Pedido #{{ pedido.id }}</title>
+    <link rel="stylesheet" href="{% static 'css/imprimir.css' %}">
+    <script>
+        window.onload = function() {
+            window.print();
+        }
+    </script>
+</head>
+<body>
+    <div class="pedido-imprimir">
+        <p>Cliente: <strong  style="font-size:20px">{{ pedido.cliente }} </strong></p>
+        
+        <div class='separacao'>
+                <p><strong>Vendedor:</strong> {{ pedido.vendedor }}</p>
+                <p><strong>Data:</strong> {{ pedido.data|date:"d/m/Y" }}</p>
+                <p><strong>Código:</strong> {{ pedido.id }}</p>
+                <p><strong>Hora:</strong> {{ pedido.data|date:"H:i" }}</p>
+                <p><strong>Status:</strong> {{ pedido.status }}</p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Tamanho</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in pedido.itens.all %}
+                <tr>
+                    <td>{{ item.produto.nome }}</td>
+                    <td>{{ item.quantidade }}</td>
+                    <td>{{ item.tamanho }}</td
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <hr>
+    </div>
+</body>
+</html>

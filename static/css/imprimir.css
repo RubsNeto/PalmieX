@@ -1,0 +1,120 @@
+/* Estilos gerais para a página de impressão */
+body {
+    font-family: 'Arial', sans-serif;
+    background: #fff;
+    color: #000;
+    margin: 0;
+    padding: 20px;
+}
+
+.separacao{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+hr{
+    margin-top: 2em;
+}
+
+
+
+.pedido-imprimir {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 0.5em;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 1.2em;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* Estilos para parágrafos de informações do pedido */
+.pedido-imprimir p {
+    font-size: 1em;
+    line-height: 1.5;
+    margin: 10px 0;
+}
+
+/* Estilos para tabela de itens do pedido */
+.pedido-imprimir table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 5px;
+}
+
+.pedido-imprimir table thead {
+    background-color: #f0f0f0;
+}
+
+.pedido-imprimir table th,
+.pedido-imprimir table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    font-size: 0.95em;
+}
+
+.pedido-imprimir table th {
+    font-weight: bold;
+}
+
+/* Ajustes para visualização de tela (não impressão) */
+@media screen {
+    .imprimir-pedido-button {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 1em;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .imprimir-pedido-button:hover {
+        background-color: #0056b3;
+    }
+}
+
+/* Estilos específicos para impressão */
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+    }
+    .imprimir-pedido-button {
+        display: none; /* Ocultar botão de impressão ao imprimir */
+    }
+    /* Remover bordas e margens desnecessárias na impressão */
+    .pedido-imprimir {
+        border: none;
+        margin: 0;
+        padding: 0;
+    }
+    table {
+        page-break-inside: avoid;
+    }
+}

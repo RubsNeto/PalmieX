@@ -6,12 +6,12 @@
 }
 
 :root {
-    --primary-color: #2E8B57; /* Verde médio */
+    --primary-color: #005830; /* Verde médio */
     --secondary-color: #ffffff;
     --accent-color: #66CDAA; /* Verde água clara */
     --font-family: 'Roboto', sans-serif;
 }
-
+    
 /* Estilizando o body com um fundo verde colorido e animado */
 body {
     height: 100vh;
@@ -20,7 +20,7 @@ body {
     justify-content: center;
     align-items: center;
     font-family: var(--font-family);
-    background-color: #2E8B57;
+    background-color: #014c2a;
     background-size: 800% 800%;
     animation: gradientAnimation 20s ease infinite;
     overflow: hidden;

@@ -35,6 +35,7 @@
         <td class="status-pedido">{{ pedido.status }}</td>
         <td>
           <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}">Detalhes</button>
+          <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}">Imprimir Pedido</button>
         </td>
       </tr>
       {% endfor %}

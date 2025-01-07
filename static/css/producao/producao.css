@@ -86,7 +86,7 @@ th{
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .ver-detalhes:hover {
@@ -97,6 +97,25 @@ th{
   outline: none;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
 }
+
+.imprimir-pedido{
+  padding: 8px 16px;
+  background-color: var(--button_hover);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+.imprimir-pedido:hover {
+  background-color: var(--button_background);
+  transform: scale(1.05);
+}
+
+
 
 /* Linha de Detalhes */
 .detalhes-row td {
@@ -396,6 +415,12 @@ h1 {
 @keyframes slideDown {
   from { transform: translateY(-50px); }
   to { transform: translateY(0); }
+}
+
+.conteudo{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 /* Estilos para a Tabela de Itens no Modal */
