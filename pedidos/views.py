@@ -1,6 +1,7 @@
 # pedidos/views.py
 
 from django.shortcuts import render, get_object_or_404
+from django.db.models import Case, When, Value, IntegerField
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_POST
@@ -19,7 +20,15 @@ def realiza_pedidos(request):
 
 @login_required
 def producao(request):
-    pedidos = Pedido.objects.prefetch_related('itens__produto').all()
+    pedidos = Pedido.objects.prefetch_related('itens__produto').annotate(
+        status_order=Case(
+            When(status='Em Produção', then=Value(1)),
+            When(status='Pendente', then=Value(2)),
+            When(status='Pedido Finalizado', then=Value(3)),
+            output_field=IntegerField()
+        )
+    ).order_by('status_order', '-data')
+    
     return render(request, 'producao/producao.html', {'pedidos': pedidos})
 
 

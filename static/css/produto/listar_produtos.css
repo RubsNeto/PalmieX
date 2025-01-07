@@ -1,151 +1,148 @@
-/* produto/static/css/produtos/listar_produtos.css */
+/* Melhorias no CSS para lista de produtos, mantendo as classes existentes */
 
 :root {
-    --main_color: #0a7b17;
-    --button_color: rgb(1, 172, 1);
-    --button_hover_color: #006400;
-}
-
-.container{
-    margin: 1em;
-}
-
-/* Container principal */
-.produtos-table {
+    --main-color: #017a39;
+    --hover-color: #019657;
+    --danger-color: #d9534f;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --info-color: #17a2b8;
+  }
+  
+  /* Container Principal */
+  h2 {
+    font-size: 1.8rem;
+    color: var(--dark-color);
+    margin-bottom: 1rem;
+  }
+  
+  /* Mensagens */
+  .messages {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .messages li {
+    background-color: var(--main-color);
+    color: white;
+    padding: 0.8rem;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Tabela de Produtos */
+  .produtos-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    font-family: Arial, sans-serif;
-}
-
-
-/* Cabeçalho da tabela */
-thead{
+    background-color: var(--light-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .produtos-table thead {
     background: linear-gradient(150deg, #017A39, #01A44D);
-}
-
-
-.cabecalho:hover{
-    background: linear-gradient(150deg, #017A39, #01A44D);
-
-}
-
-.produtos-table th {
-     
     color: white;
-    padding: 12px;
+  }
+  
+  .produtos-table th, .produtos-table td {
+    padding: 1rem;
     text-align: left;
-    font-size: 18px;
-}
-
-/* Células da tabela */
-.produtos-table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    font-size: 16px;
-}
-
-/* Linhas alternadas */
-.produtos-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-/* Efeito de hover nas linhas */
-.produtos-table tr:hover {
+    font-size: 1rem;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .produtos-table tbody tr:hover {
     background-color: #f1f1f1;
-}
-
-/* Estilização dos links de nome */
-.nome_produto{
-    color: var(--main_color);
-    font-size: 15px;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.produtos-table a:hover {
-    text-decoration: underline;
-}
-
-
-.acoes{
+  }
+  
+  /* Ações */
+  .acoes {
     display: flex;
-    flex-direction: row;
-}
-
-/* Centraliza a imagem dentro dos botões */
-.btn {
-    display: flex;                 /* Define o botão como um contêiner flexível */
-    align-items: center;           /* Alinha verticalmente ao centro */
-    justify-content: center;       /* Alinha horizontalmente ao centro */
-    padding: 6px 12px;             /* Define o padding */
-    border: none;                  /* Remove borda padrão */
-    border-radius: 4px;            /* Bordas arredondadas */
-    cursor: pointer;               /* Cursor pointer ao passar o mouse */
-    text-decoration: none;         /* Remove sublinhado de links */
-    font-size: 14px;               /* Define o tamanho da fonte */
-}
-
-/* Estilização específica para o botão Editar */
-.btn-secondary {
-    background-color: var(--button_color);     /* Cor de fundo para Editar */
-    color: white;                   /* Cor do texto e SVG */
-    margin-right: 1em;
-}
-
-.btn-secondary:hover {
-    background-color: var(--button_hover_color);     /* Cor de fundo no hover para Editar */
-}
-
-/* Estilização específica para o botão Excluir */
-.btn-danger {
-    background-color: #dc3545;     /* Cor de fundo para Excluir */
-    color: white;                   /* Cor do texto e SVG */
-}
-
-.btn-danger:hover {
-    background-color: #c82333;     /* Cor de fundo no hover para Excluir */
-}
-
-/* Ajusta o tamanho das imagens Editar e Excluir e remove margens indesejadas */
-.btn-secondary img.edit,
-.btn-danger img.delete {
-    width: 20px;                   /* Define a largura da imagem */
-    height: 20px;                  /* Define a altura da imagem */
-    object-fit: contain;           /* Mantém a proporção da imagem */
-    margin: 0;                     /* Remove margens */
-    filter: brightness(0) invert(1); /* Converte a cor para branco se estiver usando <img> */
-}
-
-/* Botão Adicionar Produto */
-.adicionarProduto {
-    font-size: 18px;
-    background-color: rgb(1, 172, 1);
-    color: white;
-    padding: 1em;
-    text-decoration: none;
+    gap: 0.5rem;
+  }
+  
+  .acoes .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
     border: none;
+    border-radius: 50%;
+    background-color: var(--main-color);
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .acoes .btn:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.1);
+  }
+  
+  .acoes .btn img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+  }
+  
+  /* Botões Específicos */
+  .acoes .btn-secondary {
+    background-color: var(--info-color);
+  }
+  
+  .acoes .btn-secondary:hover {
+    background-color: #138496;
+  }
+  
+  .acoes .btn-danger {
+    background-color: var(--danger-color);
+  }
+  
+  .acoes .btn-danger:hover {
+    background-color: #c9302c;
+  }
+  
+  /* Botão Adicionar Produto */
+  .botoesComando {
+    text-align: right;
+    margin-top: 1.5rem;
+  }
+  
+  .botoesComando .adicionarProduto {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--main-color);
+    color: white;
     border-radius: 5px;
-    cursor: pointer;              /* Adiciona cursor pointer para melhorar a UX */
-    transition: background-color 0.3s; /* Transição suave para hover */
-}
-
-.adicionarProduto:hover {
-    background-color: #006400;    /* Verde mais escuro no hover */
-}
-
-/* Estilo para a área dos botões de comando */
-.botoesComando {
-    position: absolute;              /* Mantém os botões fixos ao rolar */
-    bottom: 0;                     /* Alinha à parte inferior */
-    left: 0;                       /* Alinha à esquerda */
-    width: 100%;                   /* Ocupa toda a largura */
-    padding: 1em;                  /* Espaçamento interno */
-    display: flex;                 /* Flex container */
-    flex-direction: row;           /* Botões em linha */
-    justify-content: flex-end;     /* Alinha os botões à direita */
-    gap: 1em;                      /* Espaçamento entre botões */
-    box-sizing: border-box;        /* Inclui padding no cálculo de largura */
-    z-index: 100;                 /* Certifica-se de que fique acima de outros elementos */
-    border-top: 1px solid #ccc;    /* Linha de separação */
-}
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .botoesComando .adicionarProduto:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.05);
+  }
+  
+  .botoesComando .adicionarProduto::before {
+    font-size: 1.2rem;
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .acoes .btn {
+      width: 35px;
+      height: 35px;
+      font-size: 1rem;
+    }
+  
+    .botoesComando {
+      text-align: center;
+    }
+  }

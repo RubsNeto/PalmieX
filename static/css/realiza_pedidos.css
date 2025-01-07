@@ -9,11 +9,192 @@
     --main_color: rgb(19, 93, 26);
 }
 
-/* Estilo para o container principal */
+/* Estilo para o container pr/* CSS Completo e Moderno para o HTML principal "Ordem de Serviço" */
+
+:root {
+    --main-color: #017a39;
+    --secondary-color: #01a44d;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --hover-color: #019657;
+    --font-family: 'Arial', sans-serif;
+  }
+  
+
+  
+  /* Título */
+  .OrdemServico {
+    font-size: 2rem;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Ficha de Informações do Cliente */
+  .ficha {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .ficha .linha1 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  
+  .campo {
+    font-weight: bold;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: var(--dark-color);
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: var(--main-color);
+    box-shadow: 0 0 5px rgba(1, 122, 57, 0.5);
+  }
+  
+  /* Total */
+  .total {
+    grid-column: 1 / span 2;
+    font-size: 1.5rem;
+    color: var(--dark-color);
+  }
+  
+  .valorTotal {
+    font-size: 1.5rem;
+    color: var(--main-color);
+    text-align: right;
+  }
+  
+  /* Pedido Inicial */
+  .pedido-item {
+    background-color: #f9f9f9;
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-top: 0.2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .pedidos {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .maisEmenos {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  button.adicionarPedido,
+  button.removerPedido,
+  button.adicionarInfantil {
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  button.adicionarPedido:hover,
+  button.removerPedido:hover,
+  button.adicionarInfantil:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.05);
+  }
+  
+  .pares {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--dark-color);
+  }
+  
+  .paresValor {
+    color: var(--main-color);
+  }
+  
+  /* Contêiner de Tamanhos */
+  .containerQuadradinhos {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  
+  .containerQuadradinhos button {
+    width: 40px;
+    height: 40px;
+    background-color: var(--secondary-color);
+    color: white;
+    border-color: #017a39;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .containerQuadradinhos button:hover {
+    background-color: var(--main-color);
+    transform: scale(1.1);
+  }
+  
+  /* Botões de Comando */
+  .botoesComando {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+  }
+  
+  button.clienteloja,
+  button.realizarPedido {
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  button.clienteloja:hover,
+  button.realizarPedido:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.05);
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .linha1 {
+      grid-template-columns: 1fr;
+    }
+  
+    .botoesComando {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+  
 .ordem {
-    margin: 1em;
+    margin: 0.5em;
     overflow-y: auto;              /* Adiciona rolagem vertical quando necessário */
-    height: calc(100vh - 80px);    /* Define altura responsiva com base na viewport */
     padding-bottom: 80px;          /* Garante espaço para os botões fixos */
     display: flex;
     flex-direction: column;
@@ -90,11 +271,6 @@ input.vendedor:focus {
     box-shadow: 0 0 8px rgba(42, 157, 143, 0.4);
 }
 
-/* Container para a ficha */
-.ficha {
-    display: flex;
-    flex-direction: column;
-}
 
 /* Container para a linha1 */
 .linha1 {
@@ -210,7 +386,7 @@ h5.pares {
 }
 
 .botoesComando {
-    position: absolute;              /* Mantém os botões fixos ao rolar */
+    position: fixed;              /* Mantém os botões fixos ao rolar */
     bottom: 0;                     /* Alinha à parte inferior */
     left: 0;                       /* Alinha à esquerda */
     width: 100%;                   /* Ocupa toda a largura */

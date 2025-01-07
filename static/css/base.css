@@ -1,86 +1,120 @@
-/* Reset */
+/* CSS para Menu Lateral Base */
+
+/* Reset básico */
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --main_color: rgb(19, 93, 26);
-}
-
-/* Configurações básicas */
-html, body {
+  }
+  
+  :root {
+    --main-bg-color: #017A39;
+    --secondary-bg-color: #01A44D;
+    --hover-color: #019657;
+    --text-color: #fff;
+    --logo-size: 100px;
+  }
+  
+  /* Configurações básicas */
+  html, body {
     height: 100%;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.container {
+    background-color: #f0f0f0;
+  }
+  
+  .container {
     display: flex;
-}
+  }
+  
+  /* Menu fixo à esquerda */
+  .menu {
+    position: fixed;
+    top: 0;
+    left: 0;
 
-/* Menu fixo à esquerda */
-.menu {
-    position: fixed;                 /* Mantém o menu fixo na tela */
-    top: 0;                          /* Alinha ao topo */
-    left: 0;                         /* Alinha à esquerda */
-    width: 10em; 
-    height: 100vh;                   /* Ocupa toda a altura da viewport */
-    background: linear-gradient(135deg, #017A39, #01A44D); 
-    color: white; 
-    padding: 20px; 
-    display: flex;                   /* Utiliza Flexbox */
-    flex-direction: column;          /* Direção vertical */
-    justify-content: space-between;  /* Espaça o conteúdo entre topo e base */
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Opcional: sombra para destaque */
-    z-index: 1000;
-}
-
-
-/* Conteúdo do menu */
-.menu-content {
+    height: 100vh;
+    background: linear-gradient(135deg, var(--main-bg-color), var(--secondary-bg-color));
+    color: var(--text-color);
     display: flex;
     flex-direction: column;
-}
-
-.gestao{
-    margin-top: 1em;
-}
-
-/* Títulos e links */
-.titulo {
-    font-size: 30px;
-    margin-bottom: 0.5em;
-}
-
-.sub_menu a {
+    justify-content: space-between;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  /* Conteúdo do menu */
+  .menu-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Seções do menu */
+  .titulo {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--hover-color);
+    padding-bottom: 5px;
+  }
+  
+  /* Links do menu */
+  .sub_menu a {
     text-decoration: none;
-    color: white;   
-    font-size: 17px;
-    margin-bottom: 1em; /* Espaçamento entre os links */
-}
-
-.sub_menu a:hover {
-    color: #f0f0f0;
-    text-decoration: underline;
-}
-
-/* Logo no final do menu */
-.logo {
-    width: 3em;
-    /* Centraliza a logo horizontalmente */
+    color: var(--text-color);
+    font-size: 1rem;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    display: block;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sub_menu a:hover {
+    background-color: var(--hover-color);
+  }
+  
+  /* Logo no final do menu */
+  .logo {
+    width: var(--logo-size);
+    height: auto;
     align-self: center;
-    margin-top: auto; /* Garante que a logo fique no final */
-}
+    margin-top: auto;
+    margin-bottom: 1.5em;
+  }
+  
+  /* Conteúdo principal */
+  .test {
+    flex: 1;
+    margin-left: 180px;
+    padding: 20px;
 
-/* Conteúdo principal */
-.test {
-    flex: 1; 
-    margin-left: 10em; /* Espaço igual à largura do menu */
-    padding: 20px; /* Espaçamento interno */
-    min-height: 100vh; /* Garante altura mínima */
-}
-
-.logo{
-    width: 100px;
-}
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .menu {
+      width: 200px;
+    }
+  
+    .test {
+      margin-left: 200px;
+      padding: 20px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .menu {
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
+  
+    .test {
+      margin-left: 0;
+      padding: 20px;
+    }
+  
+    .logo {
+      width: 80px;
+    }
+  }
+  

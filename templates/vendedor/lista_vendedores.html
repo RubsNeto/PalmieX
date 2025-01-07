@@ -36,13 +36,13 @@
                     <td>{{ vendedor.data_nascimento }}</td>
                     <td>
                         <div class="acoes">
-                            <a href="{% url 'vendedor:editar_vendedor' vendedor.pk %}" class="btn btn-secondary">
+                            <a href="{% url 'vendedor:editar_vendedor' vendedor.pk %}" class="btn btn-secondary" title="Editar">
                                 <img class="edit" src="{% static 'img/edit.svg' %}" alt="Editar">
                             </a>
                             <!-- Formulário para deletar o vendedor -->
                             <form action="{% url 'vendedor:deletar_vendedor' vendedor.pk %}" method="post" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja deletar este vendedor?');">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-danger" title="Deletar">
+                                <button type="submit" class="btn btn-danger" title="Deletar" title="Deletar">
                                     <img class="delete" src="{% static 'img/trash.svg' %}" alt="Deletar">
                                 </button>
                             </form>
