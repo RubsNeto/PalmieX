@@ -18,7 +18,7 @@
     <thead>
       <tr>
         <th>Cliente</th>
-        <th>ID Pedido</th>
+        <th>Código</th>
         <th>Data</th>
         <th>Hora</th>
         <th>Status</th>
@@ -33,11 +33,23 @@
         <td>{{ pedido.data|date:"d/m/Y" }}</td>
         <td>{{ pedido.data|date:"H:i" }}</td>
         <td class="status-pedido">{{ pedido.status }}</td>
-        <td>
+        <td class="botoes">
           <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}">
             <img class="detalhes" src="{% static 'img/detalhes.svg' %}">
           </button>
-          <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}">
+
+           <!-- Botão Colocar em Produção -->
+        <button type="button" class="alterar-status prod" data-pedido-id="{{ pedido.id }}" data-novo-status="Em Produção">
+          <img class="producao" src="{% static 'img/producao.svg' %}">
+        </button>
+
+        <!-- Botão Finalizar Pedido -->
+        <button type="button" class="alterar-status fim" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Finalizado">
+          <img class="concluido" src="{% static 'img/concluido.svg' %}">
+        </button>
+
+          
+        <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}">
             <img class="detalhes" src="{% static 'img/imprimir.svg' %}">
           </button>
         </td>
@@ -59,8 +71,8 @@
     </div>
     <!-- Novos Botões para Alterar Status -->
     <div class="botoes-status">
-      <button type="button" class="alterar-status" data-novo-status="Em Produção">Marcar como Em Produção</button>
-      <button type="button" class="alterar-status" data-novo-status="Pedido Finalizado">Marcar como Finalizado</button>
+      <button type="button" class="alterar-status-modal" data-novo-status="Em Produção">Marcar como Em Produção</button>
+      <button type="button" class="alterar-status-modal" data-novo-status="Pedido Finalizado">Marcar como Finalizado</button>
     </div>
   </div>
 </div>

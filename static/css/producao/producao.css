@@ -39,6 +39,57 @@ thead{
   filter: brightness(0) invert(1); /* Converte a cor para branco se estiver usando <img> */
 }
 
+.alterar-status{
+  padding: 10px 10px;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.botoes{
+  display: flex;  
+  justify-content: space-between;
+}
+
+.prod{
+  background-color: #0c6621;
+}
+
+.prod:hover {
+  background-color: #0a5a1d;
+  transform: scale(1.05);
+}
+
+.fim{
+  background-color: #28a745;
+}
+
+
+.fim:hover {
+  background-color: #1e7e34;
+  transform: scale(1.05);
+}
+
+.alterar-status img{
+  margin-bottom: -2.5px;
+  margin-right: -2.5px;
+}
+
+.producao, .concluido{
+  width: 20px;                   /* Define a largura da imagem */
+  height: 20px;                  /* Define a altura da imagem */
+  object-fit: contain;           /* Mantém a proporção da imagem */
+  margin: 0;                     /* Remove margens */
+  filter: brightness(0) invert(1); /* Converte a cor para branco se estiver usando <img> */
+}
+
+.concluido{
+  padding-right: 2px;
+}
+
 th{
   color: white;
 }
@@ -89,7 +140,7 @@ th{
 }
 
 .imprimir-pedido{
-  padding: 8px 7px;
+  padding: 10px 9px;
   background-color: var(--button_hover);
   color: #fff;
   border: none;
@@ -105,7 +156,7 @@ th{
 }
 
 .imprimir-pedido:hover {
-  background-color: var(--button_background);
+  background-color: rgb(14, 69, 20);
   transform: scale(1.05);
 }
 
@@ -283,8 +334,8 @@ h1 {
 
 /* Botão de detalhes com efeito de "pulsar" */
 .ver-detalhes {
-  padding: 8px 8px;
-  background-color: var(--button_background);
+  padding: 10px 10px;
+  background-color: #646464;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -299,7 +350,7 @@ h1 {
 }
 
 .ver-detalhes:hover {
-  background-color: var(--button_hover);
+  background-color: #4a4a4a;
   transform: scale(1.05);
 }
 
@@ -463,7 +514,7 @@ h1 {
 }
 
 
-
+f
 /* pedidos/static/css/producao/producao.css */
 
 /* ... Seu CSS existente ... */
@@ -476,7 +527,8 @@ h1 {
   gap: 10px;
 }
 
-.alterar-status {
+
+.alterar-status-modal {
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -487,21 +539,21 @@ h1 {
   transition: background-color 0.3s ease;
 }
 
-.alterar-status:hover {
+.alterar-status-modal:hover {
   background-color: #0056b3;
 }
 
-.alterar-status:focus {
+.alterar-status-modal:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
 }
 
 /* Botão Específico para 'Pedido Finalizado' */
-.alterar-status[data-novo-status="Pedido Finalizado"] {
+.alterar-status-modal[data-novo-status="Pedido Finalizado"] {
   background-color: #28a745;
 }
 
-.alterar-status[data-novo-status="Pedido Finalizado"]:hover {
+.alterar-status-modal[data-novo-status="Pedido Finalizado"]:hover {
   background-color: #1e7e34;
 }
 

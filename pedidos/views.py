@@ -186,7 +186,6 @@ def atualizar_status_pedido(request):
         pedido_id = body.get('pedido_id')
         novo_status = body.get('novo_status', '').strip()
 
-        # Validação básica
         if not pedido_id:
             return JsonResponse({'erro': 'ID do pedido não fornecido.'}, status=400)
         if not novo_status:

@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-  // Seleciona todos os botões de "Detalhes" e "Imprimir Pedido"
+  // Seleciona os botões
   const buttonsDetalhes = document.querySelectorAll('.ver-detalhes');
   const imprimirButtons = document.querySelectorAll('.imprimir-pedido');
+  const botoesAlterarStatus = document.querySelectorAll('.alterar-status');
+  const botoesAlterarStatusModal = document.querySelectorAll('.alterar-status-modal');
 
   const modal = document.getElementById('detalhesModal');
   const closeButton = modal.querySelector('.close-button');
@@ -25,8 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Função para atualizar status do pedido
-  function atualizarStatusPedido(novoStatus) {
-      const pedidoId = modal.dataset.pedidoId;
+  function atualizarStatusPedido(novoStatus, pedidoId) {
       if (!pedidoId) {
           alert("ID do pedido não encontrado.");
           return;
@@ -53,16 +54,16 @@ document.addEventListener('DOMContentLoaded', function() {
       })
       .then(data => {
           alert(data.mensagem);
-          // Atualiza o status no modal
-          document.getElementById('status-pedido-modal').textContent = novoStatus;
           // Atualiza o status na tabela principal
           const pedidoRow = document.querySelector(`.pedido-resumo[data-pedido-id="${pedidoId}"] .status-pedido`);
           if (pedidoRow) {
               pedidoRow.textContent = novoStatus;
           }
-          // Fecha o modal após atualização
-          modal.style.display = 'none';
-          itensPedidoModal.innerHTML = '';
+          // Atualiza o status no modal
+          const statusModal = document.getElementById('status-pedido-modal');
+          if (statusModal) {
+              statusModal.textContent = novoStatus;
+          }
       })
       .catch(err => {
           console.error("Erro ao atualizar o status do pedido:", err);
@@ -74,11 +75,10 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 
-  // Lida com cliques nos botões "Detalhes" para abrir o modal e carregar detalhes do pedido
+  // Lida com cliques nos botões "Detalhes"
   buttonsDetalhes.forEach(button => {
       button.addEventListener('click', function() {
           const pedidoId = this.getAttribute('data-pedido-id');
-          console.log(`Buscando detalhes para o Pedido ID: ${pedidoId}`);
           fetch(`/api/pedido/${pedidoId}/itens/`)
               .then(resp => {
                   if (!resp.ok) {
@@ -89,42 +89,40 @@ document.addEventListener('DOMContentLoaded', function() {
               .then(data => {
                   let html = `
                     <h2>Cliente: ${data.cliente}</h2>  
-                      <div class=conteudo>
+                    <div class="conteudo">
                       <p><strong>Vendedor:</strong> ${data.vendedor_nome}</p>
-                      <p><strong>Pedido </strong> ${pedidoId}</p>
+                      <p><strong>Pedido:</strong> ${pedidoId}</p>
                       <p><strong>Data:</strong> ${data.data}</p>
                       <p><strong>Hora:</strong> ${data.hora}</p>
                       <p><strong>Status:</strong> <span id="status-pedido-modal">${data.status}</span></p>
-                      </div>
-                      <table>
-                          <thead>
-                              <tr>
-                                  <th>Código</th>
-                                  <th>Nome</th>
-                                  <th>Tamanho</th>
-                                  <th>Quantidade</th>
-                              </tr>
-                          </thead>
-                          <tbody>
+                    </div>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Código</th>
+                          <th>Nome</th>
+                          <th>Tamanho</th>
+                          <th>Quantidade</th>
+                        </tr>
+                      </thead>
+                      <tbody>
                   `;
                   data.itens.forEach(item => {
                       html += `
-                          <tr>
-                              <td>${item.codigo}</td>
-                              <td>${item.nome}</td>
-                              <td>${item.tamanho}</td>
-                              <td>${item.quantidade}</td>
-                          </tr>
+                        <tr>
+                          <td>${item.codigo}</td>
+                          <td>${item.nome}</td>
+                          <td>${item.tamanho}</td>
+                          <td>${item.quantidade}</td>
+                        </tr>
                       `;
                   });
                   html += `
-                          </tbody>
-                      </table>
-                      
+                      </tbody>
+                    </table>
                   `;
                   itensPedidoModal.innerHTML = html;
                   modal.style.display = 'block';
-                  // Armazena o ID do pedido no modal para referência futura
                   modal.dataset.pedidoId = pedidoId;
               })
               .catch(err => {
@@ -134,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   });
 
-  // Lida com cliques nos botões "Imprimir Pedido" para abrir a página de impressão numa nova aba
+  // Lida com cliques nos botões "Imprimir Pedido"
   imprimirButtons.forEach(button => {
       button.addEventListener('click', function() {
           const pedidoId = this.getAttribute('data-pedido-id');
@@ -162,13 +160,24 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   });
 
-  // Seleciona botões de alterar status dentro do modal
-  const botoesStatus = document.querySelectorAll('.alterar-status');
-  botoesStatus.forEach(btn => {
-      btn.addEventListener('click', () => {
-          const novoStatus = btn.dataset.novoStatus;
+  // Lida com cliques nos botões "Alterar Status" na tabela
+  botoesAlterarStatus.forEach(button => {
+      button.addEventListener('click', function() {
+          const pedidoId = this.getAttribute('data-pedido-id');
+          const novoStatus = this.getAttribute('data-novo-status');
           if (confirm(`Deseja realmente marcar o pedido como '${novoStatus}'?`)) {
-              atualizarStatusPedido(novoStatus);
+              atualizarStatusPedido(novoStatus, pedidoId);
+          }
+      });
+  });
+
+  // Lida com cliques nos botões "Alterar Status" no modal
+  botoesAlterarStatusModal.forEach(button => {
+      button.addEventListener('click', function() {
+          const pedidoId = modal.dataset.pedidoId;
+          const novoStatus = this.getAttribute('data-novo-status');
+          if (confirm(`Deseja realmente marcar o pedido como '${novoStatus}'?`)) {
+              atualizarStatusPedido(novoStatus, pedidoId);
           }
       });
   });
