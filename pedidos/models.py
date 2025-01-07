@@ -15,7 +15,6 @@ class Pedido(models.Model):
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
     data = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pendente')
-    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return f"Pedido #{self.pk} - Cliente: {self.cliente}"

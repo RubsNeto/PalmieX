@@ -5,7 +5,7 @@ from .models import Pedido, PedidoItem
 
 @admin.register(Pedido)
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cliente', 'vendedor', 'data', 'status', 'total')
+    list_display = ('id', 'cliente', 'vendedor', 'data', 'status')
     list_filter = ('status', 'vendedor')
     search_fields = ('cliente', 'vendedor__nome')
 

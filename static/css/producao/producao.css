@@ -23,10 +23,21 @@
   margin: 1em;
 }
 
+h2{
+  margin-bottom: 0.5em;
+}
+
 thead{
   background: linear-gradient(150deg, #017A39, #01A44D);
 }
 
+.detalhes{
+  width: 20px;                   /* Define a largura da imagem */
+  height: 20px;                  /* Define a altura da imagem */
+  object-fit: contain;           /* Mantém a proporção da imagem */
+  margin: 0;                     /* Remove margens */
+  filter: brightness(0) invert(1); /* Converte a cor para branco se estiver usando <img> */
+}
 
 th{
   color: white;
@@ -77,29 +88,8 @@ th{
   background-color: #f1f1f1;
 }
 
-/* Botão Detalhes */
-.ver-detalhes {
-  padding: 8px 16px;
-  background-color: var(--button_background);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.ver-detalhes:hover {
-  background-color: var(--button_hover);
-}
-
-.ver-detalhes:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
-}
-
 .imprimir-pedido{
-  padding: 8px 16px;
+  padding: 8px 7px;
   background-color: var(--button_hover);
   color: #fff;
   border: none;
@@ -109,6 +99,10 @@ th{
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.imprimir-pedido img{
+  margin-bottom: -2.5px;
+ 
+}
 
 .imprimir-pedido:hover {
   background-color: var(--button_background);
@@ -289,7 +283,7 @@ h1 {
 
 /* Botão de detalhes com efeito de "pulsar" */
 .ver-detalhes {
-  padding: 8px 16px;
+  padding: 8px 8px;
   background-color: var(--button_background);
   color: #fff;
   border: none;
@@ -297,6 +291,11 @@ h1 {
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.ver-detalhes img{
+  margin-bottom: -2.5px;
+  margin-right: -2.5px;
 }
 
 .ver-detalhes:hover {
