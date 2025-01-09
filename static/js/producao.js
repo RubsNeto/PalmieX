@@ -1,5 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+
+    // Função para mapear status em cores
+  function obterCorPorStatus(status) {
+    if(status === 'Pendente') {
+      return '#ffc107';
+    } else if(status === 'Em Produção') {
+      return '#17a2b8';
+    } else if(status === 'Pedido Finalizado') {
+      return '#00b244';
+    } else {
+      return '#333';
+    }
+  }
+
+  // Define a cor inicial para cada status-pedido ao carregar a página
+  const statusCells = document.querySelectorAll('.status-pedido');
+  statusCells.forEach(cell => {
+    const statusSpan = cell.querySelector('span');
+    if(statusSpan) {
+      const statusTexto = statusSpan.textContent.trim();
+      cell.style.color = obterCorPorStatus(statusTexto);
+    }
+  });
+
   // Seleciona os botões
   const buttonsDetalhes = document.querySelectorAll('.ver-detalhes');
   const imprimirButtons = document.querySelectorAll('.imprimir-pedido');
@@ -57,14 +81,23 @@ document.addEventListener('DOMContentLoaded', function() {
           // Atualiza o status na tabela principal
           const pedidoRow = document.querySelector(`.pedido-resumo[data-pedido-id="${pedidoId}"] .status-pedido`);
           if (pedidoRow) {
-              pedidoRow.textContent = novoStatus;
-          }
-          // Atualiza o status no modal
-          const statusModal = document.getElementById('status-pedido-modal');
-          if (statusModal) {
-              statusModal.textContent = novoStatus;
-          }
-      })
+            // Atualiza o texto do status
+            const statusSpan = pedidoRow.querySelector('span');
+            if (statusSpan) {
+                statusSpan.textContent = novoStatus;
+            } else {
+                pedidoRow.textContent = novoStatus;
+            }
+            // Atualiza a cor do status
+            pedidoRow.style.color = obterCorPorStatus(novoStatus);
+        }
+        // Atualiza o status no modal
+        const statusModal = document.getElementById('status-pedido-modal');
+        if (statusModal) {
+            statusModal.textContent = novoStatus;
+            statusModal.style.color = obterCorPorStatus(novoStatus);
+        }
+        })
       .catch(err => {
           console.error("Erro ao atualizar o status do pedido:", err);
           if (err.erro) {

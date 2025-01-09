@@ -82,7 +82,7 @@
   
   /* Botões Específicos */
   .acoes .btn-secondary {
-    background-color: var(--dark-color);
+    background-color: var(--info-color);
   }
   
   .acoes .btn-secondary:hover {

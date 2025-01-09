@@ -5,6 +5,7 @@ from django.db.models import Case, When, Value, IntegerField
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_POST
+from django.db.models import Q
 from .models import Vendedor, Produto, Pedido, PedidoItem
 import json
 from django.utils import timezone
@@ -20,6 +21,9 @@ def realiza_pedidos(request):
 
 @login_required
 def producao(request):
+    search_query = request.GET.get('q', '').strip()
+
+    # Consulta base com prefetch e anotação para ordenação de status
     pedidos = Pedido.objects.prefetch_related('itens__produto').annotate(
         status_order=Case(
             When(status='Em Produção', then=Value(1)),
@@ -27,9 +31,23 @@ def producao(request):
             When(status='Pedido Finalizado', then=Value(3)),
             output_field=IntegerField()
         )
-    ).order_by('status_order', '-data')
+    ).filter(~Q(status='Pedido Finalizado'))
+
+    # Aplica filtros de pesquisa se um termo for fornecido
+    if search_query:
+        pedidos = pedidos.filter(
+            Q(cliente__icontains=search_query) |
+            Q(vendedor__nome__icontains=search_query) |
+            Q(id__icontains=search_query)
+        )
+
+    # Ordena os resultados conforme status_order e data
+    pedidos = pedidos.order_by('status_order', '-data')
     
-    return render(request, 'producao/producao.html', {'pedidos': pedidos})
+    return render(request, 'producao/producao.html', {
+        'pedidos': pedidos,
+        'search_query': search_query  # Passa o termo de busca para o template
+    })
 
 
 
@@ -223,3 +241,31 @@ def atualizar_status_pedido(request):
     except Exception as e:
         logger.exception("Erro ao atualizar o status do pedido.")
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
+    
+    
+#-------------------------------Finalzados--------------------------------  
+
+@login_required
+def pedidos_finalizados(request):
+    # Obtém o termo de busca da query string, se fornecido
+    search_query = request.GET.get('q', '').strip()
+
+    # Filtra os pedidos com status 'Pedido Finalizado'
+    pedidos = Pedido.objects.filter(status='Pedido Finalizado')
+    
+    # Se houver termo de busca, filtrar por cliente, vendedor, data ou código
+    if search_query:
+        pedidos = pedidos.filter(
+            Q(cliente__icontains=search_query) |
+            Q(vendedor__nome__icontains=search_query) |
+            Q(id__icontains=search_query)
+        )
+
+    # Pré-carregando itens e ordenando por data decrescente
+    pedidos = pedidos.prefetch_related('itens__produto').order_by('-data')
+    
+    # Renderiza o template passando os pedidos e a query de busca
+    return render(request, 'pedidos/pedidos_finalizados.html', {
+        'pedidos': pedidos,
+        'search_query': search_query
+    })

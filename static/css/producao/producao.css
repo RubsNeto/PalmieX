@@ -10,6 +10,42 @@
   }
 
 
+  /*Buscador*/
+  .search-container {
+    display: flex;
+    max-width: 400px;
+    margin-bottom: 1em;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .search-input {
+    flex-grow: 1;
+    padding: 0.5em 1em;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+  }
+  .search-input::placeholder {
+    color: #999;
+  }
+  .search-button {
+    background-color: var(--button-bg-color);
+    border: none;
+    padding: 0 1em;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+  }
+  .search-button:hover {
+    background-color: var(--button-hover-bg-color);
+  }
+
   /* Título */
   .container-pedidos h1 {
     font-size: 1.8rem;
@@ -57,17 +93,24 @@
     height: 40px;
     border: none;
     border-radius: 50%;
-    background-color: var(--main-color);
     color: white;
     font-size: 1.2rem;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
   }
-
+  
   .ver-detalhes:hover, .alterar-status:hover, .imprimir-pedido:hover {
-    background-color: var(--hover-color);
     transform: scale(1.1);
   }
+
+  .ver-detalhes{
+    background-color: var(--info-color);
+  }
+
+  .ver-detalhes:hover{
+    background-color: #148fa1;
+  }
+
 
   .ver-detalhes img, .alterar-status img, .imprimir-pedido img {
     width: 20px;

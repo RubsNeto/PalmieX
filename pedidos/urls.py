@@ -15,5 +15,6 @@ urlpatterns = [
     path('realizar-pedido/', views.realizar_pedido, name='realizar_pedido'),
     path('atualizar-status-pedido/', views.atualizar_status_pedido, name='atualizar_status_pedido'),
     path('imprimir/<int:pedido_id>/', views.imprimir_pedido, name='imprimir_pedido'),
+    path('finalizados/', views.pedidos_finalizados, name='pedidos_finalizados'),
 ]
 

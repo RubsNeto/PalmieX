@@ -5,14 +5,14 @@
     box-sizing: border-box;
 }
 
+
 :root {
-    --primary-color: #005830; /* Verde médio */
+    --primary-color: #388e3c;   /* Verde escuro moderado */
+    --accent-color: #4db6ac;    /* Verde-azulado mais claro */
     --secondary-color: #ffffff;
-    --accent-color: #66CDAA; /* Verde água clara */
     --font-family: 'Roboto', sans-serif;
 }
     
-/* Estilizando o body com um fundo verde colorido e animado */
 body {
     height: 100vh;
     width: 100%;
@@ -20,20 +20,19 @@ body {
     justify-content: center;
     align-items: center;
     font-family: var(--font-family);
-    background-color: #014c2a;
-    background-size: 800% 800%;
+    background: linear-gradient(45deg, #0c5f10, #4caf50, #66bb6a);
+    background-size: 400% 400%;
     animation: gradientAnimation 20s ease infinite;
     overflow: hidden;
 }
 
-/* Animação do fundo com múltiplos tons de verde */
+
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
-    25% { background-position: 50% 100%; }
     50% { background-position: 100% 50%; }
-    75% { background-position: 50% 0%; }
     100% { background-position: 0% 50%; }
 }
+
 
 /* Container principal */
 .container {
