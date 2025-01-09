@@ -2,10 +2,11 @@
 
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Case, When, Value, IntegerField
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_POST
 from django.db.models import Q
+from functools import wraps
 from .models import Vendedor, Produto, Pedido, PedidoItem
 import json
 from django.utils import timezone
@@ -14,12 +15,24 @@ import logging
 # Configuração do logger
 logger = logging.getLogger(__name__)
 
+def permission_required(min_level):
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            # Verifica se o usuário está autenticado e possui o nível mínimo
+            if not request.user.is_authenticated or request.user.permission_level < min_level:
+                return HttpResponseForbidden("Você não tem permissão para acessar esta página.")
+            return view_func(request, *args, **kwargs)
+        return _wrapped_view
+    return decorator
+
 @login_required
 def realiza_pedidos(request):
     numeros = range(1, 18)  # de 1 a 17
     return render(request, 'realiza_pedidos.html', {'numeros': numeros})
 
 @login_required
+@permission_required(1)
 def producao(request):
     search_query = request.GET.get('q', '').strip()
 
@@ -49,18 +62,16 @@ def producao(request):
         'search_query': search_query  # Passa o termo de busca para o template
     })
 
-
-
-
 #------------------impressao-------------------
 
 @login_required
 def imprimir_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
-    return render(request, 'pedidos/imprimir.html', {'pedido': pedido})
-
-
-
+    tamanhos = range(15, 44)  # Faixa de tamanhos de 15 a 43
+    return render(request, 'pedidos/imprimir.html', {
+        'pedido': pedido,
+        'tamanhos': tamanhos
+    })
 
 @require_GET
 @login_required
@@ -101,6 +112,7 @@ def pedido_itens_api(request, pedido_id):
     return JsonResponse(data)
 
 @require_GET
+
 def buscar_vendedor(request):
     codigo = request.GET.get('codigo', '')
     if not codigo:
@@ -204,8 +216,87 @@ def realizar_pedido(request):
         logger.exception("Erro ao realizar pedido.")
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
 
+
 @require_POST
 @login_required
+def realizar_pedido_urgente(request):
+    try:
+        body = json.loads(request.body or '{}')
+
+        cliente = body.get('cliente', '').strip()
+        codigo_vendedor = body.get('codigoVendedor', '').strip()
+        vendedor_nome = body.get('vendedor', '').strip()
+        status = body.get('status', 'Cliente em espera').strip()  # Recebe status do request ou usa padrão
+
+        logger.debug(f"Dados recebidos: Cliente={cliente}, Código Vendedor={codigo_vendedor}, Vendedor={vendedor_nome}, Status={status}")
+
+        # Validações básicas
+        if not cliente:
+            logger.warning("Cliente não informado.")
+            return JsonResponse({'erro': 'Cliente não informado.'}, status=400)
+        if not codigo_vendedor or not vendedor_nome:
+            logger.warning("Dados do vendedor incompletos.")
+            return JsonResponse({'erro': 'Dados do vendedor incompletos.'}, status=400)
+
+        # Busca ou cria o vendedor
+        vendedor, criado = Vendedor.objects.get_or_create(
+            codigo=codigo_vendedor,
+            defaults={'nome': vendedor_nome}
+        )
+        if criado:
+            logger.info(f"Vendedor criado: {vendedor}")
+
+        # Cria o pedido com o status especificado
+        pedido = Pedido.objects.create(
+            cliente=cliente,
+            vendedor=vendedor,
+            status=status  # Define o status
+        )
+        logger.info(f"Pedido criado: {pedido}")
+
+        itens = body.get('itens', [])
+        for item in itens:
+            referencia = item.get('referencia', '').strip()
+            nome_produto = item.get('material', '').strip()
+            tamanhos = item.get('tamanhos', {})
+
+            if not referencia:
+                logger.warning("Referência do produto não informada.")
+                continue
+
+            for tamanho, qtd in tamanhos.items():
+                if not qtd or qtd <= 0:
+                    logger.warning(f"Quantidade inválida para tamanho {tamanho}.")
+                    continue
+
+                produto, criado_produto = Produto.objects.get_or_create(
+                    codigo=referencia,
+                    defaults={'nome': nome_produto}
+                )
+                if criado_produto:
+                    logger.info(f"Produto criado: {produto}")
+
+                PedidoItem.objects.create(
+                    pedido=pedido,
+                    produto=produto,
+                    quantidade=qtd,
+                    tamanho=tamanho
+                )
+                logger.info(f"PedidoItem criado: {Produto} - Quantidade={qtd}, Tamanho={tamanho}")
+
+        return JsonResponse({'mensagem': 'Pedido criado com sucesso!', 'pedido_id': pedido.pk})
+
+    except json.JSONDecodeError:
+        logger.error("JSON inválido.")
+        return JsonResponse({'erro': 'JSON inválido.'}, status=400)
+    except Exception as e:
+        logger.exception("Erro ao realizar pedido.")
+        return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
+
+
+@require_POST
+@login_required
+@permission_required(2)
 def atualizar_status_pedido(request):
     try:
         body = json.loads(request.body or '{}')
@@ -246,6 +337,7 @@ def atualizar_status_pedido(request):
 #-------------------------------Finalzados--------------------------------  
 
 @login_required
+@permission_required(1)
 def pedidos_finalizados(request):
     # Obtém o termo de busca da query string, se fornecido
     search_query = request.GET.get('q', '').strip()

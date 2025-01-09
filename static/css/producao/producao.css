@@ -112,11 +112,13 @@
   }
 
 
-  .ver-detalhes img, .alterar-status img, .imprimir-pedido img {
+  .ver-detalhes img, .alterar-status img, .imprimir-pedido img, .pesquisar {
     width: 20px;
     height: 20px;
     filter: brightness(0) invert(1);
   }
+
+
 
 
   .imprimir-pedido img{

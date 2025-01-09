@@ -14,7 +14,7 @@
   <!-- Formulário de busca -->
   <form method="get" action="{% url 'pedidos:producao' %}" class="search-container">
     <input type="text" name="q" placeholder="Buscar por cliente, vendedor ou código" value="{{ search_query }}" class="search-input">
-    <button type="submit" class="search-button">Buscar</button>
+    <button type="submit" class="search-button"><img src="{% static 'img/pesquisar.svg'%}" class=" pesquisar"></button>
   </form>
 
   {% if pedidos %}
@@ -46,19 +46,24 @@
             <img class="detalhes" src="{% static 'img/detalhes.svg' %}">
           </button>
 
+          {% if user.permission_level > 1 %}
            <!-- Botão Colocar em Produção -->
           <button type="button" class="alterar-status prod" data-pedido-id="{{ pedido.id }}" data-novo-status="Em Produção" title="Produção">
             <img class="producao" src="{% static 'img/producao.svg' %}">
           </button>
+          {% endif %}
 
           <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
               <img class="detalhes" src="{% static 'img/imprimir.svg' %}">
           </button>
 
+          {% if user.permission_level > 1 %}
           <!-- Botão Finalizar Pedido -->
           <button type="button" class="alterar-status fim" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Finalizado" title="Concluido">
             <img class="concluido" src="{% static 'img/concluido.svg' %}">
           </button>
+
+          {% endif %}
         </td>
       </tr>
       {% endfor %}
@@ -78,8 +83,11 @@
     </div>
     <!-- Novos Botões para Alterar Status -->
     <div class="botoes-status">
-      <button type="button" class="alterar-status-modal" data-novo-status="Em Produção">Marcar como Em Produção</button>
-      <button type="button" class="alterar-status-modal" data-novo-status="Pedido Finalizado">Marcar como Finalizado</button>
+      {% if user.permission_level > 1 %}
+        <button type="button" class="alterar-status-modal" data-novo-status="Em Produção">Marcar como Em Produção</button>
+        <button type="button" class="alterar-status-modal" data-novo-status="Pedido Finalizado">Marcar como Finalizado</button>
+        <button type="button" class="alterar-status-modal" data-novo-status="Cancelado">Cancelar Pedido</button>
+      {% endif %}
     </div>
   </div>
 </div>

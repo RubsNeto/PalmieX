@@ -1,46 +1,72 @@
 {% load static %}
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Imprimir Pedido #{{ pedido.id }}</title>
-    <link rel="stylesheet" href="{% static 'css/imprimir.css' %}">
-    <script>
-        window.onload = function() {
-            window.print();
-        }
-    </script>
-</head>
-<body>
-    <div class="pedido-imprimir">
-        <p>Cliente: <strong  style="font-size:20px">{{ pedido.cliente }} </strong></p>
-        
-        <div class='separacao'>
-                <p><strong>Vendedor:</strong> {{ pedido.vendedor }}</p>
-                <p><strong>Data:</strong> {{ pedido.data|date:"d/m/Y" }}</p>
-                <p><strong>Código:</strong> {{ pedido.id }}</p>
-                <p><strong>Hora:</strong> {{ pedido.data|date:"H:i" }}</p>
-                <p><strong>Status:</strong> {{ pedido.status }}</p>
-        </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Quantidade</th>
-                    <th>Tamanho</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in pedido.itens.all %}
-                <tr>
-                    <td>{{ item.produto.nome }}</td>
-                    <td>{{ item.quantidade }}</td>
-                    <td>{{ item.tamanho }}</td
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <hr>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/imprimir.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="pedido-imprimir">
+  <h1>Cliente {{ pedido.cliente }}</h1>
+  <div class="detalhes-pedido">
+    <p><strong>Vendedor:</strong> {{ pedido.vendedor.nome }}</p>
+    <p><strong>Código:</strong> {{ pedido.id }}</p>
+    <p><strong>Data:</strong> {{ pedido.data|date:"d/m/Y H:i" }}</p>
+    <p><strong>Total Geral:</strong> <span id="total-geral">0</span></p>
+  </div>
+
+  <hr>
+  {% regroup pedido.itens.all by produto as itens_por_produto %}
+  
+  {% for grupo in itens_por_produto %}
+    <div class="pedido-item">
+      <div class="pedidos">
+        <span class="campo">Referência:</span>
+        <input type="text" class="referencia" value="{{ grupo.grouper.codigo }}" readonly>
+        <span class="campo">Material:</span>
+        <input type="text" class="material" value="{{ grupo.grouper.nome }}" readonly>
+      </div>
+      
+      <div class="container containerQuadradinhos">
+        {% for tamanho in tamanhos %}
+          <div class="botao-container">
+            <button class="botao">{{ tamanho }}</button>
+            <div class="numero" contenteditable="false">
+              {% for item in grupo.list %}
+                {% if item.tamanho == tamanho %}
+                  {{ item.quantidade }}
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
     </div>
-</body>
-</html>
+    <hr>
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    let globalTotal = 0;
+
+    document.querySelectorAll(".pedido-item").forEach(function(item) {
+      let materialTotal = 0;
+      item.querySelectorAll(".numero").forEach(function(numDiv) {
+        let qty = parseInt(numDiv.textContent.trim()) || 0;
+        materialTotal += qty;
+      });
+      globalTotal += materialTotal;
+
+      let totalElem = document.createElement("div");
+      totalElem.className = "material-total";
+      totalElem.style.marginTop = "0.5em";
+      totalElem.style.fontWeight = "bold";
+      totalElem.textContent = "Total deste material: " + materialTotal;
+      item.appendChild(totalElem);
+    });
+
+    document.getElementById("total-geral").textContent = globalTotal;
+    window.print();
+  });
+</script>
+{% endblock content %}

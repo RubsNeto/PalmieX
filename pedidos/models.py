@@ -9,6 +9,8 @@ class Pedido(models.Model):
         ('Pendente', 'Pendente'),
         ('Em Produção', 'Em Produção'),
         ('Pedido Finalizado', 'Pedido Finalizado'),
+        ('cliente em espera', 'Cliente em Espera'),
+        ('Cancelado', 'Cancelado'),
     ]
 
     cliente = models.CharField(max_length=100)

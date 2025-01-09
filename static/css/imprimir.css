@@ -1,120 +1,458 @@
-/* Estilos gerais para a página de impressão */
-body {
-    font-family: 'Arial', sans-serif;
-    background: #fff;
-    color: #000;
+/* Resetando margin e padding */
+* {
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-family);
 }
+/* Estilo para o container pr/* CSS Completo e Moderno para o HTML principal "Ordem de Serviço" */
 
-.separacao{
+:root {
+    --main-color: #017a39;
+    --secondary-color: #01a44d;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --hover-color: #019657;
+    --font-family: 'Arial', sans-serif;
+  }
+
+  @page {
+    size: A4 landscape; /* Ou simplesmente 'landscape' para orientação horizontal */
+    margin: 1cm;        /* Ajuste as margens conforme necessário */
+  }
+  
+  
+
+  .detalhes-pedido{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-}
+  }
 
-hr{
-    margin-top: 2em;
-}
-
-
-
-.pedido-imprimir {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-}
-
-h1, h2, h3 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-h1 {
-    font-size: 2em;
-    margin-bottom: 0.5em;
-    border-bottom: 2px solid #000;
-    padding-bottom: 10px;
-}
-
-h2 {
-    font-size: 1.5em;
-    margin-top: 30px;
-    margin-bottom: 10px;
-}
-
-h3 {
-    font-size: 1.2em;
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-
-/* Estilos para parágrafos de informações do pedido */
-.pedido-imprimir p {
-    font-size: 1em;
-    line-height: 1.5;
-    margin: 10px 0;
-}
-
-/* Estilos para tabela de itens do pedido */
-.pedido-imprimir table {
+  /* Título */
+  .OrdemServico {
+    font-size: 2rem;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Ficha de Informações do Cliente */
+  .ficha {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 0.5rem;
+    border-radius: 8px;
+  }
+  
+  .ficha .linha1 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  
+  .campo {
+    font-weight: bold;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  input {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 5px;
-}
-
-.pedido-imprimir table thead {
-    background-color: #f0f0f0;
-}
-
-.pedido-imprimir table th,
-.pedido-imprimir table td {
+    padding: 0.8rem;
     border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
-    font-size: 0.95em;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: var(--dark-color);
+  }
+  
+  
+  /* Total */
+  .total {
+    grid-column: 1 / span 2;
+    font-size: 1.5rem;
+    color: var(--dark-color);
+  }
+  
+  .valorTotal {
+    font-size: 1.5rem;
+    color: var(--main-color);
+    text-align: right;
+  }
+  
+  /* Pedido Inicial */
+  .pedido-item {
+    background-color: #f9f9f9;
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-top: 0.2rem;
+  }
+  
+  .pedidos {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .maisEmenos {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  button.adicionarPedido,
+  button.removerPedido,
+  button.adicionarInfantil {
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  button.adicionarPedido:hover,
+  button.removerPedido:hover,
+  button.adicionarInfantil:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.05);
+  }
+  
+  .pares {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--dark-color);
+  }
+  
+  .paresValor {
+    color: var(--main-color);
+  }
+  
+  /* Contêiner de Tamanhos */
+  .containerQuadradinhos {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  
+  .containerQuadradinhos button {
+    width: 35.5px;
+    height: 35.5px;
+    background-color: var(--secondary-color);
+    color: white;
+    border-color: #017a39;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .containerQuadradinhos button:hover {
+    background-color: var(--main-color);
+    transform: scale(1.1);
+  }
+  
+  /* Botões de Comando */
+  .botoesComando {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+  }
+  
+  button.clienteloja,
+  button.realizarPedido {
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  button.clienteloja:hover,
+  button.realizarPedido:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.05);
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .linha1 {
+      grid-template-columns: 1fr;
+    }
+  
+    .botoesComando {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+
+  @media print {
+    @page {
+      size: A4 landscape;
+      margin: 1cm;
+    }
+    
+  }
+  
+.ordem {
+    margin: 0.5em;
+    overflow-y: auto;              /* Adiciona rolagem vertical quando necessário */
+    padding-bottom: 80px;          /* Garante espaço para os botões fixos */
+    display: flex;
+    flex-direction: column;
 }
 
-.pedido-imprimir table th {
+.fixa {
+    position: sticky;  /* Ou use 'fixed' se quiser que fique sempre no topo */
+    top: 0;            /* Fixa no topo da tela */
+    z-index: 100;      /* Garante que fique acima de outros elementos */
+    background-color: white; /* Fundo branco para destacar */
+    border-bottom: 1px solid #ccc; /* Linha de separação */
+}
+
+
+/* Estilo para a ordem de serviço */
+h4.OrdemServico {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.campo {
+    margin-top: 1em;
+    font-weight: 100;
+}
+
+.valor-positivo .botao {
+    font-weight: bold;           /* texto em negrito */
+    background-color: #164d19;   /* verde mais escuro */
+}
+
+.valor-positivo .botao:hover {
+    background-color: #0f3d0f;   /* verde mais claro */
+}
+
+
+/* Estilo aprimorado para os inputs */
+input {
+    cursor: pointer;
+    margin-top: 0.7em;
+    padding: 0.8em;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+input[type="text"] {
+    padding-left: 1em;
+}
+
+input.codVendedor {
+    width: 100px;
+}
+
+input.vendedor {
+    width: 250px;
+}
+
+
+/* Container para a linha1 */
+.linha1 {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1em;
+    align-items: flex-start;
+}
+
+span {
+    font-size: 20px;
     font-weight: bold;
 }
 
-/* Ajustes para visualização de tela (não impressão) */
-@media screen {
-    .imprimir-pedido-button {
-        display: block;
-        margin: 20px auto;
-        padding: 10px 20px;
-        font-size: 1em;
-        background-color: #007BFF;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-    }
-
-    .imprimir-pedido-button:hover {
-        background-color: #0056b3;
-    }
+.total {
+    margin-left: 2em;
+    margin-top: 0.55em;
+    font-size: 30px;
 }
 
-/* Estilos específicos para impressão */
-@media print {
-    body {
-        margin: 0;
-        padding: 0;
-        background: #fff;
-    }
-    .imprimir-pedido-button {
-        display: none; /* Ocultar botão de impressão ao imprimir */
-    }
-    /* Remover bordas e margens desnecessárias na impressão */
-    .pedido-imprimir {
-        border: none;
-        margin: 0;
-        padding: 0;
-    }
-    table {
-        page-break-inside: avoid;
-    }
+h5.valorTotal {
+    font-size: 50px;
+    align-self: flex-start;
+    color: #169122;
+    text-decoration: underline;
 }
+
+h5.pares { 
+    font-size: 28px;
+    margin-left: 1em;
+    margin-top: 0.0001em;
+}
+
+/* Estilo para a seção de pedidos */
+.pedidos {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    margin: 0em 0.5em 0.5em 0em;
+}
+
+/* Container para os botões */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-bottom: 1em;
+}
+
+/* Cada conjunto (botão + número) em coluna */
+.botao-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* Botão em cima, número embaixo */
+    align-items: center;
+    gap: 0.5em; /* espaço vertical entre o botão e o número */
+}
+
+/* Estilo dos botões */
+.botao , .adicionarPedido, .removerPedido, .adicionarInfantil{
+    width: 49px;
+    height: 49px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.botao{
+    border: 1px solid #0a7b17;
+}
+
+.adicionarPedido:hover{
+    background-color: #2c9e30;
+}
+
+.adicionarInfantil{
+    background-color: #1313a7;
+}
+
+.adicionarInfantil:hover{
+    background-color: #0d0d85;
+}
+
+
+.maisEmenos{
+    margin-left: 0.172em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.5em;
+}
+
+.removerPedido{
+    background-color: #ff0000;
+}
+
+.removerPedido:hover{
+    background-color: #e50000;
+}
+
+.numero {
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Estilo para quando o mouse passa por cima do botão */
+.botao:hover {
+    background-color: #45a049;
+}
+
+.botoesComando {
+    position: fixed;              /* Mantém os botões fixos ao rolar */
+    bottom: 0;                     /* Alinha à parte inferior */
+    left: 0;                       /* Alinha à esquerda */
+    width: 100%;                   /* Ocupa toda a largura */
+    padding: 1em;                  /* Espaçamento interno */
+    display: flex;                 /* Flex container */
+    flex-direction: row;           /* Botões em linha */
+    justify-content: flex-end;     /* Alinha os botões à direita */
+    gap: 1em;                      /* Espaçamento entre botões */
+    box-sizing: border-box;        /* Inclui padding no cálculo de largura */
+    z-index: 100;                 /* Certifica-se de que fique acima de outros elementos */
+    background-color: white;
+    border-top: 1px solid #ccc;    /* Linha de separação */
+}
+
+
+/* Estilos existentes para os botões */
+.realizarPedido, .clienteloja {
+    font-size: 18px;
+    background-color: rgb(1, 172, 1);
+    color: white;
+    padding: 1em;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;              /* Adiciona cursor pointer para melhorar a UX */
+    transition: background-color 0.3s; /* Transição suave para hover */
+}
+
+.realizarPedido:hover:hover {
+    background-color: #006400;    /* Verde mais escuro no hover */
+}
+
+
+.clienteloja {
+    
+    background-color: rgb(255, 207, 34);
+    color: black;
+}
+.clienteloja:hover {
+    background-color: rgb(255, 234, 0);
+}
+
+
+
+/* Reutilize estilos do arquivo realiza_pedidos.css relevantes para .pedido-item, .pedidos, .containerQuadradinhos, etc. */
+
+  
+  .containerQuadradinhos {
+    display: flex;
+    flex-wrap: wrap;
+    
+  }
+  
+  .botao-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .botao {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+    cursor: default;
+  }
+  
+  .numero {
+    font-size: 0.9em;
+    margin-top: 0.3em;
+  }
+  

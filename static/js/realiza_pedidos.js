@@ -520,6 +520,58 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+
+    // Botão "Realizar pedido urgente"
+    const realizarPedidoUrgenteBtn = document.querySelector('#realizarPedidoUrgente');
+    if (realizarPedidoUrgenteBtn) {
+        realizarPedidoUrgenteBtn.addEventListener('click', () => {
+            const dados = coletarDadosPedidos();
+
+            // Validação antes de enviar
+            if (!dados.cliente) {
+                alert('Por favor, preencha o campo "Cliente".');
+                return;
+            }
+            if (!dados.codigoVendedor || !dados.vendedor) {
+                alert('Por favor, preencha os campos "Código do Vendedor" e "Vendedor".');
+                return;
+            }
+            if (dados.itens.length === 0) {
+                alert('Por favor, adicione pelo menos um item ao pedido.');
+                return;
+            }
+
+            fetch('/realizar-pedido-urgente/', {  // Certifique-se de que a URL tem a barra final
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken    
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => { throw data; });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Pedido realizado com sucesso!');
+                console.log('Resposta do servidor:', data);
+                // Opcional: Redirecionar ou limpar o formulário
+                window.location.href = '/producao/';
+            })
+            .catch(err => {
+                console.error(err);
+                if (err.erro) {
+                    alert(`Erro: ${err.erro}`);
+                } else {
+                    alert('Ocorreu um erro ao realizar o pedido.');
+                }
+            });
+        });
+    }
+
     // Reorganiza tab e atualiza total
     reorganizarTabindex();
     atualizarTotalGlobal();

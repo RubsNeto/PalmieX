@@ -9,10 +9,16 @@ document.addEventListener('DOMContentLoaded', function() {
       return '#17a2b8';
     } else if(status === 'Pedido Finalizado') {
       return '#00b244';
+    } else if(status === 'Cliente em Espera') {
+        return '#ff0000';
+    } else if(status === 'Cancelado') {
+        return '#ff0000';
     } else {
       return '#333';
     }
   }
+
+  
 
   // Define a cor inicial para cada status-pedido ao carregar a página
   const statusCells = document.querySelectorAll('.status-pedido');
@@ -215,4 +221,16 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   });
 
+});
+
+
+// Lida com cliques nos botões "Alterar Status" no modal
+botoesAlterarStatusModal.forEach(button => {
+    button.addEventListener('click', function() {
+        const pedidoId = modal.dataset.pedidoId;
+        const novoStatus = this.getAttribute('data-novo-status');
+        if (confirm(`Deseja realmente marcar o pedido como '${novoStatus}'?`)) {
+            atualizarStatusPedido(novoStatus, pedidoId);
+        }
+    });
 });

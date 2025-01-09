@@ -71,15 +71,19 @@
   .sub_menu a:hover {
     background-color: var(--hover-color);
   }
-  
-  /* Logo no final do menu */
-  .logo {
-    width: var(--logo-size);
-    height: auto;
-    align-self: center;
-    margin-top: auto;
-    margin-bottom: 1.5em;
-  }
+
+
+/* Logo fixa na parte inferior e centralizada */
+.logo {
+  width: var(--logo-size);
+  height: auto;
+  position: fixed;
+  bottom: 20px;
+  left: 5%;
+  transform: translateX(-50%);
+  box-sizing: content-box;
+}
+
   
   /* Conteúdo principal */
   .test {

@@ -17,7 +17,7 @@
   <!-- Formulário de busca -->
   <form method="get" action="{% url 'pedidos:pedidos_finalizados' %}" class="search-container">
     <input type="text" name="q" placeholder="Buscar por cliente, vendedor ou código" value="{{ search_query }}" class="search-input">
-    <button type="submit" class="search-button">Buscar</button>
+    <button type="submit" class="search-button"><img src="{% static 'img/pesquisar.svg'%}" class=" pesquisar"></button>
   </form>
 
 

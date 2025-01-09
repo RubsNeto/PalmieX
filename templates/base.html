@@ -21,12 +21,19 @@
                     <a href="{% url 'pedidos:pedidos_finalizados' %}" tabindex='-1'>Finalizados</a>
                 </div>
 
+                {% if user.permission_level == 3 %}
                 <h4 class="titulo gestao">Gestão</h4>
                 <div class="sub_menu">
                     <a href="{% url 'vendedor:lista_vendedores' %}" tabindex='-1'>Vendedor</a>
-                    <a href="{% url 'produtos:lista_produtos' %}" tabindex='-1'>produtos</a>
+                    <a href="{% url 'produtos:lista_produtos' %}" tabindex='-1'>Produtos</a>
                     <a href="{% url 'logout' %}" tabindex='-1'>Logout</a>
                 </div>
+                {% else %}
+                <!-- Exibe apenas Logout para outros níveis -->
+                <div class="sub_menu">
+                    <a href="{% url 'logout' %}" tabindex='-1'>Logout</a>
+                </div>
+                {% endif %}
             </div>
             <img class="logo" src="{% static 'img/Logo_palmiex.png' %}" alt="Logo">
         </nav>
