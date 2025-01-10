@@ -26,7 +26,6 @@ def permission_required(min_level):
         return _wrapped_view
     return decorator
 
-
 def realiza_pedidos(request):
     numeros = range(1, 18)  # de 1 a 17
     return render(request, 'realiza_pedidos.html', {'numeros': numeros})

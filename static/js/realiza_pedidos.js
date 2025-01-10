@@ -319,7 +319,7 @@ function adicionarEventosPedido(pedidoItem) {
                     <input type="text" class="referencia" name="referencia">
 
                     <span class="campo">Material:</span>
-                    <input type="text" class="material" name="material" readonly>
+                    <input type="text" class="material" name="material">
 
                     <div class="maisEmenos">
                         <button type="button" class="adicionarPedido">+</button>
