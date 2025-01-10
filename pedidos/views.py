@@ -44,14 +44,15 @@ def producao(request):
             When(status='Pedido Finalizado', then=Value(3)),
             output_field=IntegerField()
         )
-    ).filter(~Q(status='Pedido Finalizado'))
+    ).filter(~Q(status='Pedido Finalizado') & ~Q(status='Cancelado'))	
 
     # Aplica filtros de pesquisa se um termo for fornecido
     if search_query:
         pedidos = pedidos.filter(
             Q(cliente__icontains=search_query) |
             Q(vendedor__nome__icontains=search_query) |
-            Q(id__icontains=search_query)
+            Q(id__icontains=search_query) |
+            Q(vendedor__loja__icontains = search_query)
         )
 
     # Ordena os resultados conforme status_order e data

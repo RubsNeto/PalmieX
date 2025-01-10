@@ -6,11 +6,12 @@
 
 {% block content %}
 <div class="pedido-imprimir">
-  <h1>Cliente {{ pedido.cliente }}</h1>
+  <h1>Cliente: {{ pedido.cliente }}</h1>
   <div class="detalhes-pedido">
     <p><strong>Vendedor:</strong> {{ pedido.vendedor.nome }}</p>
     <p><strong>Código:</strong> {{ pedido.id }}</p>
-    <p><strong>Data:</strong> {{ pedido.data|date:"d/m/Y H:i" }}</p>
+    <p><strong>Data:</strong> {{ pedido.data|date:"d/m/Y-H:i" }}</p>
+    <p><strong>Loja:</strong> {{ pedido.vendedor.loja}}</p>
     <p><strong>Total Geral:</strong> <span id="total-geral">0</span></p>
   </div>
 
