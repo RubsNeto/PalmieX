@@ -211,15 +211,15 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Lida com cliques nos botões "Alterar Status" no modal
-  botoesAlterarStatusModal.forEach(button => {
-      button.addEventListener('click', function() {
-          const pedidoId = modal.dataset.pedidoId;
-          const novoStatus = this.getAttribute('data-novo-status');
-          if (confirm(`Deseja realmente marcar o pedido como '${novoStatus}'?`)) {
-              atualizarStatusPedido(novoStatus, pedidoId);
-          }
-      });
-  });
+    botoesAlterarStatusModal.forEach(button => {
+        button.addEventListener('click', function() {
+            const pedidoId = modal.dataset.pedidoId;
+            const novoStatus = this.getAttribute('data-novo-status');
+            if (confirm(`Deseja realmente marcar o pedido como '${novoStatus}'?`)) {
+                atualizarStatusPedido(novoStatus, pedidoId);
+            }
+        });
+    });
 
 });
 

@@ -16,22 +16,22 @@
             <div class="menu-content">
                 <h4 class="titulo">Pedidos</h4>
                 <div class="sub_menu">
-                    <a href="{% url 'pedidos:realiza_pedidos' %}" tabindex='-1'>Realizar pedido</a>
-                    <a href="{% url 'pedidos:producao' %}" tabindex='-1'>Produção</a>
-                    <a href="{% url 'pedidos:pedidos_finalizados' %}" tabindex='-1'>Finalizados</a>
+                    <a href="{% url 'pedidos:realiza_pedidos' %}" tabindex='-1'><img width="13" height="13" style= "filter:brightness(0) invert(1);" src="https://img.icons8.com/parakeet-line/48/purchase-order.png" alt="order-completed"/> Realizar pedido</a>
+                    <a href="{% url 'pedidos:producao' %}" tabindex='-1'><img width="13" height="13" style= "filter:brightness(0) invert(1);" src="https://img.icons8.com/windows/32/wrench.png" alt="worker-male"/> Produção</a>
+                    <a href="{% url 'pedidos:pedidos_finalizados' %}" tabindex='-1'><img width="13" height="13" style= "filter:brightness(0) invert(1);" src="https://img.icons8.com/material-outlined/24/task-completed.png" alt="task-completed"/> Finalizados</a>
                 </div>
 
                 {% if user.permission_level == 3 %}
                 <h4 class="titulo gestao">Gestão</h4>
                 <div class="sub_menu">
-                    <a href="{% url 'vendedor:lista_vendedores' %}" tabindex='-1'>Vendedor</a>
-                    <a href="{% url 'produtos:lista_produtos' %}" tabindex='-1'>Produtos</a>
-                    <a href="{% url 'logout' %}" tabindex='-1'>Logout</a>
+                    <a href="{% url 'vendedor:lista_vendedores' %}" tabindex='-1'><img width="13" height="13"  style= "filter:brightness(0) invert(1);"  src="https://img.icons8.com/windows/32/sell-stock.png" alt="reseller"/> Vendedor</a>
+                    <a href="{% url 'produtos:lista_produtos' %}" tabindex='-1'><img width="13" height="13"  style= "filter:brightness(0) invert(1);"  src="https://img.icons8.com/material-outlined/24/box--v1.png" alt="product"/> Produtos</a>
+                    <a href="{% url 'logout' %}" tabindex='-1'><img width="13" height="13"  style= "filter:brightness(0) invert(1);"  src="https://img.icons8.com/pulsar-line/48/exit.png" alt="exit"/> Logout</a>
                 </div>
                 {% else %}
                 <!-- Exibe apenas Logout para outros níveis -->
                 <div class="sub_menu">
-                    <a href="{% url 'logout' %}" tabindex='-1'>Logout</a>
+                    <a href="{% url 'logout' %}" tabindex='-1'><img width="13" height="13"   style= "filter:brightness(0) invert(1);" src="https://img.icons8.com/pulsar-line/48/exit.png" alt="exit"/> Logout</a>
                 </div>
                 {% endif %}
             </div>
