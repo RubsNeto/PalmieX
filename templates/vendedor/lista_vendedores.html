@@ -37,7 +37,7 @@
                     <td>
                         <div class="acoes">
                             <a href="{% url 'vendedor:editar_vendedor' vendedor.pk %}" class="btn btn-secondary" title="Editar">
-                                <img class="edit" src="{% static 'img/edit.svg' %}" alt="Editar">
+                                <img class="edit" src="{% static 'img/edit.svg' %}" alt="Editar" title="Editar">
                             </a>
                             <!-- Formulário para deletar o vendedor -->
                             <form action="{% url 'vendedor:deletar_vendedor' vendedor.pk %}" method="post" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja deletar este vendedor?');">

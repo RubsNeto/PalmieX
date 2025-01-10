@@ -1,3 +1,9 @@
-from django.contrib import admin
+# vendedor/admin.py
 
-# Register your models here.
+from django.contrib import admin
+from .models import Produto
+
+@admin.register(Produto)
+class ProdutoAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'codigo')
+    search_fields = ('nome', 'codigo')

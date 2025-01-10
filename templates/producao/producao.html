@@ -53,9 +53,16 @@
           </button>
           {% endif %}
 
+          
           <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
               <img class="detalhes" src="{% static 'img/imprimir.svg' %}">
           </button>
+          
+          <!--
+          <a href="{% url 'pedidos:editar_pedido' pedido.id %}" title="Editar Pedido" class="Editar-pedido">
+            <img class="edit" src="{% static 'img/edit.svg' %}" alt="Editar">
+          </a>
+        -->
 
           {% if user.permission_level > 1 %}
           <!-- Botão Finalizar Pedido -->

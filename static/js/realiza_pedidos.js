@@ -5,7 +5,7 @@
 document.addEventListener('keydown', function(event) {
     if (event.ctrlKey && event.key === 'Enter') {
         const botao = document.getElementById('realizarPedido');
-        botao.click();
+        if (botao) botao.click();
     }
 });
 
@@ -69,19 +69,17 @@ function reconstruirBotoes(pedidoItem, infAtivo) {
     const fim   = 43;
 
     for (let num = inicio; num <= fim; num++) {
-        criarInserirBotao(containerQuadradinhos, num, false); 
-        // false => insere no final, então fica na ordem crescente
+        criarInserirBotao(containerQuadradinhos, num, false);
     }
     
-    // Se for infantil, redimensiona para ex.: 30×30
-    // Senão, redimensiona para 50×50
+    // Se for infantil, redimensiona para 40x40
+    // Senão, redimensiona para 50x50
     if (infAtivo) {
         redimensionarBotoes(containerQuadradinhos, '40px', '40px');
     } else {
         redimensionarBotoes(containerQuadradinhos, '50px', '50px');
     }
 
-    // Por fim, reorganiza a tabulação e atualiza o total
     reorganizarTabindex();
     atualizarTotalGlobal();
 }
@@ -231,7 +229,6 @@ function criarBotoesAdulto(container) {
         }
     }
     redimensionarBotoes(container, '50px', '50px');
-
     reorganizarTabindex();
 }
 
@@ -247,7 +244,6 @@ function criarBotoesInfantil(container) {
             criarInserirBotao(container, num, true);
         }
     }
-
     reorganizarTabindex();
 }
 
@@ -265,11 +261,9 @@ function adicionarFuncionalidadesInf(pedidoItem) {
 
     botaoInf.addEventListener('click', () => {
         const infAtivo = (pedidoItem.dataset.infAtivo === "true");
-        // Se estava false, passa a true, e vice-versa
         const novoEstado = !infAtivo;
         pedidoItem.dataset.infAtivo = novoEstado ? "true" : "false";
 
-        // Reconstrói do zero em ordem
         reconstruirBotoes(pedidoItem, novoEstado);
     });
 }
@@ -278,10 +272,8 @@ function adicionarFuncionalidadesInf(pedidoItem) {
  * Adiciona todos os eventos de um pedido
  */
 function adicionarEventosPedido(pedidoItem) {
-    // Primeiro, configura o toggle Inf (TEM que ser feito só 1x)
     adicionarFuncionalidadesInf(pedidoItem);
 
-    // Se houver botões já no HTML, garante clique => incrementa
     const botoes = pedidoItem.querySelectorAll('.botao');
     botoes.forEach(botao => {
         botao.addEventListener('click', () => {
@@ -294,7 +286,6 @@ function adicionarEventosPedido(pedidoItem) {
         });
     });
 
-    // Edição manual
     const numeros = pedidoItem.querySelectorAll('.numero');
     numeros.forEach(num => {
         num.addEventListener('input', () => {
@@ -305,7 +296,6 @@ function adicionarEventosPedido(pedidoItem) {
         });
     });
 
-    // Botão remover ( - )
     const removerBtn = pedidoItem.querySelector('.removerPedido');
     if (removerBtn) {
         removerBtn.addEventListener('click', () => {
@@ -316,7 +306,6 @@ function adicionarEventosPedido(pedidoItem) {
         });
     }
 
-    // Botão adicionar pedido ( + )
     const adicionarBtn = pedidoItem.querySelector('.adicionarPedido');
     if (adicionarBtn) {
         adicionarBtn.addEventListener('click', () => {
@@ -324,7 +313,6 @@ function adicionarEventosPedido(pedidoItem) {
             const novoPedido = document.createElement('div');
             novoPedido.classList.add('pedido-item');
 
-            // Estrutura do novo pedido
             novoPedido.innerHTML = `
                 <div class="pedidos">
                     <span class="campo">Referência:</span>
@@ -343,14 +331,11 @@ function adicionarEventosPedido(pedidoItem) {
                 <div class="container containerQuadradinhos"></div>
             `;
 
-            // Coloca no DOM
             lista.appendChild(novoPedido);
 
-            // Cria adulto 30..43 no novo pedido
             const containerQuadradinhos = novoPedido.querySelector('.containerQuadradinhos');
             criarBotoesAdulto(containerQuadradinhos);
 
-            // Adiciona eventos no novo pedido
             adicionarEventosPedido(novoPedido);
 
             reorganizarTabindex();
@@ -358,7 +343,6 @@ function adicionarEventosPedido(pedidoItem) {
         });
     }
 
-    // Busca material ao digitar referência
     const referenciaInput = pedidoItem.querySelector('.referencia');
     const materialInput = pedidoItem.querySelector('.material');
     if (referenciaInput && materialInput) {
@@ -394,7 +378,6 @@ function coletarDadosPedidos() {
         const referencia = pedido.querySelector('.referencia')?.value || '';
         const material = pedido.querySelector('.material')?.value || '';
 
-        // Coletar as quantidades (tamanhos)
         const tamanhos = {};
         const botaoContainers = pedido.querySelectorAll('.botao-container');
         botaoContainers.forEach(bc => {
@@ -425,7 +408,6 @@ function getCookie(name) {
       const cookies = document.cookie.split(';');
       for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i].trim();
-        // Does this cookie string begin with the name we want?
         if (cookie.substring(0, name.length + 1) === (name + '=')) {
           cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
           break;
@@ -436,10 +418,57 @@ function getCookie(name) {
 }
 
 /**
+ * Função unificada para enviar pedidos
+ */
+function enviarPedido(url, dados) {
+    const csrftoken = getCookie('csrftoken');
+
+    if (!dados.cliente) {
+        alert('Por favor, preencha o campo "Cliente".');
+        return;
+    }
+    if (!dados.codigoVendedor || !dados.vendedor) {
+        alert('Por favor, preencha os campos "Código do Vendedor" e "Vendedor".');
+        return;
+    }
+    if (dados.itens.length === 0) {
+        alert('Por favor, adicione pelo menos um item ao pedido.');
+        return;
+    }
+
+    fetch(url, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken    
+        },
+        body: JSON.stringify(dados)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => { throw data; });
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert('Pedido realizado com sucesso!');
+        console.log('Resposta do servidor:', data);
+        window.location.href = '/producao/';
+    })
+    .catch(err => {
+        console.error(err);
+        if (err.erro) {
+            alert(`Erro: ${err.erro}`);
+        } else {
+            alert('Ocorreu um erro ao realizar o pedido.');
+        }
+    });
+}
+
+/**
  * Ao carregar a página
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // Para cada pedido-item existente (inclusive o inicial), cria adulto 30..43 e adiciona eventos
     document.querySelectorAll('.pedido-item').forEach(pedido => {
         const containerQuadradinhos = pedido.querySelector('.containerQuadradinhos');
         if (containerQuadradinhos) {
@@ -448,7 +477,6 @@ document.addEventListener('DOMContentLoaded', () => {
         adicionarEventosPedido(pedido);
     });
 
-    // Busca vendedor ao digitar código
     const codVendedorInput = document.querySelector('.codVendedor');
     const vendedorInput = document.querySelector('.vendedor');
 
@@ -470,109 +498,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Botão "Realizar pedido"
     const realizarPedidoBtn = document.querySelector('.realizarPedido');
-    const csrftoken = getCookie('csrftoken'); // Se Django estiver usando o nome padrão
     if (realizarPedidoBtn) {
         realizarPedidoBtn.addEventListener('click', () => {
             const dados = coletarDadosPedidos();
-
-            // Validação antes de enviar
-            if (!dados.cliente) {
-                alert('Por favor, preencha o campo "Cliente".');
-                return;
-            }
-            if (!dados.codigoVendedor || !dados.vendedor) {
-                alert('Por favor, preencha os campos "Código do Vendedor" e "Vendedor".');
-                return;
-            }
-            if (dados.itens.length === 0) {
-                alert('Por favor, adicione pelo menos um item ao pedido.');
-                return;
-            }
-
-            fetch('/realizar-pedido/', {  // Certifique-se de que a URL tem a barra final
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken    
-                },
-                body: JSON.stringify(dados)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => { throw data; });
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert('Pedido realizado com sucesso!');
-                console.log('Resposta do servidor:', data);
-                // Opcional: Redirecionar ou limpar o formulário
-                window.location.href = '/producao/';
-            })
-            .catch(err => {
-                console.error(err);
-                if (err.erro) {
-                    alert(`Erro: ${err.erro}`);
-                } else {
-                    alert('Ocorreu um erro ao realizar o pedido.');
-                }
-            });
+            enviarPedido('/realizar-pedido/', dados);
         });
     }
-
 
     // Botão "Realizar pedido urgente"
     const realizarPedidoUrgenteBtn = document.querySelector('#realizarPedidoUrgente');
     if (realizarPedidoUrgenteBtn) {
         realizarPedidoUrgenteBtn.addEventListener('click', () => {
             const dados = coletarDadosPedidos();
-
-            // Validação antes de enviar
-            if (!dados.cliente) {
-                alert('Por favor, preencha o campo "Cliente".');
-                return;
-            }
-            if (!dados.codigoVendedor || !dados.vendedor) {
-                alert('Por favor, preencha os campos "Código do Vendedor" e "Vendedor".');
-                return;
-            }
-            if (dados.itens.length === 0) {
-                alert('Por favor, adicione pelo menos um item ao pedido.');
-                return;
-            }
-
-            fetch('/realizar-pedido-urgente/', {  // Certifique-se de que a URL tem a barra final
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken    
-                },
-                body: JSON.stringify(dados)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => { throw data; });
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert('Pedido realizado com sucesso!');
-                console.log('Resposta do servidor:', data);
-                // Opcional: Redirecionar ou limpar o formulário
-                window.location.href = '/producao/';
-            })
-            .catch(err => {
-                console.error(err);
-                if (err.erro) {
-                    alert(`Erro: ${err.erro}`);
-                } else {
-                    alert('Ocorreu um erro ao realizar o pedido.');
-                }
-            });
+            enviarPedido('/realizar-pedido-urgente/', dados);
         });
     }
 
-    // Reorganiza tab e atualiza total
     reorganizarTabindex();
     atualizarTotalGlobal();
 });

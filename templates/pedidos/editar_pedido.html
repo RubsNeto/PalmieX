@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Pedido{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/realiza_pedidos.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="ordem">
+    <!-- Seção de Informações do Cliente -->
+    <div class="ficha fixa">
+        <h4 class="OrdemServico">Editar Ordem de Serviço</h4>    
+        <div class="linha1">
+            <span class="campo">Cliente</span>
+            <input type="text" class="cliente" value="{{ pedido.cliente }}">
+
+            <span class="campo">Código</span>
+            <input type="text" class="codVendedor" value="{{ pedido.vendedor.codigo }}">
+
+            <span class="campo">Vendedor</span>
+            <input type="text" class="vendedor" value="{{ pedido.vendedor.nome }}">
+
+            <h5 class="total"><b>TOTAL:</b></h5>
+            <h5 class="valorTotal"><b>0</b></h5>
+        </div>
+    </div>
+
+    <!-- Renderização dos itens do pedido -->
+    {% for produto, itens in itens_por_produto.items %}
+    <div class="pedido-item">
+        <div class="pedidos">
+            <span class="campo">Referência:</span>
+            <input type="text" class="referencia" value="{{ produto.codigo }}">
+
+            <span class="campo">Material:</span>
+            <input type="text" class="material" value="{{ produto.nome }}">
+
+            <div class="maisEmenos">
+                <button type="button" class="adicionarPedido">+</button>
+                <button type="button" class="removerPedido">-</button>
+                <button type="button" class="adicionarInfantil">Inf</button>
+                <h5 class="pares">Pares: <b class="paresValor">0</b></h5>
+            </div>
+        </div>
+
+        <div class="container containerQuadradinhos">
+            {% for tamanho in tamanhos %}
+            <div class="botao-container">
+                <button class="botao">{{ tamanho }}</button>
+                <div class="numero" contenteditable="true">
+                    {% for item in itens %}
+                        {% if item.tamanho == tamanho %}
+                            {{ item.quantidade }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <hr>
+    {% endfor %}
+
+    <!-- Contêiner para novos pedidos (caso adicione mais itens) -->
+    <div class="lista-pedidos"></div>
+
+    <!-- Botões de Comando -->
+    <div class="botoesComando">
+        <button type="button" class="clienteloja" id="realizarPedidoUrgente">Cliente em loja</button>
+        <button type="button" class="realizarPedido" id="salvarPedido">Salvar alterações</button>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'js/realiza_pedidos.js' %}"></script>
+
+{% endblock extra_js %}

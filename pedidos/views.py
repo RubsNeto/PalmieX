@@ -294,6 +294,71 @@ def realizar_pedido_urgente(request):
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
 
 
+@login_required
+def editar_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    tamanhos = list(range(15, 44))  # faixa de tamanhos
+    itens_por_produto = {}
+    for item in pedido.itens.all():
+        prod = item.produto
+        if prod not in itens_por_produto:
+            itens_por_produto[prod] = []
+        itens_por_produto[prod].append(item)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body or '{}')
+            # Atualiza informações principais do pedido
+            pedido.cliente = data.get('cliente', pedido.cliente)
+            # Atualize outros campos do pedido se necessário
+            pedido.save()
+
+            # Atualiza itens do pedido
+            # Exemplo simplificado: Remove itens antigos e recria com novos dados
+            pedido.itens.all().delete()
+
+            for item_data in data.get('itens', []):
+                referencia = item_data.get('referencia', '').strip()
+                material = item_data.get('material', '').strip()
+                tamanhos_quantidades = item_data.get('tamanhos', {})
+
+                if not referencia:
+                    logger.warning("Referência do produto não informada.")
+                    continue
+
+                # Obter ou criar o produto
+                produto, criado = Produto.objects.get_or_create(
+                    codigo=referencia,
+                    defaults={'nome': material}
+                )
+
+                for tamanho, qtd in tamanhos_quantidades.items():
+                    try:
+                        qtd = int(qtd)
+                    except (ValueError, TypeError):
+                        continue
+                    if qtd <= 0:
+                        continue
+
+                    PedidoItem.objects.create(
+                        pedido=pedido,
+                        produto=produto,
+                        quantidade=qtd,
+                        tamanho=tamanho
+                    )
+
+            return JsonResponse({'mensagem': 'Pedido atualizado com sucesso!'})
+        except Exception as e:
+            logger.exception("Erro ao atualizar pedido.")
+            return JsonResponse({'erro': str(e)}, status=500)
+
+    context = {
+        'pedido': pedido,
+        'tamanhos': tamanhos,
+        'itens_por_produto': itens_por_produto,
+    }
+    return render(request, 'pedidos/editar_pedido.html', context)
+
 @require_POST
 @login_required
 @permission_required(2)
@@ -343,7 +408,7 @@ def pedidos_finalizados(request):
     search_query = request.GET.get('q', '').strip()
 
     # Filtra os pedidos com status 'Pedido Finalizado'
-    pedidos = Pedido.objects.filter(status='Pedido Finalizado')
+    pedidos = Pedido.objects.filter(Q(status='Pedido Finalizado') | Q(status='Cancelado'))
     
     # Se houver termo de busca, filtrar por cliente, vendedor, data ou código
     if search_query:

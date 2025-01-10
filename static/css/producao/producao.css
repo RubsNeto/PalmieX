@@ -81,10 +81,10 @@
 
   /* Botões */
   .botoes {
-    gap: 0.5rem;
+    gap: 1em;
   }
 
-  .ver-detalhes, .alterar-status, .imprimir-pedido {
+  .ver-detalhes, .alterar-status, .imprimir-pedido, .Editar-pedido {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -103,20 +103,29 @@
     transform: scale(1.1);
   }
 
-  .ver-detalhes{
+  .Editar-pedido{
     background-color: var(--info-color);
   }
 
-  .ver-detalhes:hover{
+  .Editar-pedido:hover{
     background-color: #148fa1;
   }
 
+  .ver-detalhes{
+    background-color: rgb(97, 0, 97);
+  }
 
-  .ver-detalhes img, .alterar-status img, .imprimir-pedido img, .pesquisar {
+  .ver-detalhes:hover{
+    background-color: rgb(77, 0, 77);
+  }
+
+
+  .ver-detalhes img, .alterar-status img, .imprimir-pedido img, .pesquisar, .edit {
     width: 20px;
     height: 20px;
     filter: brightness(0) invert(1);
   }
+
 
 
 
