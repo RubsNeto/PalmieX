@@ -469,6 +469,17 @@ function enviarPedido(url, dados) {
  * Ao carregar a página
  */
 document.addEventListener('DOMContentLoaded', () => {
+
+
+    const ordem = document.querySelector('.ordem');
+    ordem.style.animationDelay = '0.1s'; // Adiciona um pequeno atraso na animação
+  
+    const buttons = document.querySelectorAll('.botoesComando button');
+    buttons.forEach((button, index) => {
+      button.style.animationDelay = `${0.5 + index * 0.1}s`; // Delay progressivo nos botões
+    });
+
+    
     document.querySelectorAll('.pedido-item').forEach(pedido => {
         const containerQuadradinhos = pedido.querySelector('.containerQuadradinhos');
         if (containerQuadradinhos) {

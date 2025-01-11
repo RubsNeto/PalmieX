@@ -8,6 +8,40 @@
     --dark-color: #343a40;
     --info-color: #17a2b8;
   }
+  
+
+/* Animação de Fade-In sequencial */
+.pedidos-table tbody tr {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInRow 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeInRow {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Animação para o container de pedidos */
+.container-pedidos {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 
 
   /*Buscador*/
@@ -335,6 +369,11 @@
   background-color: #f1f1f1;
 }
 
+.conteudo{
+  display: flex;
+  justify-content: space-between;
+}
+
 /* Botões no Modal */
 .botoes-status {
   display: flex;
@@ -384,5 +423,83 @@
   .alterar-status-modal {
     padding: 8px 16px;
     font-size: 0.9rem;
+  }
+}
+
+
+/* Container para o cabeçalho do produto (código e nome lado a lado) */
+.produto-cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: baseline; /* Alinha textos na mesma linha, se possível */
+  margin-bottom: 0.5rem;
+}
+
+.produto-cabecalho span {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.produto-cabecalho span strong {
+  color: var(--button-bg-color);
+}
+
+/* Estilização da lista principal de itens permanece */
+.lista-itens {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Estilo para cada item da lista principal (produto) */
+.item-list {
+  background-color: #fff;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.item-list:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Lista de tamanhos e quantidades para o produto */
+.lista-tamanhos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.lista-tamanhos li {
+  background: #f9f9f9;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.lista-tamanhos li strong {
+  color: var(--button-bg-color);
+}
+
+/* Responsividade: ajustar exibição em telas menores */
+@media (max-width: 600px) {
+  .produto-cabecalho {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .lista-tamanhos {
+    flex-direction: column;
   }
 }

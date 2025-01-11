@@ -4,11 +4,6 @@
     padding: 0;
     box-sizing: border-box;
 }
-
-:root {
-    --main_color: rgb(19, 93, 26);
-}
-
 /* Estilo para o container pr/* CSS Completo e Moderno para o HTML principal "Ordem de Serviço" */
 
 :root {
@@ -21,7 +16,6 @@
     --font-family: 'Arial', sans-serif;
   }
   
-
   
   /* Título */
   .OrdemServico {

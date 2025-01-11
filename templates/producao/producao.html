@@ -88,14 +88,6 @@
     <div class="itens-do-pedido-modal">
       <!-- Os detalhes do pedido serão inseridos aqui via JavaScript -->
     </div>
-    <!-- Novos Botões para Alterar Status -->
-    <div class="botoes-status">
-      {% if user.permission_level > 1 %}
-        <button type="button" class="alterar-status-modal" data-novo-status="Em Produção">Marcar como Em Produção</button>
-        <button type="button" class="alterar-status-modal" data-novo-status="Pedido Finalizado">Marcar como Finalizado</button>
-        <button type="button" class="alterar-status-modal" data-novo-status="Cancelado">Cancelar Pedido</button>
-      {% endif %}
-    </div>
   </div>
 </div>
 {% endblock content %}
