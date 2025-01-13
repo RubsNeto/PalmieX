@@ -88,7 +88,7 @@ function reconstruirBotoes(pedidoItem, infAtivo) {
  * Atualiza o total de pares de UM pedido
  */
 function atualizarParesPedido(pedidoItem) {
-    const numeros = pedidoItem.querySelectorAll('.numero');
+    const numeros = subpalmilha.querySelectorAll('.numero');
     let soma = 0;
     numeros.forEach(num => {
         const valor = parseInt(num.textContent.trim(), 10) || 0;
@@ -315,20 +315,37 @@ function adicionarEventosPedido(pedidoItem) {
 
             novoPedido.innerHTML = `
                 <div class="pedidos">
+                <div class="linha-pedido">
                     <span class="campo">Referência:</span>
-                    <input type="text" class="referencia" name="referencia">
+                    <input type="text" class="referencia">
 
                     <span class="campo">Material:</span>
-                    <input type="text" class="material" name="material">
+                    <input type="text" class="material">
 
-                    <div class="maisEmenos">
-                        <button type="button" class="adicionarPedido">+</button>
-                        <button type="button" class="removerPedido">-</button>
-                        <button type="button" class="adicionarInfantil">Inf</button>
-                        <h5 class="pares">Pares: <b class="paresValor">0</b></h5>
-                    </div>
+                    <span class="campo">Subpalmilha:</span>
+                    <input type="text" class="subpalmilha">
+
+                    <span class="campo">Costura:</span>
+                    <input type="text" class="costura">
                 </div>
-                <div class="container containerQuadradinhos"></div>
+
+                <div class="linha-pedido">
+                    <span class="campo">Sintetico:</span>
+                    <input type="text" class="sintetico">
+                    
+                    <span class="campo">Cor:</span>
+                    <input type="text" class="cor">
+                    
+                    <span class="campo">Obs:</span>
+                    <input type="text" class="obs">
+                
+                    <button type="button" class="adicionarPedido">+</button>
+                    <button type="button" class="removerPedido">-</button>
+                    <button type="button" class="adicionarInfantil">Inf</button>
+                    <h5 class="pares">Pares: <b class="paresValor">0</b></h5>
+                </div>
+            </div>
+            <div class="container containerQuadradinhos"></div>
             `;
 
             lista.appendChild(novoPedido);

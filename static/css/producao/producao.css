@@ -24,6 +24,10 @@
   }
 }
 
+.item-nome{
+  word-spacing: 8px;
+  font-size: 17px
+}
 
 /* Animação para o container de pedidos */
 .container-pedidos {

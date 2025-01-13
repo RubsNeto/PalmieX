@@ -11,22 +11,31 @@
     <p><strong>Vendedor:</strong> {{ pedido.vendedor.nome }}</p>
     <p><strong>Código:</strong> {{ pedido.id }}</p>
     <p><strong>Data:</strong> {{ pedido.data|date:"d/m/Y-H:i" }}</p>
-    <p><strong>Loja:</strong> {{ pedido.vendedor.loja}}</p>
+    <p><strong>Loja:</strong> {{ pedido.vendedor.loja }}</p>
     <p><strong>Total Geral:</strong> <span id="total-geral">0</span></p>
   </div>
 
   <hr>
   {% regroup pedido.itens.all by produto as itens_por_produto %}
-  
+
   {% for grupo in itens_por_produto %}
     <div class="pedido-item">
       <div class="pedidos">
-        <span class="campo">Referência:</span>
-        <input type="text" class="referencia" value="{{ grupo.grouper.codigo }}" readonly>
-        <span class="campo">Material:</span>
-        <input type="text" class="material" value="{{ grupo.grouper.nome }}" readonly>
+        <span class="campo"><b>Referência:</b> {{ grupo.grouper.codigo }}</span>
+
+        <span class="campo"><b>Material:</b> {{ grupo.grouper.nome }}</span>
+
+        <span class="campo"><b>Subpalmilha:</b> {{ grupo.list.0.subpalmilha }}</span>
+
+        <span class="campo"><b>Costura:</b> {{ grupo.list.0.costura }}</span>
+
+        <span class="campo"><b>Sintético:</b> {{ grupo.list.0.sintetico }}</span>
+
+        <span class="campo"><b>Cor:</b> {{ grupo.list.0.cor }}</span>
+
+        <span class="campo"><b> Obs:</b> {{ grupo.list.0.obs }}</span>
       </div>
-      
+
       <div class="container containerQuadradinhos">
         {% for tamanho in tamanhos %}
           <div class="botao-container">

@@ -28,5 +28,13 @@ class PedidoItem(models.Model):
     quantidade = models.IntegerField()
     tamanho = models.IntegerField(null=True, blank=True)
 
+    subpalmilha = models.CharField(max_length=50, default=True, null=True, blank=True)
+    costura = models.CharField(max_length=50, default=True, null=True, blank=True)
+    sintetico = models.CharField(max_length=50, default=True, null=True, blank=True)
+    cor = models.CharField(max_length=50, default=True, null=True, blank=True)
+    obs = models.TextField(null=True, blank=True)
+
+
+
     def __str__(self):
         return f"{self.quantidade}x {self.produto} (Tamanho {self.tamanho})"

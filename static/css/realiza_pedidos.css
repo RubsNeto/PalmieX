@@ -16,6 +16,14 @@
     --font-family: 'Arial', sans-serif;
   }
   
+  .linha-pedido {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .linha-pedido h5 {
+    margin: 0; /* Evita margens extras do h5 */
+  }
   
   /* Título */
   .OrdemServico {
@@ -43,7 +51,7 @@
   .campo {
     font-weight: bold;
     color: var(--dark-color);
-    margin-bottom: 0.5rem;
+
   }
   
   input {
@@ -74,26 +82,27 @@
     text-align: right;
   }
   
-  /* Pedido Inicial */
   .pedido-item {
     background-color: #f9f9f9;
     padding: 0.5rem;
     border-radius: 8px;
     margin-top: 0.2rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .pedidos {
+    /* Adicione as 2 linhas abaixo   */
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    flex-direction: column;
   }
   
   .maisEmenos {
+    /* Em vez de margin-top: 0.5em */
+    margin-top: auto;               /* Empurra o bloco para o fim da coluna */
     display: flex;
+    flex-direction: row;
+    justify-content: center;
     align-items: center;
     gap: 0.5rem;
   }
+  
   
   button.adicionarPedido,
   button.removerPedido,
@@ -303,7 +312,6 @@ h5.pares {
     display: flex;
     flex-direction: row;
     gap: 0.5em;
-    margin: 0em 0.5em 0.5em 0em;
 }
 
 /* Container para os botões */

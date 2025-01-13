@@ -11,6 +11,6 @@ class PedidoAdmin(admin.ModelAdmin):
 
 @admin.register(PedidoItem)
 class PedidoItemAdmin(admin.ModelAdmin):
-    list_display = ('pedido', 'produto', 'quantidade', 'tamanho')  # 'produto' com p minúsculo
-    list_filter = ('produto', 'tamanho')  # 'produto' com p minúsculo
-    search_fields = ('produto__nome',)  # 'produto' com p minúsculo
+    list_display = ('pedido', 'produto', 'quantidade', 'tamanho', 'costura', 'sintetico', 'cor', 'obs')  # 'produto' com p minúsculo
+    list_filter = ('produto', 'tamanho', 'costura', 'sintetico', 'cor', 'obs') 
+    search_fields = ('produto__nome',) 

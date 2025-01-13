@@ -67,28 +67,16 @@ def producao(request):
 @login_required
 def imprimir_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
-    tamanhos = range(15, 44)  # Faixa de tamanhos de 15 a 43
+    tamanhos = range(15, 44)
     return render(request, 'pedidos/imprimir.html', {
         'pedido': pedido,
         'tamanhos': tamanhos
     })
-
+    
 @require_GET
 @login_required
 def pedido_itens_api(request, pedido_id):
-    """
-    Retorna, em formato JSON, os dados de um Pedido específico:
-      - cliente
-      - vendedor_nome
-      - vendedor_codigo
-      - data
-      - hora
-      - status
-      - itens (lista de {codigo, nome, tamanho, quantidade})
-    """
     pedido = get_object_or_404(Pedido, id=pedido_id)
-    
-    # Converter para o fuso horário local
     data_local = timezone.localtime(pedido.data)
     
     data = {
@@ -101,18 +89,25 @@ def pedido_itens_api(request, pedido_id):
         "itens": []
     }
     
+    # Agora inclua os campos adicionais:
     for item in pedido.itens.all():
         data["itens"].append({
             "codigo": item.produto.codigo,
             "nome": item.produto.nome,
             "tamanho": item.tamanho,
-            "quantidade": item.quantidade
+            "quantidade": item.quantidade,
+            "subpalmilha": item.subpalmilha,
+            "costura": item.costura,
+            "sintetico": item.sintetico,
+            "cor": item.cor,
+            "obs": item.obs
         })
     
     return JsonResponse(data)
 
-@require_GET
 
+
+@require_GET
 def buscar_vendedor(request):
     codigo = request.GET.get('codigo', '')
     if not codigo:
@@ -149,16 +144,12 @@ def realizar_pedido(request):
         cliente = body.get('cliente', '').strip()
         codigo_vendedor = body.get('codigoVendedor', '').strip()
         vendedor_nome = body.get('vendedor', '').strip()
-        status = body.get('status', 'Pendente').strip()  # Recebe status do request ou usa padrão
-
-        logger.debug(f"Dados recebidos: Cliente={cliente}, Código Vendedor={codigo_vendedor}, Vendedor={vendedor_nome}, Status={status}")
+        status = body.get('status', 'Pendente').strip()
 
         # Validações básicas
         if not cliente:
-            logger.warning("Cliente não informado.")
             return JsonResponse({'erro': 'Cliente não informado.'}, status=400)
         if not codigo_vendedor or not vendedor_nome:
-            logger.warning("Dados do vendedor incompletos.")
             return JsonResponse({'erro': 'Dados do vendedor incompletos.'}, status=400)
 
         # Busca ou cria o vendedor
@@ -166,16 +157,13 @@ def realizar_pedido(request):
             codigo=codigo_vendedor,
             defaults={'nome': vendedor_nome}
         )
-        if criado:
-            logger.info(f"Vendedor criado: {vendedor}")
 
-        # Cria o pedido com o status especificado
+        # Cria o pedido
         pedido = Pedido.objects.create(
             cliente=cliente,
             vendedor=vendedor,
-            status=status  # Define o status
+            status=status
         )
-        logger.info(f"Pedido criado: {pedido}")
 
         itens = body.get('itens', [])
         for item in itens:
@@ -183,38 +171,46 @@ def realizar_pedido(request):
             nome_produto = item.get('material', '').strip()
             tamanhos = item.get('tamanhos', {})
 
+            # *Novos campos*
+            subpalmilha = item.get('subpalmilha', '').strip()
+            costura = item.get('costura', '').strip()
+            sintetico = item.get('sintetico', '').strip()
+            cor = item.get('cor', '').strip()
+            obs = item.get('obs', '').strip()  # cuidado para não usar 'cor' no lugar de 'obs'!
+
             if not referencia:
-                logger.warning("Referência do produto não informada.")
                 continue
+
+            # Localiza ou cria o produto
+            produto, criado_produto = Produto.objects.get_or_create(
+                codigo=referencia,
+                defaults={'nome': nome_produto}
+            )
 
             for tamanho, qtd in tamanhos.items():
                 if not qtd or qtd <= 0:
-                    logger.warning(f"Quantidade inválida para tamanho {tamanho}.")
                     continue
 
-                produto, criado_produto = Produto.objects.get_or_create(
-                    codigo=referencia,
-                    defaults={'nome': nome_produto}
-                )
-                if criado_produto:
-                    logger.info(f"Produto criado: {produto}")
-
+                # Cria o item do pedido COM os novos campos
                 PedidoItem.objects.create(
                     pedido=pedido,
                     produto=produto,
                     quantidade=qtd,
-                    tamanho=tamanho
+                    tamanho=tamanho,
+                    subpalmilha=subpalmilha,
+                    costura=costura,
+                    sintetico=sintetico,
+                    cor=cor,
+                    obs=obs
                 )
-                logger.info(f"PedidoItem criado: {Produto} - Quantidade={qtd}, Tamanho={tamanho}")
 
         return JsonResponse({'mensagem': 'Pedido criado com sucesso!', 'pedido_id': pedido.pk})
 
     except json.JSONDecodeError:
-        logger.error("JSON inválido.")
         return JsonResponse({'erro': 'JSON inválido.'}, status=400)
     except Exception as e:
-        logger.exception("Erro ao realizar pedido.")
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
+
 
 
 @require_POST
@@ -226,78 +222,77 @@ def realizar_pedido_urgente(request):
         cliente = body.get('cliente', '').strip()
         codigo_vendedor = body.get('codigoVendedor', '').strip()
         vendedor_nome = body.get('vendedor', '').strip()
-        status = body.get('status', 'Cliente em espera').strip()  # Recebe status do request ou usa padrão
-
-        logger.debug(f"Dados recebidos: Cliente={cliente}, Código Vendedor={codigo_vendedor}, Vendedor={vendedor_nome}, Status={status}")
+        status = body.get('status', 'Cliente em espera').strip()
 
         # Validações básicas
         if not cliente:
-            logger.warning("Cliente não informado.")
             return JsonResponse({'erro': 'Cliente não informado.'}, status=400)
         if not codigo_vendedor or not vendedor_nome:
-            logger.warning("Dados do vendedor incompletos.")
             return JsonResponse({'erro': 'Dados do vendedor incompletos.'}, status=400)
 
-        # Busca ou cria o vendedor
         vendedor, criado = Vendedor.objects.get_or_create(
             codigo=codigo_vendedor,
-            defaults={'nome': vendedor_nome}
+            defaults={'nome': vendedor_nome},
         )
-        if criado:
-            logger.info(f"Vendedor criado: {vendedor}")
 
-        # Cria o pedido com o status especificado
         pedido = Pedido.objects.create(
             cliente=cliente,
             vendedor=vendedor,
-            status=status  # Define o status
+            status=status,
         )
-        logger.info(f"Pedido criado: {pedido}")
 
         itens = body.get('itens', [])
         for item in itens:
             referencia = item.get('referencia', '').strip()
             nome_produto = item.get('material', '').strip()
+            # Cuidado aqui: item.get('tamanhos', {}) às vezes vem como tupla?
             tamanhos = item.get('tamanhos', {})
+            
+            # Campos adicionais
+            subpalmilha = item.get('subpalmilha', '').strip()
+            costura = item.get('costura', '').strip()
+            sintetico = item.get('sintetico', '').strip()
+            cor = item.get('cor', '').strip()
+            obs = item.get('obs', '').strip()  # Corrija para 'obs', não 'cor'!
 
             if not referencia:
-                logger.warning("Referência do produto não informada.")
                 continue
 
+            produto, criado_produto = Produto.objects.get_or_create(
+                codigo=referencia,
+                defaults={'nome': nome_produto},
+            )
+
+            # Agora sim criamos o PedidoItem com os novos campos
             for tamanho, qtd in tamanhos.items():
                 if not qtd or qtd <= 0:
-                    logger.warning(f"Quantidade inválida para tamanho {tamanho}.")
                     continue
-
-                produto, criado_produto = Produto.objects.get_or_create(
-                    codigo=referencia,
-                    defaults={'nome': nome_produto}
-                )
-                if criado_produto:
-                    logger.info(f"Produto criado: {produto}")
 
                 PedidoItem.objects.create(
                     pedido=pedido,
                     produto=produto,
                     quantidade=qtd,
-                    tamanho=tamanho
+                    tamanho=tamanho,
+                    subpalmilha=subpalmilha,
+                    costura=costura,
+                    sintetico=sintetico,
+                    cor=cor,
+                    obs=obs
                 )
-                logger.info(f"PedidoItem criado: {Produto} - Quantidade={qtd}, Tamanho={tamanho}")
 
         return JsonResponse({'mensagem': 'Pedido criado com sucesso!', 'pedido_id': pedido.pk})
 
     except json.JSONDecodeError:
-        logger.error("JSON inválido.")
         return JsonResponse({'erro': 'JSON inválido.'}, status=400)
     except Exception as e:
-        logger.exception("Erro ao realizar pedido.")
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
 
+    
 
 @login_required
 def editar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
-    tamanhos = list(range(15, 44))  # faixa de tamanhos
+    tamanhos = list(range(15, 44))
     itens_por_produto = {}
     for item in pedido.itens.all():
         prod = item.produto

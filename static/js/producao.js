@@ -150,11 +150,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const tamanhoB = String(b.tamanho || '');
         
             if (codigoA !== codigoB) {
-            return codigoB.localeCompare(codigoA); // Ordem decrescente para código
+            return codigoB.localeCompare(codigoA);
             }
-            return tamanhoB.localeCompare(tamanhoA);   // Ordem decrescente para tamanho
+            return tamanhoB.localeCompare(tamanhoA);   
         });
-  
   
           const produtosAgrupados = {};
           data.itens.forEach(item => {
@@ -163,10 +162,16 @@ document.addEventListener('DOMContentLoaded', function() {
               produtosAgrupados[chave] = {
                 codigo: item.codigo,
                 nome: item.nome,
+                subpalmilha: item.subpalmilha,
+                costura: item.costura,
+                sintetico:item.sintetico,
+                cor:item.cor,
+                obs:item.obs,
                 tamanhos: []
               };
             }
             produtosAgrupados[chave].tamanhos.push({
+
               tamanho: item.tamanho,
               quantidade: item.quantidade
             });
@@ -187,12 +192,10 @@ document.addEventListener('DOMContentLoaded', function() {
           Object.values(produtosAgrupados).forEach(produto => {
             html += `<li class="item-list">`;
             html += `<div class="produto-cabecalho">`;
-            if(produto.codigo && produto.codigo !== produto.nome) {
-              html += `<span class="item-codigo" style = "font-size: 17px"><strong>Código:</strong> ${produto.codigo}</span>`;
-            }
-            html += `<span class="item-nome" style = "font-size: 17px"><strong>Produto:</strong> ${produto.nome}</span>`;
+            html += `<span class="item-nome"><strong>Produto:</strong> ${produto.nome} <strong>Código:</strong> ${produto.codigo} <strong>Subpalmilha:</strong> ${produto.subpalmilha} <strong>Costura:</strong> ${produto.costura}</span>`;
+            html += `<span class="item-nome"><strong>Sintetico:</strong> ${produto.sintetico} <strong>Cor:</strong> ${produto.cor} <strong>Observação:</strong> ${produto.obs}</span>`
             html += `</div>`;
-  
+            
             html += `<ul class="lista-tamanhos">`;
             produto.tamanhos.forEach(item => {
               html += `<li><strong>Tamanho:</strong> ${item.tamanho} – <strong>Quantidade:</strong> ${item.quantidade}</li>`;
