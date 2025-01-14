@@ -53,10 +53,9 @@
           </button>
           {% endif %}
 
-          <button type="button" class="cancelar-pedido" data-pedido-id="{{ pedido.id }}" title="cancelar">
-            <img class="cancelar" src="{% static 'img/trash.svg' %}">
+          <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}">
+            <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
           </button>
-          
           
           <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
               <img class="detalhes" src="{% static 'img/imprimir.svg' %}">
@@ -70,6 +69,17 @@
 
           {% endif %}
         </td>
+
+        <div class="modal" id="modalSenhaGerente" style="display: none;">
+          <div class="modal-content">
+            <span class="close-button" id="closeGerenteModal">&times;</span>
+            <h2>Cancelar Pedido</h2>
+            <p>solicite a senha com o gerente:</p>
+            <input type="password" id="senhaGerente" placeholder="Senha do gerente">
+            <br><br>
+            <button type="button" id="confirmarCancelamentoBtn">Confirmar Cancelamento</button>
+          </div>
+        </div>
       </tr>
       {% endfor %}
     </tbody>
@@ -81,7 +91,7 @@
 
 <!-- Estrutura do Modal -->
 <div id="detalhesModal" class="modal">
-  <div class="modal-content">
+  <div class="modal-content-cancelar">
     <span class="close-button">&times;</span>
     <div class="itens-do-pedido-modal">
       <!-- Os detalhes do pedido serão inseridos aqui via JavaScript -->

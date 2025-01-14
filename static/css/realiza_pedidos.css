@@ -330,6 +330,11 @@ h5.pares {
     gap: 0.5em; /* espaço vertical entre o botão e o número */
 }
 
+textarea{
+  height: 3.5em;
+  border-radius: 5px;
+}
+
 /* Estilo dos botões */
 .botao , .adicionarPedido, .removerPedido, .adicionarInfantil{
     width: 49px;

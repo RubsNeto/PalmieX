@@ -6,6 +6,9 @@ from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password
+from autenticacao.models import Perfil 
 from django.db.models import Q
 from functools import wraps
 from .models import Vendedor, Produto, Pedido, PedidoItem
@@ -291,12 +294,35 @@ def realizar_pedido_urgente(request):
 
 
 
-@csrf_exempt  # Temporariamente para testar
+@csrf_exempt  
 @require_POST
 @login_required
 def cancelar_pedido(request, pedido_id):
-    print(f"Cancelando pedido {pedido_id}")  # Depuração
+    import json
+    from django.contrib.auth.models import User
+    from django.http import JsonResponse
+    from django.shortcuts import get_object_or_404
+    from .models import Pedido  # ajuste conforme seu local do modelo Pedido
+
+    body = json.loads(request.body or '{}')
+    senha_digitada = body.get('senhaNivel3', '')  # considere renomear a chave se necessário
+
     pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    # Lista todos os usuários com nível 3 ou 4
+    usuarios_autorizados = User.objects.filter(perfil__permission_level__in=[3, 4])
+
+    # Verifica se a senha digitada corresponde à senha de ALGUM usuário nível 3 ou 4
+    autorizado = False
+    for usuario in usuarios_autorizados:
+        if usuario.check_password(senha_digitada):
+            autorizado = True
+            break
+
+    if not autorizado:
+        return JsonResponse({'erro': 'Senha de gerente incorreta ou não encontrada.'}, status=403)
+
+    # Se autorizado, cancela o pedido
     pedido.status = 'Cancelado'
     pedido.save()
     return JsonResponse({'mensagem': f'Pedido {pedido_id} cancelado com sucesso.'})

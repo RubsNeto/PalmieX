@@ -10,7 +10,9 @@ class Perfil(models.Model):
         (1, 'Nível 1'),
         (2, 'Nível 2'),
         (3, 'Nível 3'),
+        (4, 'Nivel 4')
     )
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     permission_level = models.PositiveSmallIntegerField(choices=PERMISSION_LEVELS, default=1)
 

@@ -349,10 +349,10 @@ function adicionarEventosPedido(pedidoItem) {
 
                 <div class="linha-pedido">
                     <span class="campo">Sintetico:</span>
-                    <input type="text" class="sintetico">
+                    <input type="text" class="sintetico">   
                     
                     <span class="campo">Obs:</span>
-                    <input type="text" class="obs">
+                    <textarea type="text" class="obs"></textarea>
                 </div>
                 
                 <div class="linha-pedido">
@@ -417,6 +417,11 @@ function coletarDadosPedidos() {
     pedidoItens.forEach(pedido => {
         const referencia = pedido.querySelector('.referencia')?.value || '';
         const material = pedido.querySelector('.material')?.value || '';
+        const sintetico = pedido.querySelector('.sintetico')?.value || '';
+        const cor = pedido.querySelector('.cor')?.value || '';
+        const subpalmilha = pedido.querySelector('.subpalmilha')?.value || '';
+        const costura = pedido.querySelector('.costura')?.value || '';
+        const obs = pedido.querySelector('.obs')?.value || '';
 
         const tamanhos = {};
         const botaoContainers = pedido.querySelectorAll('.botao-container');
@@ -435,12 +440,18 @@ function coletarDadosPedidos() {
         dados.itens.push({
             referencia: referencia,
             material: material,
+            sintetico: sintetico,
+            cor: cor,
+            subpalmilha: subpalmilha,
+            costura: costura,
+            obs: obs,
             tamanhos: tamanhos
         });
     });
 
     return dados;
 }
+
 
 function getCookie(name) {
     let cookieValue = null;
@@ -462,20 +473,41 @@ function getCookie(name) {
  */
 function enviarPedido(url, dados) {
     const csrftoken = getCookie('csrftoken');
-
-    if (!dados.cliente) {
+    
+    // 1. Validação do nível "cliente / vendedor"
+    if (!dados.cliente.trim()) {
         alert('Por favor, preencha o campo "Cliente".');
         return;
     }
-    if (!dados.codigoVendedor || !dados.vendedor) {
+    if (!dados.codigoVendedor.trim() || !dados.vendedor.trim()) {
         alert('Por favor, preencha os campos "Código do Vendedor" e "Vendedor".');
         return;
     }
+
+    // 2. Verifica se pelo menos 1 item existe
     if (dados.itens.length === 0) {
         alert('Por favor, adicione pelo menos um item ao pedido.');
         return;
     }
 
+    // 3. Validação de cada item
+    //    - Referência, Subpalmilha, Material, Costura são obrigatórios
+    //    - (Sintético, Cor e Obs são opcionais)
+    for (let i = 0; i < dados.itens.length; i++) {
+        const item = dados.itens[i];
+        
+        if (!item.referencia.trim()) {
+            alert(`Preencha o campo Referência.`);
+            return;
+        }
+        if (!item.material.trim()) {
+            alert(`Preencha o campo Material`);
+            return;
+        }
+    }
+
+    // Se chegar até aqui, significa que passou em todas as validações
+    // Prosseguir com a requisição ao servidor
     fetch(url, {
         method: 'POST',
         headers: { 
@@ -486,6 +518,7 @@ function enviarPedido(url, dados) {
     })
     .then(response => {
         if (!response.ok) {
+            // Tenta extrair um JSON de erro do servidor
             return response.json().then(data => { throw data; });
         }
         return response.json();
@@ -504,6 +537,7 @@ function enviarPedido(url, dados) {
         }
     });
 }
+
 
 /**
  * Ao carregar a página
