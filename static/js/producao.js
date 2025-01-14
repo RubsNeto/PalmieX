@@ -22,13 +22,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // Função para mapear status em cores (customize as cores conforme desejar)
   function obterCorPorStatus(status) {
       if (status === 'Pendente') {
-          return '#ffc107';       // amarelo
+          return '#f3a600';       // amarelo
       } else if (status === 'Em Produção') {
           return '#17a2b8';       // azul
       } else if (status === 'Pedido Finalizado') {
           return '#00b244';       // verde
-      } else if (status === 'Cliente em espera') {
-          return '#333';
+      } else if (status === 'Cliente em Espera') {
+          return '#610061';
       } else if (status === 'Cancelado') {
           return '#ff0000';       // vermelho
       } else {
@@ -354,7 +354,7 @@ document.addEventListener('DOMContentLoaded', function() {
           return response.json();
       })
       .then(data => {
-          alert(data.mensagem || 'Pedido cancelado com sucesso!');
+          alert('Pedido cancelado com sucesso!');
           modalSenhaGerente.style.display = 'none';
           // (Opcional) recarrega a página ou atualiza o status na tabela
           window.location.reload();

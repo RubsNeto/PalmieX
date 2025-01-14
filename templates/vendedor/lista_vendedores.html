@@ -46,6 +46,11 @@
                                     <img class="delete" src="{% static 'img/trash.svg' %}" alt="Deletar">
                                 </button>
                             </form>
+
+                            <a href="{% url 'vendedor:download_excel_report' vendedor.pk %}" class="btn btn-success" title="Baixar Relatório Excel">
+                                <img src="{% static 'img/relatorio.svg' %}" alt="Baixar Excel">
+                            </a>
+                            
                         </div>
                     </td>
                 </tr>

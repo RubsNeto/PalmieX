@@ -26,7 +26,8 @@
         <th>Data</th>
         <th>Hora</th>
         <th>Status</th>
-        <th>Ação</th>
+        <th>Controle</th>
+        <th>Operação</th>
       </tr>
     </thead>
     <tbody>
@@ -42,33 +43,44 @@
         </td>        
       
         <td class="botoes">
-          <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
-            <img class="detalhes" src="{% static 'img/detalhes.svg' %}">
-          </button>
+          <div class="coluna-esquerda">
+            <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
+              <img class="detalhes" src="{% static 'img/detalhes.svg' %}">
+            </button>
+        
+            {% if user.permission_level > 1 %}
+            <!-- Botão Colocar em Produção -->
+            <button type="button" class="alterar-status prod" data-pedido-id="{{ pedido.id }}" data-novo-status="Em Produção" title="Produção">
+              <img class="producao" src="{% static 'img/producao.svg' %}">
+            </button>
+            {% endif %}
+        
+            <button type="button" class="alterar-status reposicao" data-pedido-id="{{ pedido.id }}" data-novo-status="Aguardando Reposição" title="Reposição">
+              <img class="rep" src="{% static 'img/empty.svg' %}" alt="reposicao">
+            </button>
 
-          {% if user.permission_level > 1 %}
-           <!-- Botão Colocar em Produção -->
-          <button type="button" class="alterar-status prod" data-pedido-id="{{ pedido.id }}" data-novo-status="Em Produção" title="Produção">
-            <img class="producao" src="{% static 'img/producao.svg' %}">
-          </button>
-          {% endif %}
+            
+          </div>
+        </td>
 
-          <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}">
+        <td>
+          <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}" title="Cancelar">
             <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
           </button>
           
           <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
-              <img class="detalhes" src="{% static 'img/imprimir.svg' %}">
+            <img class="detalhes" src="{% static 'img/imprimir.svg' %}">
           </button>
-
+      
           {% if user.permission_level > 1 %}
           <!-- Botão Finalizar Pedido -->
           <button type="button" class="alterar-status fim" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Finalizado" title="Concluido">
             <img class="concluido" src="{% static 'img/concluido.svg' %}">
           </button>
-
           {% endif %}
-        </td>
+        </div>
+      </td>
+        
 
         <div class="modal" id="modalSenhaGerente" style="display: none;">
           <div class="modal-content">

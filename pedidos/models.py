@@ -9,8 +9,9 @@ class Pedido(models.Model):
         ('Pendente', 'Pendente'),
         ('Em Produção', 'Em Produção'),
         ('Pedido Finalizado', 'Pedido Finalizado'),
-        ('cliente em espera', 'Cliente em Espera'),
+        ('Cliente em Espera', 'Cliente em Espera'),
         ('Cancelado', 'Cancelado'),
+        ('Aguardando Reposição', 'Aguardando Reposição')
     ]
 
     cliente = models.CharField(max_length=100)
@@ -28,10 +29,10 @@ class PedidoItem(models.Model):
     quantidade = models.IntegerField()
     tamanho = models.IntegerField(null=True, blank=True)
 
-    subpalmilha = models.CharField(max_length=50, default=True, null=True, blank=True)
-    costura = models.CharField(max_length=50, default=True, null=True, blank=True)
-    sintetico = models.CharField(max_length=50, default=True, null=True, blank=True)
-    cor = models.CharField(max_length=50, default=True, null=True, blank=True)
+    subpalmilha = models.CharField(max_length=50, null=True, blank=True)
+    costura = models.CharField(max_length=50, null=True, blank=True)
+    sintetico = models.CharField(max_length=50, null=True, blank=True)
+    cor = models.CharField(max_length=50, null=True, blank=True)
     obs = models.TextField(null=True, blank=True)
 
 

@@ -154,7 +154,8 @@
   }
 
   .ver-detalhes{
-    background-color: rgb(97, 0, 97);
+    background-color: #610061;
+  
   }
 
   .ver-detalhes:hover{
@@ -209,6 +210,10 @@
   .prod:hover {
     background-color: #e0a800;
   }
+  .reposicao{
+    background-color: gray;
+  }
+
 
   .fim {
     background-color: #28a745;

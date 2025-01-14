@@ -10,4 +10,6 @@ urlpatterns = [
     path('novo/', views.criar_vendedor, name='criar_vendedor'),
     path('<int:pk>/editar/', views.editar_vendedor, name='editar_vendedor'),
     path('<int:pk>/deletar/', views.deletar_vendedor, name='deletar_vendedor'),
+    path('report_excel/<int:vendedor_id>/', views.download_excel_report, name='download_excel_report'),
+
 ]
