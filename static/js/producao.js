@@ -1,11 +1,64 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+  
+
+  const cancelarButtons = document.querySelectorAll('.cancelar-pedido');
+    
+  cancelarButtons.forEach(button => {
+      button.addEventListener('click', function() {
+          const pedidoId = this.getAttribute('data-pedido-id');
+          if (!pedidoId) return;
+
+          // Confirmação antes de cancelar
+          if (!confirm(`Tem certeza que deseja cancelar o pedido ${pedidoId}?`)) {
+              return;
+          }
+
+          fetch(`/cancelar-pedido/${pedidoId}/`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  // Inclua o token CSRF se necessário
+                  'X-CSRFToken': getCookie('csrftoken'),
+              },
+          })
+          .then(response => {
+              if (!response.ok) throw new Error('Erro ao cancelar pedido.');
+              return response.json();
+          })
+          .then(data => {
+              alert(data.mensagem);
+              // Atualiza a interface conforme necessário, por exemplo, removendo a linha da tabela:
+              const row = document.querySelector(`tr[data-pedido-id="${pedidoId}"]`);
+              if (row) row.remove();
+          })
+          .catch(error => {
+              console.error('Erro:', error);
+              alert('Ocorreu um erro ao cancelar o pedido.');
+          });
+      });
+  });
 
     const rows = document.querySelectorAll('.pedidos-table tbody tr');
 
     rows.forEach((row, index) => {
       row.style.animationDelay = `${index * 0.15}s`; // Delay progressivo
     });
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
 
     // Função para mapear status em cores
   function obterCorPorStatus(status) {
@@ -47,20 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const itensPedidoModal = document.querySelector('.itens-do-pedido-modal');
 
   // Função para obter valor de cookie
-  function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-          const cookies = document.cookie.split(';');
-          for (let i = 0; i < cookies.length; i++) {
-              const cookie = cookies[i].trim();
-              if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                  break;
-              }
-          }
-      }
-      return cookieValue;
-  }
+  
 
   // Função para atualizar status do pedido
   function atualizarStatusPedido(novoStatus, pedidoId) {

@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Case, When, Value, IntegerField
 from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 from django.db.models import Q
 from functools import wraps
@@ -286,6 +287,19 @@ def realizar_pedido_urgente(request):
         return JsonResponse({'erro': 'JSON inválido.'}, status=400)
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
+
+
+
+
+@csrf_exempt  # Temporariamente para testar
+@require_POST
+@login_required
+def cancelar_pedido(request, pedido_id):
+    print(f"Cancelando pedido {pedido_id}")  # Depuração
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    pedido.status = 'Cancelado'
+    pedido.save()
+    return JsonResponse({'mensagem': f'Pedido {pedido_id} cancelado com sucesso.'})
 
     
 

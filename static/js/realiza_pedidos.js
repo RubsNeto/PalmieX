@@ -30,8 +30,24 @@ function reorganizarTabindex() {
         // Referência e Material
         const referencia = pedido.querySelector('.referencia');
         if (referencia) referencia.setAttribute('tabindex', proximoTabindex++);
+
         const material = pedido.querySelector('.material');
         if (material) material.setAttribute('tabindex', proximoTabindex++);
+
+        const sintetico = pedido.querySelector('.sintetico');
+        if (sintetico) sintetico.setAttribute('tabindex', proximoTabindex++);
+
+        const cor = pedido.querySelector('.cor');
+        if (cor) cor.setAttribute('tabindex', proximoTabindex++);
+
+        const subpalmilha = pedido.querySelector('.subpalmilha');
+        if (subpalmilha) subpalmilha.setAttribute('tabindex', proximoTabindex++);
+
+        const costura = pedido.querySelector('.costura');
+        if (costura) costura.setAttribute('tabindex', proximoTabindex++);
+
+        const obs = pedido.querySelector('.obs');
+        if (obs) obs.setAttribute('tabindex', proximoTabindex++);
 
         // Botões (+, -, Inf)
         const botoesFocaveis = pedido.querySelectorAll('.adicionarPedido, .removerPedido, .adicionarInfantil');
@@ -319,11 +335,13 @@ function adicionarEventosPedido(pedidoItem) {
                     <span class="campo">Referência:</span>
                     <input type="text" class="referencia">
 
-                    <span class="campo">Material:</span>
-                    <input type="text" class="material">
-
                     <span class="campo">Subpalmilha:</span>
                     <input type="text" class="subpalmilha">
+                </div>
+
+                <div class="linha-pedido">
+                    <span class="campo">Material:</span>
+                    <input type="text" class="material">
 
                     <span class="campo">Costura:</span>
                     <input type="text" class="costura">
@@ -333,17 +351,22 @@ function adicionarEventosPedido(pedidoItem) {
                     <span class="campo">Sintetico:</span>
                     <input type="text" class="sintetico">
                     
-                    <span class="campo">Cor:</span>
-                    <input type="text" class="cor">
-                    
                     <span class="campo">Obs:</span>
                     <input type="text" class="obs">
-                
-                    <button type="button" class="adicionarPedido">+</button>
-                    <button type="button" class="removerPedido">-</button>
-                    <button type="button" class="adicionarInfantil">Inf</button>
-                    <h5 class="pares">Pares: <b class="paresValor">0</b></h5>
                 </div>
+                
+                <div class="linha-pedido">
+                    <span class="campo">Cor:</span>
+                    <input type="text" class="cor">
+                
+                    <div class="maisEmenos">
+                        <button type="button" class="adicionarPedido">+</button>
+                        <button type="button" class="removerPedido">-</button>
+                        <button type="button" class="adicionarInfantil">Inf</button>
+                        
+                    </div>
+                </div>
+                <h5 class="pares">Pares: <b class="paresValor">0</b></h5>
             </div>
             <div class="container containerQuadradinhos"></div>
             `;
