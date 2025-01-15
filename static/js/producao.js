@@ -132,31 +132,62 @@ document.addEventListener('DOMContentLoaded', function() {
                       <ul class="lista-itens">
                   `;
 
-                  Object.values(produtosAgrupados).forEach(produto => {
-                      html += `<li class="item-list">
-                                  <div class="produto-cabecalho">
-                                    <span class="item-nome">
-                                      <strong>Produto:</strong> ${produto.nome} 
-                                      <strong>Código:</strong> ${produto.codigo} 
-                                      <strong>Subpalmilha:</strong> ${produto.subpalmilha}
-                                      <strong>Costura:</strong> ${produto.costura}
-                                    </span>
-                                    <span class="item-nome">
-                                      <strong>Sintetico:</strong> ${produto.sintetico}
-                                      <strong>Cor:</strong> ${produto.cor}
-                                      <strong>Obs:</strong> ${produto.obs}
-                                    </span>
-                                  </div>
-                                  <ul class="lista-tamanhos">
-                      `;
-                      produto.tamanhos.forEach(t => {
-                          html += `<li>
-                                      <strong>Tamanho:</strong> ${t.tamanho}
-                                      – <strong>Quantidade:</strong> ${t.quantidade}
-                                   </li>`;
-                      });
-                      html += `</ul></li>`;
-                  });
+                  // Exemplo de array de todos os tamanhos (15 a 43)
+                    const todosTamanhos = Array.from({ length: 43 - 15 + 1 }, (_, i) => i + 15);
+
+
+                    Object.values(produtosAgrupados).forEach(produto => {
+                    // 1. Monta um map (objeto) que associa o tamanho => quantidade,
+                    //    conforme vem do back-end (produto.tamanhos).
+                    const mapTamanhos = {};
+                    produto.tamanhos.forEach(t => {
+                        // t.tamanho e t.quantidade vêm da API
+                        mapTamanhos[t.tamanho] = t.quantidade;
+                    });
+
+                    // 2. Inicia bloco de HTML para cada produto
+                    html += `
+                        <li class="item-list">
+                        <div class="produto-cabecalho">
+                            <span class="item-nome">
+                            <strong>Produto:</strong> ${produto.nome} 
+                            <strong>Código:</strong> ${produto.codigo} 
+                            <strong>Subpalmilha:</strong> ${produto.subpalmilha}
+                            <strong>Costura:</strong> ${produto.costura}
+                            </span>
+                            <span class="item-nome">
+                            <strong>Sintético:</strong> ${produto.sintetico}
+                            <strong>Cor:</strong> ${produto.cor}
+                            <strong>Obs:</strong> ${produto.obs}
+                            </span>
+                        </div>
+
+                        <!-- Quadradinhos de tamanho 15 a 43 -->
+                        <div class="container containerQuadradinhos">
+                    `;
+
+                    // 3. Percorre de 15 a 43 para criar cada quadradinho
+                    todosTamanhos.forEach(tamanho => {
+                        // Se existir no map, pega a quantidade; se não, exibe vazio
+                        const quantidade = mapTamanhos[tamanho] || '';
+                        html += `
+                        <div class="botao-container">
+                            <button class="botao">${tamanho}</button>
+                            <div class="numero" contenteditable="false">
+                            ${quantidade}
+                            </div>
+                        </div>
+                        `;
+                    });
+
+                    // 4. Fecha as divs e li
+                    html += `
+                        </div> <!-- fecha containerQuadradinhos -->
+                        </li>
+                    `;
+                    });
+
+                
 
                   html += `</ul>`;
                   itensPedidoModal.innerHTML = html;

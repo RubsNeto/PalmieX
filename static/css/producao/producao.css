@@ -204,11 +204,11 @@
 
   /* Botões específicos */
   .prod {
-    background-color: #ffc107;
+    background-color: #17a2b8;
   }
 
   .prod:hover {
-    background-color: #e0a800;
+    background-color: #138496;
   }
   .reposicao{
     background-color: gray;
@@ -608,4 +608,38 @@
 /* Ajuste de animação caso o modal seja grande e ultrapasse a tela */
 .modal-content:focus {
   outline: none;
+}
+
+
+/* Contêiner de Tamanhos */
+.containerQuadradinhos {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.containerQuadradinhos button {
+  width: 40px;
+  height: 40px;
+  background-color: var(--secondary-color);
+  color: #002913;
+  border: 1px solid #017a39;  /* Borda fina verde */
+  font-size: 1rem;
+  cursor: default;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  /* Opcional: adicionar border-radius se desejar cantos arredondados
+  border-radius: 4px; 
+  */
+}
+
+.numero {
+  font-weight: bold;
+}
+
+.botao-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column; /* Botão em cima, número embaixo */
+  align-items: center;
+  gap: 0.5em; /* espaço vertical entre o botão e o número */
 }

@@ -290,18 +290,6 @@ function adicionarFuncionalidadesInf(pedidoItem) {
 function adicionarEventosPedido(pedidoItem) {
     adicionarFuncionalidadesInf(pedidoItem);
 
-    const botoes = pedidoItem.querySelectorAll('.botao');
-    botoes.forEach(botao => {
-        botao.addEventListener('click', () => {
-            const botaoContainer = botao.parentElement;
-            const numeroDiv = botaoContainer.querySelector('.numero');
-            let valor = parseInt(numeroDiv.textContent.trim(), 10) || 0;
-            valor++;
-            atualizarEstiloValor(botaoContainer, valor);
-            atualizarTotalGlobal();
-        });
-    });
-
     const numeros = pedidoItem.querySelectorAll('.numero');
     numeros.forEach(num => {
         num.addEventListener('input', () => {
