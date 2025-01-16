@@ -21,19 +21,15 @@
   {% for grupo in itens_por_produto %}
     <div class="pedido-item">
       <div class="pedidos">
-        <span class="campo"><b>Referência:</b> {{ grupo.grouper.codigo }}</span>
+          <span class="campo"><b>Ref. Balancinho:</b> {{ grupo.list.0.ref_balancinho }}</span>
+          <span class="campo"><b>Mat. Balancinho:</b> {{ grupo.list.0.mat_balancinho }}</span>
+          <span class="campo"><b>Ref. Palmilha:</b> {{ grupo.list.0.ref_palmilha }}</span>
+          <span class="campo"><b>Mat. Palmilha:</b> {{ grupo.list.0.mat_palmilha }}</span>
 
-        <span class="campo"><b>Material:</b> {{ grupo.grouper.nome }}</span>
-
-        <span class="campo"><b>Subpalmilha:</b> {{ grupo.list.0.subpalmilha }}</span>
-
-        <span class="campo"><b>Costura:</b> {{ grupo.list.0.costura }}</span>
-
-        <span class="campo"><b>Sintético:</b> {{ grupo.list.0.sintetico }}</span>
-
-        <span class="campo"><b>Cor:</b> {{ grupo.list.0.cor }}</span>
-
-        <span class="campo"><b> Obs:</b> {{ grupo.list.0.obs }}</span>
+          <span class="campo"><b>Serviço:</b> {{ grupo.list.0.tipo_servico }}</span>
+          <span class="campo"><b>Sintético:</b> {{ grupo.list.0.sintetico }}</span>
+          <span class="campo"><b>Cor:</b> {{ grupo.list.0.cor }}</span>
+          <span class="campo"><b>Obs:</b> {{ grupo.list.0.obs }}</span>        
       </div>
 
       <div class="container containerQuadradinhos">

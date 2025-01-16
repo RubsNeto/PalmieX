@@ -250,7 +250,7 @@ def download_excel_report(request, vendedor_id):
         headers = [
             'Pedido ID', 'Cliente', 'Data', 'Status',
             'Produto', 'Quantidade', 'Tamanho',
-            'Subpalmilha', 'Costura', 'Sintético', 'Cor', 'Obs'
+            'Tipo serviço', 'Sintético', 'Cor', 'Obs'
         ]
         row_header = linha_info
         for col_index, header in enumerate(headers, start=1):
@@ -276,8 +276,7 @@ def download_excel_report(request, vendedor_id):
                     item.produto.nome,
                     item.quantidade,
                     item.tamanho,
-                    item.subpalmilha,
-                    item.costura,
+                    item.tipo_servico,
                     item.sintetico,
                     item.cor,
                     item.obs

@@ -1,16 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Ordem de serviço{% endblock title %}
+{% block title %}Ordem de Serviço{% endblock title %}
+
 {% block extra_css %}
+<!-- Exemplo de import de Google Fonts para uma tipografia moderna -->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="{% static 'css/realiza_pedidos.css' %}">
 {% endblock extra_css %}
 
 {% block content %}
 <div class="ordem">
     <!-- Seção de Informações do Cliente -->
-    
-    <div class="ficha fixa">
+    <div class="ficha">
         <h4 class="OrdemServico">Ordem de serviço</h4>    
         <div class="linha1">
             <span>Cliente:</span>
@@ -29,52 +33,76 @@
 
     <!-- Pedido Inicial -->
     <div class="pedido-item">
-        <div class="pedidos">
-            <div class="linha-pedido">
-                <span class="campo">Referência:</span>
-                <input type="text" class="referencia" required>
-
-                <span class="campo">Subpalmilha:</span>
-                <input type="text" class="subpalmilha" required>
+  
+        <div class="linha-pedido grid-3">
+            <!-- Balancinho -->
+            <div>
+              <span class="campo">Ref. Balancinho</span>
+              <input type="text" class="refBalancinho" required>
             </div>
-
-            <div class="linha-pedido">
-                <span class="campo">Material:</span>
-                <input type="text" class="material" required>
-
-                <span class="campo">Costura:</span>
-                <input type="text" class="costura" required>
+            <div>
+              <span class="campo">Material Balancinho</span>
+              <input type="text" class="matBalancinho" required>
             </div>
-
-            <div class="linha-pedido">
-                <span class="campo">Sintetico:</span>
-                <input type="text" class="sintetico">
-                
-                <span class="campo">Obs:</span>
-                <textarea type="text" class="obs"></textarea>
+          
+            <!-- Palmilha -->
+            <div>
+              <span class="campo">Ref. Palmilha</span>
+              <input type="text" class="refPalmilha" required>
             </div>
-            
-            <div class="linha-pedido">
-                <span class="campo">Cor:</span>
-                <input type="text" class="cor">
-              
-                <div class="maisEmenos">
-                    <button type="button" class="adicionarPedido">+</button>
-                    <button type="button" class="removerPedido">-</button>
-                    <button type="button" class="adicionarInfantil">Inf</button>
-                    
-                </div>
-                
+            <div>
+              <span class="campo">Material Palmilha</span>
+              <input type="text" class="matPalmilha" required>
             </div>
-            <h5 class="pares">Pares: <b class="paresValor">0</b></h5>   
+          
+            <!-- Sintético -->
+            <div>
+              <span class="campo">Sintético</span>
+              <input type="text" class="sintetico">
+            </div>
+            <!-- Cor -->
+            <div>
+              <span class="campo">Cor</span>
+              <input type="text" class="cor">
+            </div>
+          </div>
+        <!-- Linha com radio e obs lado a lado -->
+        <div class="linha-pedido radio-obs">
+            <div class="radio">
+              <label>
+                <span class="radio-label">Nenhum</span>
+                <input type="radio" name="tipoServico" value="nenhum" checked>
+              </label>
+              <label>
+                <span class="radio-label">Subpalmilha</span>
+                <input type="radio" name="tipoServico" value="subpalmilha">
+              </label>
+              <label>
+                <span class="radio-label">Costura</span>
+                <input type="radio" name="tipoServico" value="costura">
+              </label>
+            </div>
+          
+            <div class="campoObs">
+              <span class="campo">Obs:</span>
+              <textarea class="obs"></textarea>
+            </div>
+          </div>
+          
+        
+        <!-- Linha dos pares e botões +, -, Inf -->
+        <div class="linha-pedido">
+          <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
+          <div class="maisEmenos">
+            <button type="button" class="adicionarPedido">+</button>
+            <button type="button" class="removerPedido">-</button>
+          </div>
         </div>
-
-        <div class="container containerQuadradinhos">
-            <!-- Aqui os botões de tamanhos serão criados dinamicamente pelo JS -->
-        </div>
+        <div class="container containerQuadradinhos"></div>
     </div>
+      
 
-    <!-- Contêiner para Novos Pedidos -->
+    <!-- Novos Pedidos (adicionados via JavaScript) -->
     <div class="lista-pedidos"></div>
 
     <!-- Botões de Comando -->
@@ -86,5 +114,4 @@
 
 <!-- Inclusão do JavaScript -->
 <script src="{% static 'js/realiza_pedidos.js' %}"></script>
-
 {% endblock %}

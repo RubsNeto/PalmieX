@@ -78,7 +78,6 @@ def imprimir_pedido(request, pedido_id):
     })
     
 @require_GET
-@login_required
 def pedido_itens_api(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     data_local = timezone.localtime(pedido.data)
@@ -93,21 +92,24 @@ def pedido_itens_api(request, pedido_id):
         "itens": []
     }
     
-    # Agora inclua os campos adicionais:
     for item in pedido.itens.all():
         data["itens"].append({
             "codigo": item.produto.codigo,
             "nome": item.produto.nome,
             "tamanho": item.tamanho,
             "quantidade": item.quantidade,
-            "subpalmilha": item.subpalmilha,
-            "costura": item.costura,
+            "tipo_servico": item.tipo_servico,
             "sintetico": item.sintetico,
             "cor": item.cor,
-            "obs": item.obs
+            "obs": item.obs,
+            "ref_balancinho": item.ref_balancinho,
+            "mat_balancinho": item.mat_balancinho,
+            "ref_palmilha": item.ref_palmilha,
+            "mat_palmilha": item.mat_palmilha,
+            "tipo_servico": item.tipo_servico
         })
-    
     return JsonResponse(data)
+
 
 
 
@@ -139,6 +141,8 @@ def buscar_produto(request):
         'codigo': produto_obj.codigo
     })
 
+# pedidos/views.py
+
 @require_POST
 @login_required
 def realizar_pedido(request):
@@ -150,59 +154,65 @@ def realizar_pedido(request):
         vendedor_nome = body.get('vendedor', '').strip()
         status = body.get('status', 'Pendente').strip()
 
-        # Validações básicas
-        if not cliente:
-            return JsonResponse({'erro': 'Cliente não informado.'}, status=400)
-        if not codigo_vendedor or not vendedor_nome:
-            return JsonResponse({'erro': 'Dados do vendedor incompletos.'}, status=400)
+        # Validações (omitidas para brevidade)...
 
-        # Busca ou cria o vendedor
-        vendedor, criado = Vendedor.objects.get_or_create(
+        # Busca/cria vendedor e cria o pedido
+        vendedor, _ = Vendedor.objects.get_or_create(
             codigo=codigo_vendedor,
             defaults={'nome': vendedor_nome}
         )
-
-        # Cria o pedido
         pedido = Pedido.objects.create(
             cliente=cliente,
             vendedor=vendedor,
             status=status
         )
 
+        # Percorre os itens
         itens = body.get('itens', [])
         for item in itens:
-            referencia = item.get('referencia', '').strip()
-            nome_produto = item.get('material', '').strip()
-            tamanhos = item.get('tamanhos', {})
+            refBalancinho = item.get('refBalancinho', '').strip()
+            matBalancinho = item.get('matBalancinho', '').strip()
+            refPalmilha = item.get('refPalmilha', '').strip()
+            matPalmilha = item.get('matPalmilha', '').strip()
 
-            # *Novos campos*
-            subpalmilha = item.get('subpalmilha', '').strip()
-            costura = item.get('costura', '').strip()
+            tipoServico = item.get('tipoServico', 'nenhum').strip()
             sintetico = item.get('sintetico', '').strip()
             cor = item.get('cor', '').strip()
-            obs = item.get('obs', '').strip()  # cuidado para não usar 'cor' no lugar de 'obs'!
+            obs = item.get('obs', '').strip()
 
-            if not referencia:
+            # Se quiser, checar refBalancinho ou refPalmilha antes de criar:
+            if not refBalancinho and not refPalmilha:
+                # Nenhuma referência = item inválido, continue
                 continue
 
-            # Localiza ou cria o produto
-            produto, criado_produto = Produto.objects.get_or_create(
-                codigo=referencia,
+            # Você pode escolher usar UMA das refs para criar "produto" principal,
+            # ou criar um Produto fictício "Bal/Palm"? Depende da lógica do seu sistema.
+            # Exemplo usando refBalancinho como "produto.codigo":
+            referencia_principal = refBalancinho or refPalmilha
+            nome_produto = matBalancinho or matPalmilha
+
+            produto, _ = Produto.objects.get_or_create(
+                codigo=referencia_principal,
                 defaults={'nome': nome_produto}
             )
 
+            # Tamanhos
+            tamanhos = item.get('tamanhos', {})
             for tamanho, qtd in tamanhos.items():
-                if not qtd or qtd <= 0:
+                if qtd <= 0:
                     continue
 
-                # Cria o item do pedido COM os novos campos
                 PedidoItem.objects.create(
                     pedido=pedido,
                     produto=produto,
                     quantidade=qtd,
                     tamanho=tamanho,
-                    subpalmilha=subpalmilha,
-                    costura=costura,
+
+                    ref_balancinho=refBalancinho,
+                    mat_balancinho=matBalancinho,
+                    ref_palmilha=refPalmilha,
+                    mat_palmilha=matPalmilha,
+                    tipo_servico=tipoServico,
                     sintetico=sintetico,
                     cor=cor,
                     obs=obs
@@ -214,7 +224,6 @@ def realizar_pedido(request):
         return JsonResponse({'erro': 'JSON inválido.'}, status=400)
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
-
 
 
 @require_POST

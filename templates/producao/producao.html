@@ -53,12 +53,15 @@
             <button type="button" class="alterar-status prod" data-pedido-id="{{ pedido.id }}" data-novo-status="Em Produção" title="Produção">
               <img class="producao" src="{% static 'img/producao.svg' %}">
             </button>
-            {% endif %}
-        
-            <button type="button" class="alterar-status reposicao" data-pedido-id="{{ pedido.id }}" data-novo-status="Reposição pendente" title="Reposição">
-              <img class="rep" src="{% static 'img/empty.svg' %}" alt="reposicao">
+
+            <button type="button" class="alterar-status separado" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Separado" title="Separado">
+              <img class="sep" src="{% static 'img/separado.svg' %}" alt="Sep">
             </button>
 
+            <button type="button" class="alterar-status reposicao" data-pedido-id="{{ pedido.id }}" data-novo-status="Reposição pendente" title="Reposição">
+              <img class="rep" src="{% static 'img/empty.svg' %}" alt="reposicao">
+            </button>        
+            {% endif %}
             
           </div>
         </td>

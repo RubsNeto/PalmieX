@@ -210,6 +210,14 @@
   .prod:hover {
     background-color: #138496;
   }
+
+  .separado {
+    background-color: #006400;
+  }
+  .separado:hover{
+    background-color: rgb(0, 69, 0);
+  }
+
   .reposicao{
     background-color: gray;
   }

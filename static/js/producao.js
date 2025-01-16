@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
           return '#610061';
       } else if (status === 'Cancelado') {
           return '#ff0000';       // vermelho
+      } else if (status === 'Pedido Separado') {
+          return '#006400';       // vermelho
       } else {
           return '#333';          // cor padrão
       }
@@ -75,136 +77,121 @@ document.addEventListener('DOMContentLoaded', function() {
                   return resp.json();
               })
               .then(data => {
-                  // Verifica se data.itens existe e é um array
-                  if (!data || !Array.isArray(data.itens)) {
-                      throw new Error('Estrutura inesperada da resposta da API.');
-                  }
-
-                  // Ordenar itens por código e tamanho (exemplo decrescente)
-                  data.itens.sort((a, b) => {
-                      const codigoA = String(a.codigo || '');
-                      const codigoB = String(b.codigo || '');
-                      const tamanhoA = String(a.tamanho || '');
-                      const tamanhoB = String(b.tamanho || '');
-
-                      if (codigoA !== codigoB) {
-                          // Ordena primeiro por código (desc)
-                          return codigoB.localeCompare(codigoA);
-                      }
-                      // Depois por tamanho (desc)
-                      return tamanhoB.localeCompare(tamanhoA);
-                  });
-
-                  // Agrupar por produto (código-nome)
-                  const produtosAgrupados = {};
-                  data.itens.forEach(item => {
-                      const chave = `${item.codigo}-${item.nome}`;
-                      if (!produtosAgrupados[chave]) {
-                          produtosAgrupados[chave] = {
-                              codigo: item.codigo,
-                              nome: item.nome,
-                              subpalmilha: item.subpalmilha,
-                              costura: item.costura,
-                              sintetico: item.sintetico,
-                              cor: item.cor,
-                              obs: item.obs,
-                              tamanhos: []
-                          };
-                      }
-                      produtosAgrupados[chave].tamanhos.push({
-                          tamanho: item.tamanho,
-                          quantidade: item.quantidade
-                      });
-                  });
-
-                  // Monta HTML
-                  let html = `
-                      <h2>Cliente: ${data.cliente}</h2>
-                      <div class="conteudo">
-                          <p><strong>Vendedor:</strong> ${data.vendedor_nome}</p>
-                          <p><strong>Pedido:</strong> ${pedidoId}</p>
-                          <p><strong>Data:</strong> ${data.data}</p>
-                          <p><strong>Hora:</strong> ${data.hora}</p>
-                          <p><strong>Status:</strong> 
-                              <span id="status-pedido-modal">${data.status}</span>
-                          </p>
-                      </div>
-                      <ul class="lista-itens">
-                  `;
-
-                  // Exemplo de array de todos os tamanhos (15 a 43)
-                    const todosTamanhos = Array.from({ length: 43 - 15 + 1 }, (_, i) => i + 15);
-
-
-                    Object.values(produtosAgrupados).forEach(produto => {
-                    // 1. Monta um map (objeto) que associa o tamanho => quantidade,
-                    //    conforme vem do back-end (produto.tamanhos).
-                    const mapTamanhos = {};
-                    produto.tamanhos.forEach(t => {
-                        // t.tamanho e t.quantidade vêm da API
-                        mapTamanhos[t.tamanho] = t.quantidade;
+                if (!data || !Array.isArray(data.itens)) {
+                    throw new Error('Estrutura inesperada da resposta da API.');
+                }
+            
+                // Ordenar itens por código e tamanho
+                data.itens.sort((a, b) => {
+                    const codigoA = String(a.codigo || '');
+                    const codigoB = String(b.codigo || '');
+                    const tamanhoA = String(a.tamanho || '');
+                    const tamanhoB = String(b.tamanho || '');
+                    if (codigoA !== codigoB) {
+                        return codigoB.localeCompare(codigoA);
+                    }
+                    return tamanhoB.localeCompare(tamanhoA);
+                });
+            
+                // Agrupar por produto (código-nome) e incluir novos campos
+                const produtosAgrupados = {};
+                data.itens.forEach(item => {
+                    const chave = `${item.codigo}-${item.nome}`;
+                    if (!produtosAgrupados[chave]) {
+                        produtosAgrupados[chave] = {
+                            codigo: item.codigo,
+                            nome: item.nome,
+                            sintetico: item.sintetico,
+                            cor: item.cor,
+                            obs: item.obs,
+                            ref_balancinho: item.ref_balancinho,
+                            mat_balancinho: item.mat_balancinho,
+                            ref_palmilha: item.ref_palmilha,
+                            mat_palmilha: item.mat_palmilha,
+                            tipo_servico: item.tipo_servico,
+                            tamanhos: []
+                        };
+                    }
+                    produtosAgrupados[chave].tamanhos.push({
+                        tamanho: item.tamanho,
+                        quantidade: item.quantidade
                     });
-
-                    // 2. Inicia bloco de HTML para cada produto
+                });
+            
+                // Construir HTML do modal
+                let html = `
+                    <h2>Cliente: ${data.cliente}</h2>
+                    <div class="conteudo">
+                        <p><strong>Vendedor:</strong> ${data.vendedor_nome}</p>
+                        <p><strong>Pedido:</strong> ${modal.dataset.pedidoId}</p>
+                        <p><strong>Data:</strong> ${data.data}</p>
+                        <p><strong>Hora:</strong> ${data.hora}</p>
+                        <p><strong>Status:</strong> 
+                            <span id="status-pedido-modal">${data.status}</span>
+                        </p>
+                    </div>
+                    <ul class="lista-itens">
+                `;
+            
+                const todosTamanhos = Array.from({ length: 43 - 15 + 1 }, (_, i) => i + 15);
+            
+                Object.values(produtosAgrupados).forEach(produto => {
                     html += `
                         <li class="item-list">
                         <div class="produto-cabecalho">
                             <span class="item-nome">
-                            <strong>Produto:</strong> ${produto.nome} 
-                            <strong>Código:</strong> ${produto.codigo} 
-                            <strong>Subpalmilha:</strong> ${produto.subpalmilha}
-                            <strong>Costura:</strong> ${produto.costura}
+                              <strong>Produto:</strong> ${produto.nome} 
+                              <strong>Código:</strong> ${produto.codigo} 
+                              <strong>Ref. Balancinho:</strong> ${produto.ref_balancinho || ''} 
+                              <strong>Mat. Balancinho:</strong> ${produto.mat_balancinho || ''} 
+                              <strong>Ref. Palmilha:</strong> ${produto.ref_palmilha || ''} 
+                              <strong>Mat. Palmilha:</strong> ${produto.mat_palmilha || ''} 
                             </span>
                             <span class="item-nome">
-                            <strong>Sintético:</strong> ${produto.sintetico}
-                            <strong>Cor:</strong> ${produto.cor}
-                            <strong>Obs:</strong> ${produto.obs}
+                              <strong>Serviço:</strong> ${produto.tipo_servico || 'Nenhum'} 
+                              <strong>Sintético:</strong> ${produto.sintetico}
+                              <strong>Cor:</strong> ${produto.cor}
+                              <strong>Obs:</strong> ${produto.obs}
                             </span>
                         </div>
-
-                        <!-- Quadradinhos de tamanho 15 a 43 -->
                         <div class="container containerQuadradinhos">
                     `;
-
-                    // 3. Percorre de 15 a 43 para criar cada quadradinho
+            
                     todosTamanhos.forEach(tamanho => {
-                        // Se existir no map, pega a quantidade; se não, exibe vazio
-                        const quantidade = mapTamanhos[tamanho] || '';
+                        const matching = produto.tamanhos.find(t => t.tamanho == tamanho);
+                        const quantidade = matching ? matching.quantidade : '';
                         html += `
                         <div class="botao-container">
                             <button class="botao">${tamanho}</button>
                             <div class="numero" contenteditable="false">
-                            ${quantidade}
+                              ${quantidade}
                             </div>
                         </div>
                         `;
                     });
-
-                    // 4. Fecha as divs e li
+            
                     html += `
                         </div> <!-- fecha containerQuadradinhos -->
                         </li>
                     `;
-                    });
-
-                
-
-                  html += `</ul>`;
-                  itensPedidoModal.innerHTML = html;
-
-                  // Aplica cor ao status
-                  const statusModal = document.getElementById('status-pedido-modal');
-                  if (statusModal) {
-                      statusModal.style.color = obterCorPorStatus(statusModal.textContent.trim());
-                  }
-
-                  modal.style.display = 'block';
-                  modal.dataset.pedidoId = pedidoId;
-              })
-              .catch(err => {
-                  console.error("Erro ao buscar itens do pedido:", err);
-                  alert(`Ocorreu um erro ao carregar os detalhes do pedido: ${err.message || ''}`);
-              });
+                });
+            
+                html += `</ul>`;
+                itensPedidoModal.innerHTML = html;
+            
+                // Aplicar cor ao status
+                const statusModal = document.getElementById('status-pedido-modal');
+                if (statusModal) {
+                    statusModal.style.color = obterCorPorStatus(statusModal.textContent.trim());
+                }
+            
+                modal.style.display = 'block';
+                modal.dataset.pedidoId = data.pedido_id; // opcional se desejar armazenar ID no modal
+            })
+            .catch(err => {
+                console.error("Erro ao buscar itens do pedido:", err);
+                alert(`Ocorreu um erro ao carregar os detalhes do pedido: ${err.message || ''}`);
+            });
       });
   });
 

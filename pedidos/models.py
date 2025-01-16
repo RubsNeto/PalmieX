@@ -11,6 +11,7 @@ class Pedido(models.Model):
         ('Pedido Finalizado', 'Pedido Finalizado'),
         ('Cliente em Espera', 'Cliente em Espera'),
         ('Cancelado', 'Cancelado'),
+        ('Pedido Separado','Pedido Separado'),
         ('Reposição pendente', 'Reposição pendente')
         
     ]
@@ -24,19 +25,37 @@ class Pedido(models.Model):
         return f"Pedido #{self.pk} - Cliente: {self.cliente}"
 
 
+# pedidos/models.py
+
 class PedidoItem(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
     tamanho = models.IntegerField(null=True, blank=True)
 
-    subpalmilha = models.CharField(max_length=50, null=True, blank=True)
-    costura = models.CharField(max_length=50, null=True, blank=True)
+    # === Novos campos específicos: ===
+    ref_balancinho = models.CharField(max_length=50, null=True, blank=True)
+    mat_balancinho = models.CharField(max_length=50, null=True, blank=True)
+
+    ref_palmilha = models.CharField(max_length=50, null=True, blank=True)
+    mat_palmilha = models.CharField(max_length=50, null=True, blank=True)
+
+    # Um só campo de serviço (radio) em vez de subpalmilha/costura separados.
+    TIPO_SERVICO_CHOICES = [
+        ('nenhum', 'Nenhum'),
+        ('subpalmilha', 'Subpalmilha'),
+        ('costura', 'Costura'),
+    ]
+    tipo_servico = models.CharField(
+        max_length=20,
+        choices=TIPO_SERVICO_CHOICES,
+        default='nenhum'
+    )
+
     sintetico = models.CharField(max_length=50, null=True, blank=True)
     cor = models.CharField(max_length=50, null=True, blank=True)
     obs = models.TextField(null=True, blank=True)
 
-
-
     def __str__(self):
-        return f"{self.quantidade}x {self.produto} (Tamanho {self.tamanho})"
+        return f"{self.quantidade}x (Bal: {self.ref_balancinho}, Palm: {self.ref_palmilha})"
+
