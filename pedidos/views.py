@@ -225,7 +225,6 @@ def realizar_pedido(request):
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
 
-
 @require_POST
 @login_required
 def realizar_pedido_urgente(request):

@@ -213,29 +213,29 @@
 
 
 
-/* Botão de visualizar detalhes */
+/* Botão de visualizar detalhes */  
 .ver-detalhes {
-  background-color: #285ba7; /* Verde claro */
+  background-color: #0d5917; /* Verde claro */
   color: white;
 }
 
 .ver-detalhes:hover {
-  background-color: #214b8a; /* Verde mais escuro */
+  background-color: #218a28; /* Verde mais escuro */
 }
 
 /* Botão de alterar status */
 .alterar-status {
-  background-color: #17a2b8; /* Amarelo esverdeado */
+  background-color: #0a900a; /* Amarelo esverdeado */
   color: white;
 }
 
 .alterar-status:hover {
-  background-color: #15889a; /* Amarelo esverdeado mais escuro */
+  background-color: #159a24; /* Amarelo esverdeado mais escuro */
 }
 
 /* Botão de imprimir pedido */
 .imprimir-pedido {
-  background-color: #631a83; /* Roxo escuro */
+  background-color: #f3a200; /* Roxo escuro */
   color: white;
 }
 
@@ -255,7 +255,7 @@
 
 /* Botão de finalização */
 .fim {
-  background-color: #28a745; /* Verde escuro */
+  background-color: #5b2c6f; /* Verde escuro */
   color: white;
 }
 
