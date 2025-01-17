@@ -105,7 +105,7 @@ def download_excel_report(request, vendedor_id):
     # -----------------------------
     titulo_fill = GradientFill(stop=("2C7A7B", "4FD1C5"))  # Gradiente teal
     titulo_font = Font(color="FFFFFF", size=16, bold=True)
-    titulo_alignment = Alignment(horizontal="left", vertical="center")
+    titulo_alignment = Alignment(horizontal="center", vertical="center")
 
     thin_border = Border(
         left=Side(style="thin", color="888888"),
@@ -273,6 +273,7 @@ def download_excel_report(request, vendedor_id):
                     pedido.cliente,
                     data_str,
                     pedido.status,
+                    #/////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     item.produto.nome,
                     item.quantidade,
                     item.tamanho,
@@ -281,7 +282,6 @@ def download_excel_report(request, vendedor_id):
                     item.cor,
                     item.obs
                 ]
-                
                 
                 for col_index, valor in enumerate(row_data, start=1):
                     cell = ws.cell(row=linha_atual, column=col_index)
@@ -299,11 +299,6 @@ def download_excel_report(request, vendedor_id):
                     cell.border = thin_border
                     if (linha_atual % 2) == 0:
                         cell.style = "ZebraPar"
-
-
-
-
-
 
                 ws.row_dimensions[linha_atual].height = 20
                 linha_atual += 1

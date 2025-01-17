@@ -33,9 +33,7 @@
 
     <!-- Pedido Inicial -->
     <div class="pedido-item">
-  
         <div class="linha-pedido grid-3">
-            <!-- Balancinho -->
             <div>
               <span class="campo">Ref. Balancinho</span>
               <input type="text" class="refBalancinho" required>
@@ -44,8 +42,12 @@
               <span class="campo">Material Balancinho</span>
               <input type="text" class="matBalancinho" required>
             </div>
+
+            <div>
+              <span class="campo">Sintético</span>
+              <input type="text" class="sintetico">
+            </div>
           
-            <!-- Palmilha -->
             <div>
               <span class="campo">Ref. Palmilha</span>
               <input type="text" class="refPalmilha" required>
@@ -54,43 +56,35 @@
               <span class="campo">Material Palmilha</span>
               <input type="text" class="matPalmilha" required>
             </div>
-          
-            <!-- Sintético -->
+
             <div>
-              <span class="campo">Sintético</span>
-              <input type="text" class="sintetico">
+              <span class="campo">tamanho Palmilha</span>
+              <input type="text" class="tamPalmilha" required>
             </div>
-            <!-- Cor -->
-            <div>
+
+            <div class="tipo-servico">
+              <span class="campo">Tipo de Serviço</span>
+              <select name="tipoServico" class="selectTipoServico">
+                <option value="nenhum">Nenhum</option>
+                <option value="subpalmilha">Subpalmilha</option>
+                <option value="costura">Costura</option>
+            </select>
+            
+            </div>
+            
+            
+
+            <div class="cor">
               <span class="campo">Cor</span>
               <input type="text" class="cor">
             </div>
-          </div>
-        <!-- Linha com radio e obs lado a lado -->
-        <div class="linha-pedido radio-obs">
-            <div class="radio">
-              <label>
-                <span class="radio-label">Nenhum</span>
-                <input type="radio" name="tipoServico" value="nenhum" checked>
-              </label>
-              <label>
-                <span class="radio-label">Subpalmilha</span>
-                <input type="radio" name="tipoServico" value="subpalmilha">
-              </label>
-              <label>
-                <span class="radio-label">Costura</span>
-                <input type="radio" name="tipoServico" value="costura">
-              </label>
-            </div>
-          
+            
             <div class="campoObs">
               <span class="campo">Obs:</span>
               <textarea class="obs"></textarea>
             </div>
-          </div>
-          
+        </div>
         
-        <!-- Linha dos pares e botões +, -, Inf -->
         <div class="linha-pedido">
           <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
           <div class="maisEmenos">
@@ -101,17 +95,14 @@
         <div class="container containerQuadradinhos"></div>
     </div>
       
-
     <!-- Novos Pedidos (adicionados via JavaScript) -->
     <div class="lista-pedidos"></div>
 
-    <!-- Botões de Comando -->
     <div class="botoesComando">
         <button type="button" class="clienteloja" id="realizarPedidoUrgente">Cliente em loja</button>
         <button type="button" class="realizarPedido" id="realizarPedido">Realizar pedido</button>
     </div>
 </div>
 
-<!-- Inclusão do JavaScript -->
 <script src="{% static 'js/realiza_pedidos.js' %}"></script>
 {% endblock %}

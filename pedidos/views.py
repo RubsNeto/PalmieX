@@ -262,7 +262,8 @@ def realizar_pedido_urgente(request):
             tamanhos = item.get('tamanhos', {})
             
             # Campos adicionais
-            subpalmilha = item.get('subpalmilha', '').strip()
+            tipo_servico = item.get('tipoServico', 'nenhum').strip()
+            tamanho_palmilha = item.get('tamPalmilha','').strip()
             costura = item.get('costura', '').strip()
             sintetico = item.get('sintetico', '').strip()
             cor = item.get('cor', '').strip()
@@ -286,7 +287,8 @@ def realizar_pedido_urgente(request):
                     produto=produto,
                     quantidade=qtd,
                     tamanho=tamanho,
-                    subpalmilha=subpalmilha,
+                    tamanho_palmilha = tamanho_palmilha,    
+                    tipo_servico = tipo_servico,                   
                     costura=costura,
                     sintetico=sintetico,
                     cor=cor,

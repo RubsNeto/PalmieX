@@ -39,6 +39,7 @@ class PedidoItem(models.Model):
 
     ref_palmilha = models.CharField(max_length=50, null=True, blank=True)
     mat_palmilha = models.CharField(max_length=50, null=True, blank=True)
+    tamanho_palmilha = models.CharField(max_length=50, default='0')
 
     # Um só campo de serviço (radio) em vez de subpalmilha/costura separados.
     TIPO_SERVICO_CHOICES = [
@@ -54,7 +55,7 @@ class PedidoItem(models.Model):
 
     sintetico = models.CharField(max_length=50, null=True, blank=True)
     cor = models.CharField(max_length=50, null=True, blank=True)
-    obs = models.TextField(null=True, blank=True)
+    obs = models.TextField(max_length=90,null=True, blank=True)
 
     def __str__(self):
         return f"{self.quantidade}x (Bal: {self.ref_balancinho}, Palm: {self.ref_palmilha})"

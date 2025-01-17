@@ -40,8 +40,6 @@ function reorganizarTabindex() {
         const cor = pedido.querySelector('.cor');
         if (cor) cor.setAttribute('tabindex', proximoTabindex++);
 
-        const subpalmilha = pedido.querySelector('.subpalmilha');
-        if (subpalmilha) subpalmilha.setAttribute('tabindex', proximoTabindex++);
 
         const costura = pedido.querySelector('.costura');
         if (costura) costura.setAttribute('tabindex', proximoTabindex++);
@@ -284,60 +282,64 @@ function adicionarEventosPedido(pedidoItem) {
                 <br>
                 <br>
                 <div class="pedido-conteudo">
-                    <!-- Linha de 3 colunas, cada coluna tem 2 campos (total 6 campos) -->
                     <div class="linha-pedido grid-3">
                     <div>
-                        <span class="campo">Ref. Balancinho</span>
-                        <input type="text" class="referencia" required>
+                    <span class="campo">Ref. Balancinho</span>
+                    <input type="text" class="refBalancinho" required>
                     </div>
                     <div>
-                        <span class="campo">Material</span>
-                        <input type="text" class="material" required>
+                    <span class="campo">Material Balancinho</span>
+                    <input type="text" class="matBalancinho" required>
+                    </div>
+
+                    <div>
+                    <span class="campo">Sintético</span>
+                    <input type="text" class="sintetico">
+                    </div>
+                
+                    <div>
+                    <span class="campo">Ref. Palmilha</span>
+                    <input type="text" class="refPalmilha" required>
                     </div>
                     <div>
-                        <span class="campo">Sintetico</span>
-                        <input type="text" class="sintetico">
+                    <span class="campo">Material Palmilha</span>
+                    <input type="text" class="matPalmilha" required>
                     </div>
+
                     <div>
-                        <span class="campo">Ref. Palmilha</span>
-                        <input type="text" class="referencia" required>
+                    <span class="campo">tamanho Palmilha</span>
+                    <input type="text" class="tamPalmilha" required>
                     </div>
-                    <div>
-                        <span class="campo">Material</span>
-                        <input type="text" class="material" required>
+
+                    <div class="tipo-servico">
+                        <span class="campo">Tipo de Serviço</span>
+                        <select name="tipoServico" class="selectTipoServico">
+                            <option value="nenhum">Nenhum</option>
+                            <option value="subpalmilha">Subpalmilha</option>
+                            <option value="costura">Costura</option>
+                        </select>
                     </div>
-                    <div>
-                        <span class="campo">Cor</span>
-                        <input type="text" class="cor">
-                    </div>
+
+
+                    <div class="cor">
+                    <span class="campo">Cor</span>
+                    <input type="text" class="cor">
                     </div>
                     
-                    <!-- Linha com radio e obs lado a lado -->
-                    <div class="linha-pedido radio-obs">
-                    <div class="radio">
-                        <label>
-                        <span class="radio-label">Subpalmilha</span>
-                        <input type="radio" name="tipoServico" value="subpalmilha">
-                        </label>
-                        <label>
-                        <span class="radio-label">Costura</span>
-                        <input type="radio" name="tipoServico" value="costura">
-                        </label>
-                    </div>
                     <div class="campoObs">
-                        <span class="campo">Obs:</span>
-                        <textarea class="obs"></textarea>
+                    <span class="campo">Obs:</span>
+                    <textarea class="obs"></textarea>
                     </div>
-                    </div>
+                </div>
+                
+                <div class="linha-pedido">
+                <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
+                <div class="maisEmenos">
+                    <button type="button" class="adicionarPedido">+</button>
+                    <button type="button" class="removerPedido">-</button>
+                </div>
+                </div>
                     
-                    <!-- Linha dos pares e botões +, -, Inf -->
-                    <div class="linha-pedido">
-                    <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
-                    <div class="maisEmenos">
-                        <button type="button" class="adicionarPedido">+</button>
-                        <button type="button" class="removerPedido">-</button>
-                    </div>
-                    </div>
                     <div class="container containerQuadradinhos"></div>
                 </div>
             `;
@@ -373,7 +375,6 @@ function adicionarEventosPedido(pedidoItem) {
     }
 }
 
-
 function coletarDadosPedidos() {
     const dados = {};
     dados.cliente = document.querySelector('.cliente')?.value || '';
@@ -384,24 +385,21 @@ function coletarDadosPedidos() {
 
     const pedidoItens = document.querySelectorAll('.pedido-item');
     pedidoItens.forEach(pedido => {
-        // Pega as refs e materiais separados:
-        const refBalancinho = pedido.querySelector('.refBalancinho')?.value.trim() || '';
-        const matBalancinho = pedido.querySelector('.matBalancinho')?.value.trim() || '';
-        const refPalmilha = pedido.querySelector('.refPalmilha')?.value.trim() || '';
-        const matPalmilha = pedido.querySelector('.matPalmilha')?.value.trim() || '';
+        const refBalancinho = (pedido.querySelector('.refBalancinho')?.value || '').trim();
+        const matBalancinho = (pedido.querySelector('.matBalancinho')?.value || '').trim();
+        const refPalmilha = (pedido.querySelector('.refPalmilha')?.value || '').trim();
+        const matPalmilha = (pedido.querySelector('.matPalmilha')?.value || '').trim();
+        const tamPalmilha = (pedido.querySelector('.tamPalmilha')?.value || '').trim();
 
-        // Pega o radio selecionado:
+        const selectServico = pedido.querySelector('.selectTipoServico');
         let tipoServico = 'nenhum';
-        const radioSelecionado = pedido.querySelector('input[name="tipoServico"]:checked');
-        if (radioSelecionado) {
-            tipoServico = radioSelecionado.value;
+        if (selectServico) {    
+            tipoServico = selectServico.value;
         }
+        const sintetico = (pedido.querySelector('.sintetico')?.value || '').trim();
+        const cor = (pedido.querySelector('.cor')?.value || '').trim();
+        const obs = (pedido.querySelector('.obs')?.value || '').trim();
 
-        const sintetico = pedido.querySelector('.sintetico')?.value.trim() || '';
-        const cor = pedido.querySelector('.cor')?.value.trim() || '';
-        const obs = pedido.querySelector('.obs')?.value.trim() || '';
-
-        // Coleta tamanhos:
         const tamanhos = {};
         const botaoContainers = pedido.querySelectorAll('.botao-container');
         botaoContainers.forEach(bc => {
@@ -416,7 +414,6 @@ function coletarDadosPedidos() {
             }
         });
 
-        // Monta o objeto do item
         dados.itens.push({
             refBalancinho: refBalancinho,
             matBalancinho: matBalancinho,
@@ -426,12 +423,15 @@ function coletarDadosPedidos() {
             sintetico: sintetico,
             cor: cor,
             obs: obs,
+            tamPalmilha: tamPalmilha,
             tamanhos: tamanhos
         });
     });
 
     return dados;
 }
+
+
 
 
 function getCookie(name) {
@@ -470,29 +470,38 @@ function enviarPedido(url, dados) {
         alert('Por favor, adicione pelo menos um item ao pedido.');
         return;
     }
-
+    
     // 3. Validação de cada item
+   // 3. Validação de cada item
     for (let i = 0; i < dados.itens.length; i++) {
         const item = dados.itens[i];
         
-        // Verifica se pelo menos uma referência foi preenchida
-        if (!item.refBalancinho.trim() && !item.refPalmilha.trim()) {
+        // Atribuir e limpar espaços antes de validar
+        const refBalancinho = (item.refBalancinho || '').trim();
+        const matBalancinho = (item.matBalancinho || '').trim();
+        const refPalmilha   = (item.refPalmilha   || '').trim();
+        const matPalmilha   = (item.matPalmilha   || '').trim();
+        
+        // Verificar cada campo individualmente e alertar se vazio
+        if (!refBalancinho && !refPalmilha) {
             alert(`Preencha pelo menos uma referência: Balancinho ou Palmilha.`);
             return;
         }
-        
-        // Verifica se para cada referência preenchida há um material
-        if (item.refBalancinho.trim() && !item.matBalancinho.trim()) {
+        if (refBalancinho && !matBalancinho) {
             alert(`Preencha o material para o Balancinho.`);
             return;
         }
-        if (item.refPalmilha.trim() && !item.matPalmilha.trim()) {
+        if (refPalmilha && !matPalmilha) {
             alert(`Preencha o material para a Palmilha.`);
             return;
         }
     }
-    
 
+    
+    
+    
+    
+    
     fetch(url, {
         method: 'POST',
         headers: { 
@@ -520,6 +529,7 @@ function enviarPedido(url, dados) {
             alert('Ocorreu um erro ao realizar o pedido.');
         }
     });
+    
 }
 
 /**
@@ -568,7 +578,6 @@ document.addEventListener('DOMContentLoaded', () => {
         realizarPedidoBtn.addEventListener('click', () => {
             const dados = coletarDadosPedidos();
             enviarPedido('/realizar-pedido/', dados);
-            alert('env');
         });
     }
 
