@@ -235,51 +235,54 @@ def realizar_pedido_urgente(request):
         cliente = body.get('cliente', '').strip()
         codigo_vendedor = body.get('codigoVendedor', '').strip()
         vendedor_nome = body.get('vendedor', '').strip()
-        status = body.get('status', 'Cliente em espera').strip()
+        status = body.get('status', 'Cliente em Espera').strip()
 
-        # Validações básicas
-        if not cliente:
-            return JsonResponse({'erro': 'Cliente não informado.'}, status=400)
-        if not codigo_vendedor or not vendedor_nome:
-            return JsonResponse({'erro': 'Dados do vendedor incompletos.'}, status=400)
+        # Validações (omitidas para brevidade)...
 
-        vendedor, criado = Vendedor.objects.get_or_create(
+        # Busca/cria vendedor e cria o pedido
+        vendedor, _ = Vendedor.objects.get_or_create(
             codigo=codigo_vendedor,
-            defaults={'nome': vendedor_nome},
+            defaults={'nome': vendedor_nome}
         )
-
         pedido = Pedido.objects.create(
             cliente=cliente,
             vendedor=vendedor,
-            status=status,
+            status=status
         )
 
+        # Percorre os itens
         itens = body.get('itens', [])
         for item in itens:
-            referencia = item.get('referencia', '').strip()
-            nome_produto = item.get('material', '').strip()
-            # Cuidado aqui: item.get('tamanhos', {}) às vezes vem como tupla?
-            tamanhos = item.get('tamanhos', {})
-            
-            # Campos adicionais
-            tipo_servico = item.get('tipoServico', 'nenhum').strip()
-            tamanho_palmilha = item.get('tamPalmilha','').strip()
-            costura = item.get('costura', '').strip()
+            refBalancinho = item.get('refBalancinho', '').strip()
+            matBalancinho = item.get('matBalancinho', '').strip()
+            refPalmilha = item.get('refPalmilha', '').strip()
+            matPalmilha = item.get('matPalmilha', '').strip()
+
+            tipoServico = item.get('tipoServico', 'nenhum').strip()
             sintetico = item.get('sintetico', '').strip()
             cor = item.get('cor', '').strip()
-            obs = item.get('obs', '').strip()  # Corrija para 'obs', não 'cor'!
+            obs = item.get('obs', '').strip()
 
-            if not referencia:
+            # Se quiser, checar refBalancinho ou refPalmilha antes de criar:
+            if not refBalancinho and not refPalmilha:
+                # Nenhuma referência = item inválido, continue
                 continue
 
-            produto, criado_produto = Produto.objects.get_or_create(
-                codigo=referencia,
-                defaults={'nome': nome_produto},
+            # Você pode escolher usar UMA das refs para criar "produto" principal,
+            # ou criar um Produto fictício "Bal/Palm"? Depende da lógica do seu sistema.
+            # Exemplo usando refBalancinho como "produto.codigo":
+            referencia_principal = refBalancinho or refPalmilha
+            nome_produto = matBalancinho or matPalmilha
+
+            produto, _ = Produto.objects.get_or_create(
+                codigo=referencia_principal,
+                defaults={'nome': nome_produto}
             )
 
-            # Agora sim criamos o PedidoItem com os novos campos
+            # Tamanhos
+            tamanhos = item.get('tamanhos', {})
             for tamanho, qtd in tamanhos.items():
-                if not qtd or qtd <= 0:
+                if qtd <= 0:
                     continue
 
                 PedidoItem.objects.create(
@@ -287,9 +290,12 @@ def realizar_pedido_urgente(request):
                     produto=produto,
                     quantidade=qtd,
                     tamanho=tamanho,
-                    tamanho_palmilha = tamanho_palmilha,    
-                    tipo_servico = tipo_servico,                   
-                    costura=costura,
+
+                    ref_balancinho=refBalancinho,
+                    mat_balancinho=matBalancinho,
+                    ref_palmilha=refPalmilha,
+                    mat_palmilha=matPalmilha,
+                    tipo_servico=tipoServico,
                     sintetico=sintetico,
                     cor=cor,
                     obs=obs

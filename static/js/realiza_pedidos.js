@@ -28,21 +28,29 @@ function reorganizarTabindex() {
     const pedidos = document.querySelectorAll('.pedido-item');
     pedidos.forEach(pedido => {
         // Referência e Material
-        const referencia = pedido.querySelector('.referencia');
-        if (referencia) referencia.setAttribute('tabindex', proximoTabindex++);
+        const refBalancinho = pedido.querySelector('.refBalancinho');
+        if (refBalancinho) refBalancinho.setAttribute('tabindex', proximoTabindex++);
 
-        const material = pedido.querySelector('.material');
-        if (material) material.setAttribute('tabindex', proximoTabindex++);
+        const matBalancinho = pedido.querySelector('.matBalancinho');
+        if (matBalancinho) matBalancinho.setAttribute('tabindex', proximoTabindex++);
 
         const sintetico = pedido.querySelector('.sintetico');
         if (sintetico) sintetico.setAttribute('tabindex', proximoTabindex++);
 
+        const refPalmilha = pedido.querySelector('.refPalmilha');
+        if (refPalmilha) refPalmilha.setAttribute('tabindex', proximoTabindex++);
+
+        const matPalmilha = pedido.querySelector('.matPalmilha');
+        if (matPalmilha) matPalmilha.setAttribute('tabindex', proximoTabindex++);
+
+        const tamPalmilha = pedido.querySelector('.tamPalmilha');
+        if (tamPalmilha) tamPalmilha.setAttribute('tabindex', proximoTabindex++);
+
+        const selectTipoServico = pedido.querySelector('.selectTipoServico');
+        if (selectTipoServico) selectTipoServico.setAttribute('tabindex', proximoTabindex++);
+
         const cor = pedido.querySelector('.cor');
         if (cor) cor.setAttribute('tabindex', proximoTabindex++);
-
-
-        const costura = pedido.querySelector('.costura');
-        if (costura) costura.setAttribute('tabindex', proximoTabindex++);
 
         const obs = pedido.querySelector('.obs');
         if (obs) obs.setAttribute('tabindex', proximoTabindex++);
@@ -283,63 +291,64 @@ function adicionarEventosPedido(pedidoItem) {
                 <br>
                 <div class="pedido-conteudo">
                     <div class="linha-pedido grid-3">
-                    <div>
-                    <span class="campo">Ref. Balancinho</span>
-                    <input type="text" class="refBalancinho" required>
-                    </div>
-                    <div>
-                    <span class="campo">Material Balancinho</span>
-                    <input type="text" class="matBalancinho" required>
-                    </div>
+                        <div>
+                            <span class="campo">Ref. Balancinho</span>
+                            <input type="text" class="refBalancinho" required>
+                        </div>
+                        <div>
+                          <span class="campo">Material Balancinho</span>
+                            <input type="text" class="matBalancinho" required>
+                        </div>
 
-                    <div>
-                    <span class="campo">Sintético</span>
-                    <input type="text" class="sintetico">
+                        <div>
+                            <span class="campo">Sintético</span>
+                            <input type="text" class="sintetico">
+                        </div>
+                    
+                        <div>
+                            <span class="campo">Ref. Palmilha</span>
+                            <input type="text" class="refPalmilha" required>
+                        </div>
+
+                        <div>
+                            <span class="campo">Material Palmilha</span>
+                            <input type="text" class="matPalmilha" required>
+                        </div>
+
+                        <div>
+                            <span class="campo">tamanho Palmilha</span>
+                            <input type="text" class="tamPalmilha" required 
+                                    placeholder="MM" inputmode="numeric" pattern="[0-9]*" 
+                                    title="Digite apenas números para o tamanho em milímetros">
+                        </div>
+
+                        <div class="tipo-servico">
+                            <span class="campo">Tipo de Serviço</span>
+                            <select name="tipoServico" class="selectTipoServico">
+                                <option value="nenhum">Nenhum</option>
+                                <option value="subpalmilha">Subpalmilha</option>
+                                <option value="costura">Costura</option>
+                            </select>
+                        </div>
+
+                        <div class="divCor">
+                            <span class="campo">Cor</span>
+                            <input type="text" class="cor">
+                        </div>
+                        
+                        <div class="campoObs">
+                            <span class="campo">Obs:</span>
+                            <textarea class="obs"></textarea>
+                        </div>
                     </div>
                 
-                    <div>
-                    <span class="campo">Ref. Palmilha</span>
-                    <input type="text" class="refPalmilha" required>
+                    <div class="linha-pedido">
+                        <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
+                        <div class="maisEmenos">
+                            <button type="button" class="adicionarPedido">+</button>
+                            <button type="button" class="removerPedido">-</button>
+                        </div>
                     </div>
-                    <div>
-                    <span class="campo">Material Palmilha</span>
-                    <input type="text" class="matPalmilha" required>
-                    </div>
-
-                    <div>
-                    <span class="campo">tamanho Palmilha</span>
-                    <input type="text" class="tamPalmilha" required>
-                    </div>
-
-                    <div class="tipo-servico">
-                        <span class="campo">Tipo de Serviço</span>
-                        <select name="tipoServico" class="selectTipoServico">
-                            <option value="nenhum">Nenhum</option>
-                            <option value="subpalmilha">Subpalmilha</option>
-                            <option value="costura">Costura</option>
-                        </select>
-                    </div>
-
-
-                    <div class="cor">
-                    <span class="campo">Cor</span>
-                    <input type="text" class="cor">
-                    </div>
-                    
-                    <div class="campoObs">
-                    <span class="campo">Obs:</span>
-                    <textarea class="obs"></textarea>
-                    </div>
-                </div>
-                
-                <div class="linha-pedido">
-                <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
-                <div class="maisEmenos">
-                    <button type="button" class="adicionarPedido">+</button>
-                    <button type="button" class="removerPedido">-</button>
-                </div>
-                </div>
-                    
                     <div class="container containerQuadradinhos"></div>
                 </div>
             `;
@@ -400,6 +409,8 @@ function coletarDadosPedidos() {
         const cor = (pedido.querySelector('.cor')?.value || '').trim();
         const obs = (pedido.querySelector('.obs')?.value || '').trim();
 
+        console.log(cor);
+
         const tamanhos = {};
         const botaoContainers = pedido.querySelectorAll('.botao-container');
         botaoContainers.forEach(bc => {
@@ -426,6 +437,7 @@ function coletarDadosPedidos() {
             tamPalmilha: tamPalmilha,
             tamanhos: tamanhos
         });
+        console.log(dados)
     });
 
     return dados;
@@ -496,10 +508,6 @@ function enviarPedido(url, dados) {
             return;
         }
     }
-
-    
-    
-    
     
     
     fetch(url, {
@@ -528,8 +536,7 @@ function enviarPedido(url, dados) {
         } else {
             alert('Ocorreu um erro ao realizar o pedido.');
         }
-    });
-    
+    });   
 }
 
 /**

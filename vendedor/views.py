@@ -213,7 +213,7 @@ def download_excel_report(request, vendedor_id):
             best_day_str = "N/A"
 
         # 2) Título mesclado A1..L3
-        ws.merge_cells('A1:L3')
+        ws.merge_cells('A1:K3')
         cell_titulo = ws['A1']
         nome_mes = nomes_meses[mes - 1]
         cell_titulo.value = f"RELATÓRIO - {nome_mes.upper()} {ano_atual} - Vendedor: {vendedor.nome.upper()}"

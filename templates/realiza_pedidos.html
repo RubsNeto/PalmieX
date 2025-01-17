@@ -59,8 +59,11 @@
 
             <div>
               <span class="campo">tamanho Palmilha</span>
-              <input type="text" class="tamPalmilha" required>
+              <input type="text" class="tamPalmilha" required 
+                     placeholder="MM" inputmode="numeric" pattern="[0-9]*" 
+                     title="Digite apenas números para o tamanho em milímetros">
             </div>
+            
 
             <div class="tipo-servico">
               <span class="campo">Tipo de Serviço</span>
@@ -71,10 +74,8 @@
             </select>
             
             </div>
-            
-            
-
-            <div class="cor">
+          
+            <div class="divCor">
               <span class="campo">Cor</span>
               <input type="text" class="cor">
             </div>

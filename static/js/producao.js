@@ -21,22 +21,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Função para mapear status em cores (customize as cores conforme desejar)
   function obterCorPorStatus(status) {
-      if (status === 'Pendente') {
-          return '#f3a600';       // amarelo
-      } else if (status === 'Em Produção') {
-          return '#17a2b8';       // azul
-      } else if (status === 'Pedido Finalizado') {
-          return '#00b244';       // verde
-      } else if (status === 'Cliente em Espera') {
-          return '#610061';
-      } else if (status === 'Cancelado') {
-          return '#ff0000';       // vermelho
-      } else if (status === 'Pedido Separado') {
-          return '#006400';       // vermelho
-      } else {
-          return '#333';          // cor padrão
-      }
-  }
+    if (status === 'Pendente') {
+        return '#f3a600';       // amarelo
+    } else if (status === 'Em Produção') {
+        return '#17a2b8';       // azul
+    } else if (status === 'Pedido Finalizado') {
+        return '#00b244';       // verde
+    } else if (status === 'Cliente em Espera') {
+        return '#610061';
+    } else if (status === 'Cancelado') {
+        return '#ff0000';       // vermelho
+    } else if (status === 'Pedido Separado') {
+        return '#4caf50';       // vermelho
+    } else {
+        return '#333';          // cor padrão
+    }
+}
+
+
 
   // Animação: delay progressivo em cada linha
   const rows = document.querySelectorAll('.pedidos-table tbody tr');
@@ -142,10 +144,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="item-nome">
                               <strong>Produto:</strong> ${produto.nome} 
                               <strong>Código:</strong> ${produto.codigo} 
-                              <strong>Ref. Balancinho:</strong> ${produto.ref_balancinho || ''} 
-                              <strong>Mat. Balancinho:</strong> ${produto.mat_balancinho || ''} 
-                              <strong>Ref. Palmilha:</strong> ${produto.ref_palmilha || ''} 
-                              <strong>Mat. Palmilha:</strong> ${produto.mat_palmilha || ''} 
+                              <strong>Ref.Balancinho:</strong> ${produto.ref_balancinho || ''} 
+                              <strong>Balancinho:</strong> ${produto.mat_balancinho || ''} 
+                              <strong>Ref.Palmilha:</strong> ${produto.ref_palmilha || ''} 
+                              <strong>Palmilha:</strong> ${produto.mat_palmilha || ''} 
                             </span>
                             <span class="item-nome">
                               <strong>Serviço:</strong> ${produto.tipo_servico || 'Nenhum'} 
@@ -312,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // 1. Criamos (ou selecionamos) o modal de senha do gerente
   const modalSenhaGerente = document.getElementById('modalSenhaGerente');
   const closeGerenteModal = document.getElementById('closeGerenteModal');
-  const senhaGerenteInput = document.getElementById('senhaGerente');
+  const senhaGerenteInput = modalSenhaGerente.querySelector('.senha-gerente');
   const confirmarCancelamentoBtn = document.getElementById('confirmarCancelamentoBtn');
 
   // 2. Armazenaremos o pedidoId que o gerente quer cancelar

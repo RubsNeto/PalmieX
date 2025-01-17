@@ -7,6 +7,16 @@
   --hover-color: #019657;
   --font-family: 'Arial', sans-serif;
 }
+/* Remover outline padrão e ajustar estilos de foco para inputs, selects e textareas */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  /* Opcional: ajuste a borda e box-shadow para destacar o foco como desejado */
+  border-color: #28a745;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.15);
+}
+
 
 /* Tipografia base dentro do container .ordem */
 .ordem {
@@ -339,7 +349,7 @@
   flex: 1; /* Para expandir se quiser, enquanto o radio ocupa só o espaço dele */
 }
 
-.cor {
+.divCor {
   display: flex;
   flex-direction: column;
   flex: 1; /* Para expandir se quiser, enquanto o radio ocupa só o espaço dele */
