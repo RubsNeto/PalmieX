@@ -215,22 +215,22 @@
 
 /* Botão de visualizar detalhes */  
 .ver-detalhes {
-  background-color: #0d5917; /* Verde claro */
+  background-color: #00b5c6; /* Verde claro */
   color: white;
 }
 
 .ver-detalhes:hover {
-  background-color: #218a28; /* Verde mais escuro */
+  background-color: #0e98a4; /* Verde mais escuro */
 }
 
 /* Botão de alterar status */
 .alterar-status {
-  background-color: #0a900a; /* Amarelo esverdeado */
+  background-color: #5b2c6f; /* Amarelo esverdeado */
   color: white;
 }
 
 .alterar-status:hover {
-  background-color: #159a24; /* Amarelo esverdeado mais escuro */
+  background-color: #3e1b4d; /* Amarelo esverdeado mais escuro */
 }
 
 /* Botão de imprimir pedido */
@@ -240,7 +240,7 @@
 }
 
 .imprimir-pedido:hover {
-  background-color: #5b2c6f; /* Roxo mais escuro */
+  background-color: #b87c05; /* Roxo mais escuro */
 }
 
 /* Botão de cancelamento */
@@ -255,12 +255,12 @@
 
 /* Botão de finalização */
 .fim {
-  background-color: #5b2c6f; /* Verde escuro */
+  background-color: #0a900a; /* Verde escuro */
   color: white;
 }
 
 .fim:hover {
-  background-color: #155d27; /* Verde escuro mais escuro */
+  background-color: #066d06; /* Verde escuro mais escuro */
 }
 
   /* Modal */

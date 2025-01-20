@@ -365,8 +365,8 @@ function adicionarEventosPedido(pedidoItem) {
         });
     }
 
-    const referenciaInput = pedidoItem.querySelector('.referencia');
-    const materialInput = pedidoItem.querySelector('.material');
+    const referenciaInput = pedidoItem.querySelector('.refBalancinho');
+    const materialInput = pedidoItem.querySelector('.matBalancinho');
     if (referenciaInput && materialInput) {
         referenciaInput.addEventListener('input', function() {
             const referencia = this.value;
@@ -375,6 +375,25 @@ function adicionarEventosPedido(pedidoItem) {
                 .then(data => {
                     if (data.nome) {
                         materialInput.value = data.nome;
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro ao buscar material:", err);
+                });
+        });
+    }
+
+
+    const PalmilhareferenciaInput = pedidoItem.querySelector('.refPalmilha');
+    const PalmilhamaterialInput = pedidoItem.querySelector('.matPalmilha');
+    if (PalmilhareferenciaInput && PalmilhamaterialInput) {
+        PalmilhareferenciaInput.addEventListener('input', function() {
+            const Palmilhareferencia = this.value;
+            fetch(`/buscar-produto/?codigo=${encodeURIComponent(Palmilhareferencia)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.nome) {
+                        PalmilhamaterialInput.value = data.nome;
                     }
                 })
                 .catch(err => {
