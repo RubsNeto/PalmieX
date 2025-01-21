@@ -54,15 +54,14 @@
               <img class="producao" src="{% static 'img/producao.svg' %}">
             </button>
 
-            <button type="button" class="alterar-status separado" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Separado" title="Separado">
+            <button type="button" class="alterar-status separado" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Pronto" title="Separado">
               <img class="sep" src="{% static 'img/separado.svg' %}" alt="Sep">
             </button>
 
-            <button type="button" class="alterar-status reposicao" data-pedido-id="{{ pedido.id }}" data-novo-status="Reposição pendente" title="Reposição">
+            <button type="button" class="alterar-status reposicao" data-pedido-id="{{ pedido.id }}" data-novo-status="Reposição Pendente" title="Reposição">
               <img class="rep" src="{% static 'img/empty.svg' %}" alt="reposicao">
             </button>        
             {% endif %}
-            
           </div>
         </td>
 
@@ -99,6 +98,26 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <!-- Logo após a tabela, por exemplo -->
+  <div class="pagination">
+    {% if pedidos.has_previous %}
+      <a href="?page={{ pedidos.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">&laquo; Anterior</a>
+    {% endif %}
+
+    {% for num in pedidos.paginator.page_range %}
+      {% if pedidos.number == num %}
+        <strong>{{ num }}</strong>
+      {% else %}
+        <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if pedidos.has_next %}
+      <a href="?page={{ pedidos.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">Próximo &raquo;</a>
+    {% endif %}
+  </div>
+
   {% else %}
     <p>Nenhum pedido encontrado.</p>
   {% endif %}

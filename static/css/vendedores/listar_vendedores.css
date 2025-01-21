@@ -157,6 +157,36 @@ h2, .vendedores-table, .botoesComando {
     content: "+ ";
     font-size: 1.2rem;
   }
+
+  .pagination {
+    display: flex;
+    justify-content: center;  /* Alinha o bloco de paginação no centro */
+    margin: 20px 0;           /* Espaçamento vertical */
+    gap: 5px;                 /* Espaço entre os botões */
+  }
+  
+  .pagination a, 
+  .pagination strong {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #f4f4f4;
+    color: #333;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .pagination a:hover {
+    background-color: #ddd;
+  }
+  
+  /* Página atual (usando <strong> no template) */
+  .pagination strong {
+    background-color: #4CAF50; /* destaque */
+    color: #fff;
+  }
+  
   
   /* Responsividade */
   @media (max-width: 768px) {
@@ -170,4 +200,6 @@ h2, .vendedores-table, .botoesComando {
       text-align: center;
     }
   }
+
+  
   

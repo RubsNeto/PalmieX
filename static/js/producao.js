@@ -31,8 +31,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return '#610061';
     } else if (status === 'Cancelado') {
         return '#ff0000';       // vermelho
-    } else if (status === 'Pedido Separado') {
+    } else if (status === 'Pedido Pronto') {
         return '#4caf50';       // vermelho
+    } else if (status === 'Reposição Pendente') {
+        return '#862fab';      // roxo
     } else {
         return '#333';          // cor padrão
     }

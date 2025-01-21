@@ -1,5 +1,5 @@
 # pedidos/views.py
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Case, When, Value, IntegerField
 from django.http import JsonResponse, HttpResponseForbidden
@@ -55,15 +55,31 @@ def producao(request):
             Q(cliente__icontains=search_query) |
             Q(vendedor__nome__icontains=search_query) |
             Q(id__icontains=search_query) |
-            Q(vendedor__loja__icontains = search_query)
+            Q(vendedor__loja__icontains=search_query)
         )
 
     # Ordena os resultados conforme status_order e data
     pedidos = pedidos.order_by('status_order', '-data')
-    
+
+    # ========== PAGINAÇÃO ==========
+    # Recupera o número da página via GET
+    page = request.GET.get('page', 1)
+
+    # Cria o paginator, definindo quantos itens por página
+    paginator = Paginator(pedidos, 10)  # Exemplo: 10 por página
+
+    try:
+        pedidos_paginados = paginator.page(page)
+    except PageNotAnInteger:
+        # Se page não for um inteiro, exibe a primeira página
+        pedidos_paginados = paginator.page(1)
+    except EmptyPage:
+        # Se page estiver fora do intervalo, exibe a última página
+        pedidos_paginados = paginator.page(paginator.num_pages)
+
     return render(request, 'producao/producao.html', {
-        'pedidos': pedidos,
-        'search_query': search_query  # Passa o termo de busca para o template
+        'pedidos': pedidos_paginados,  # Passa o objeto paginado para o template
+        'search_query': search_query
     })
 
 #------------------impressao-------------------
@@ -455,13 +471,14 @@ def atualizar_status_pedido(request):
 @login_required
 @permission_required(1)
 def pedidos_finalizados(request):
-    # Obtém o termo de busca da query string, se fornecido
     search_query = request.GET.get('q', '').strip()
 
-    # Filtra os pedidos com status 'Pedido Finalizado'
-    pedidos = Pedido.objects.filter(Q(status='Pedido Finalizado') | Q(status='Cancelado'))
-    
-    # Se houver termo de busca, filtrar por cliente, vendedor, data ou código
+    # Filtra os pedidos com status 'Pedido Finalizado' ou 'Cancelado'
+    pedidos = Pedido.objects.filter(
+        Q(status='Pedido Finalizado') | Q(status='Cancelado')
+    )
+
+    # Filtro de busca
     if search_query:
         pedidos = pedidos.filter(
             Q(cliente__icontains=search_query) |
@@ -471,9 +488,19 @@ def pedidos_finalizados(request):
 
     # Pré-carregando itens e ordenando por data decrescente
     pedidos = pedidos.prefetch_related('itens__produto').order_by('-data')
-    
-    # Renderiza o template passando os pedidos e a query de busca
+
+    # ========== PAGINAÇÃO ==========
+    page = request.GET.get('page', 1)
+    paginator = Paginator(pedidos, 10)  # 10 itens por página, ajuste conforme necessidade
+
+    try:
+        pedidos_paginados = paginator.page(page)
+    except PageNotAnInteger:
+        pedidos_paginados = paginator.page(1)
+    except EmptyPage:
+        pedidos_paginados = paginator.page(paginator.num_pages)
+
     return render(request, 'pedidos/pedidos_finalizados.html', {
-        'pedidos': pedidos,
+        'pedidos': pedidos_paginados,
         'search_query': search_query
     })

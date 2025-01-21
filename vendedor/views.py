@@ -5,6 +5,8 @@ from django.contrib import messages
 from openpyxl.styles import (
     Font, PatternFill, Alignment, Border, Side, GradientFill
 )
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 from openpyxl.chart.label import DataLabelList
 from openpyxl.chart.axis import DateAxis
 
@@ -43,8 +45,27 @@ def permission_required(min_level):
 
 @permission_required(4)
 def lista_vendedores(request):
-    vendedores = Vendedor.objects.all().order_by('codigo')
-    return render(request, 'vendedor/lista_vendedores.html', {'vendedores': vendedores})
+    vendedores_list = Vendedor.objects.all().order_by('codigo')
+    
+    # Recupera o número da página atual (caso não exista, assume 1)
+    page = request.GET.get('page', 1)
+    
+    # Define quantos itens por página (por exemplo, 10)
+    paginator = Paginator(vendedores_list, 10)
+    
+    try:
+        vendedores = paginator.page(page)
+    except PageNotAnInteger:
+        # Se 'page' não for inteiro, exibe a primeira página
+        vendedores = paginator.page(1)
+    except EmptyPage:
+        # Se 'page' estiver fora do intervalo, mostra a última página
+        vendedores = paginator.page(paginator.num_pages)
+
+    return render(request, 'vendedor/lista_vendedores.html', {
+        'vendedores': vendedores
+    })
+
 
 @permission_required(4)
 def criar_vendedor(request):

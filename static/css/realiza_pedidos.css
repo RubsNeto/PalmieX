@@ -285,6 +285,10 @@ textarea:focus {
   transition: background-color 0.2s, transform 0.1s;
 }
 
+.clienteloja:hover{
+  border-color: #017a39;
+}
+
 /* Botão "Cliente em loja" */
 .clienteloja {
   background-color: #28a745;

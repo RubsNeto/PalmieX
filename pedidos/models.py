@@ -15,6 +15,17 @@ class Pedido(models.Model):
         ('Reposição pendente', 'Reposição pendente')
         
     ]
+    
+    STATUS_CHOICES = [
+        ('Pendente', 'Pendente'),
+        ('Em Produção', 'Em Produção'),
+        ('Pedido Finalizado', 'Pedido Finalizado'),
+        ('Cliente em Espera', 'Cliente em Espera'),
+        ('Cancelado', 'Cancelado'),
+        ('Pedido Pronto','Pedido Pronto'),
+        ('Reposição Pendente', 'Reposição Pendente')
+        
+    ]
 
     cliente = models.CharField(max_length=100)
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE)

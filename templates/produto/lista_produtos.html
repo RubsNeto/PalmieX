@@ -41,6 +41,10 @@
                             <button type="button" class="btn btn-danger delete-button" data-id="{{ produto.pk }}" title="Deletar">
                                 <img class="delete" src="{% static 'img/trash.svg' %}" alt="Deletar">
                             </button>
+
+                            <a href="{% url 'produto:relatorio_excel_produto' produto.pk %}" class="btn btn-success" title="Baixar Relatório Excel">
+                                <img src="{% static 'img/relatorio.svg' %}" alt="Baixar Excel">
+                            </a>
                         </div>
                     </td>
                 </tr>
@@ -51,6 +55,27 @@
             {% endfor %}
         </tbody>    
     </table>
+    <!-- Bloco de paginação -->
+    {% if produtos.has_other_pages %}
+    <div class="pagination">
+        {% if produtos.has_previous %}
+        <a href="?page={{ produtos.previous_page_number }}">&laquo; Anterior</a>
+        {% endif %}
+
+        {% for num in produtos.paginator.page_range %}
+        {% if produtos.number == num %}
+            <!-- Página atual -->
+            <strong>{{ num }}</strong>
+        {% else %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+        {% endfor %}
+
+        {% if produtos.has_next %}
+        <a href="?page={{ produtos.next_page_number }}">Próximo &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
 
     <div class="botoesComando">
         <a href="{% url 'produto:criar_produto' %}" class="btn btn-primary adicionarProduto">Adicionar Produto</a>

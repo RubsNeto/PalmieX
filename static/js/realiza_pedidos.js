@@ -46,11 +46,11 @@ function reorganizarTabindex() {
         const tamPalmilha = pedido.querySelector('.tamPalmilha');
         if (tamPalmilha) tamPalmilha.setAttribute('tabindex', proximoTabindex++);
 
-        const selectTipoServico = pedido.querySelector('.selectTipoServico');
-        if (selectTipoServico) selectTipoServico.setAttribute('tabindex', proximoTabindex++);
-
         const cor = pedido.querySelector('.cor');
         if (cor) cor.setAttribute('tabindex', proximoTabindex++);
+        
+        const selectTipoServico = pedido.querySelector('.selectTipoServico');
+        if (selectTipoServico) selectTipoServico.setAttribute('tabindex', proximoTabindex++);
 
         const obs = pedido.querySelector('.obs');
         if (obs) obs.setAttribute('tabindex', proximoTabindex++);

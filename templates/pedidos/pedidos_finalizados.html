@@ -63,6 +63,27 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <!-- Após a tabela -->
+  <div class="pagination">
+    {% if pedidos.has_previous %}
+      <a href="?page={{ pedidos.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">&laquo; Anterior</a>
+    {% endif %}
+
+    {% for num in pedidos.paginator.page_range %}
+      {% if pedidos.number == num %}
+        <strong>{{ num }}</strong>
+      {% else %}
+        <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if pedidos.has_next %}
+      <a href="?page={{ pedidos.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">Próximo &raquo;</a>
+    {% endif %}
+  </div>
+
+
   {% else %}
     <p>Nenhum pedido finalizado encontrado.</p>
   {% endif %}
