@@ -207,7 +207,7 @@ function criarInserirBotao(container, numero, inserirNoInicio = false) {
         let val = parseInt(numeroDiv.textContent.trim(), 10);
         if (isNaN(val)) val = 0;
         atualizarEstiloValor(botaoContainer, val);
-        // Removida chamada duplicada de atualizarTotalGlobal() aqui
+        atualizarTotalGlobal()
     });
 
     botaoContainer.appendChild(botao);

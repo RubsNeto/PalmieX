@@ -323,6 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 1. Criamos (ou selecionamos) o modal de senha do gerente
   const modalSenhaGerente = document.getElementById('modalSenhaGerente');
+  const modalcontent = document.querySelector('.modal-content');
   const closeGerenteModal = document.getElementById('closeGerenteModal');
   const senhaGerenteInput = modalSenhaGerente.querySelector('.senha-gerente');
   const confirmarCancelamentoBtn = document.getElementById('confirmarCancelamentoBtn');
@@ -340,6 +341,7 @@ document.addEventListener('DOMContentLoaded', function() {
           senhaGerenteInput.value = '';
           motivoCancelamentoInput.value = '';
           modalSenhaGerente.style.display = 'block';
+          modalcontent.style.maxWidth = '400px';
       });
   });
 

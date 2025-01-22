@@ -1,14 +1,17 @@
-  /* Melhorias no CSS para produção, mantendo as classes existentes */
+@import '../base.css';
 
-  :root {
-    --main-color: #017a39;
-    --hover-color: #019657;
-    --danger-color: #d9534f;
-    --light-color: #f8f9fa;
-    --dark-color: #343a40;
-    --info-color: #17a2b8;
-  }
-  
+/* Estilos específicos para produção */
+
+/* Melhorias no CSS para produção, mantendo as classes existentes */
+
+:root {
+  --main-color: #017a39;
+  --hover-color: #019657;
+  --danger-color: #d9534f;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --info-color: #17a2b8;
+}
 
 /* Animação de Fade-In sequencial */
 .pedidos-table tbody tr {
@@ -45,167 +48,158 @@
   }
 }
 
+/* Buscador*/
+.search-container {
+  display: flex;
+  max-width: 400px;
+  margin-bottom: 1em;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.search-input {
+  flex-grow: 1;
+  padding: 0.5em 1em;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+.search-input::placeholder {
+  color: #999;
+}
+.search-button {
+  background-color: var(--button-bg-color);
+  border: none;
+  padding: 0 1em;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+.search-button:hover {
+  background-color: var(--button-hover-bg-color);
+}
 
+/* Título */
+.container-pedidos h1 {
+  font-size: 1.8rem;
+  color: var(--dark-color);
+  margin-bottom: 1rem;
+}
 
+/* Tabela de Pedidos */
+.pedidos-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--light-color);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 
-  /*Buscador*/
-  .search-container {
-    display: flex;
-    max-width: 400px;
-    margin-bottom: 1em;
-    border: 1px solid #ddd;
-    border-radius: 25px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  .search-input {
-    flex-grow: 1;
-    padding: 0.5em 1em;
-    border: none;
-    outline: none;
-    font-size: 1rem;
-  }
-  .search-input::placeholder {
-    color: #999;
-  }
-  .search-button {
-    background-color: var(--button-bg-color);
-    border: none;
-    padding: 0 1em;
-    color: #fff;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
-  }
-  .search-button:hover {
-    background-color: var(--button-hover-bg-color);
-  }
+.pedidos-table thead {
+  background: linear-gradient(150deg, #017A39, #01A44D);;
+  color: white;
+}
 
-  /* Título */
-  .container-pedidos h1 {
-    font-size: 1.8rem;
-    color: var(--dark-color);
-    margin-bottom: 1rem;
-  }
+.pedidos-table th, .pedidos-table td {
+  padding: 1rem;
+  text-align: left;
+  font-size: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
 
-  /* Tabela de Pedidos */
-  .pedidos-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: var(--light-color);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
+.pedidos-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
 
-  .pedidos-table thead {
-    background: linear-gradient(150deg, #017A39, #01A44D);;
-    color: white;
-  }
-
-  .pedidos-table th, .pedidos-table td {
-    padding: 1rem;
-    text-align: left;
-    font-size: 1rem;
-    border-bottom: 1px solid #e9ecef;
-  }
-
-  .pedidos-table tbody tr:hover {
-    background-color: #f1f1f1;
-  }
-
-  /* Botões */
-  .botoes {
-    gap: 1em;
-  }
-
-  .ver-detalhes, .alterar-status, .imprimir-pedido, .Editar-pedido, .cancelar-pedido {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  .ver-detalhes:hover, .alterar-status:hover, .imprimir-pedido:hover , .cancelar-pedido:hover{
-    transform: scale(1.1);
-  }
-
-  .cancelar-pedido{
-    background-color: red;
-  }
-
-  .Editar-pedido{
-    background-color: var(--info-color);
-  }
-
-  .Editar-pedido:hover{
-    background-color: #148fa1;
-  }
-
-  .ver-detalhes{
-    background-color: #610061;
-  
-  }
-
-  .ver-detalhes:hover{
-    background-color: rgb(77, 0, 77);
-  }
-
-
-  .ver-detalhes img, .alterar-status img, .imprimir-pedido img, .pesquisar, .edit , .cancelar{
-    width: 20px;
-    height: 20px;
-    filter: brightness(0) invert(1);
-  }
-
-
-
-
-
-  .imprimir-pedido img{
-    position: relative;
-    top: 7%; /* Ajuste para o ponto desejado */
-    left: 12%;
-    transform: translate(-20%, -15%); /* Centraliza o ícone no ponto definido */
-  }
-
-  .ver-detalhes img{
-    position: relative;
-    top: 7%; /* Ajuste para o ponto desejado */
-    left: 12%;
-    transform: translate(-20%, -15%); /* Centraliza o ícone no ponto definido */
-  }
-
-  .fim img{
-    position: relative;
-    top: 8%; /* Ajuste para o ponto desejado */
-    left: 9%;
-    transform: translate(-20%, -15%); /* Centraliza o ícone no ponto definido */
-  }
-
-  .prod img{
-    position: relative;
-    top: 7%; /* Ajuste para o ponto desejado */
-    left: 15%;
-    transform: translate(-20%, -15%); /* Centraliza o ícone no ponto definido */
-  }   
-  
-/* Botões gerais */
+/* Botões */
 .botoes {
   gap: 1em;
 }
 
+.ver-detalhes, .alterar-status, .imprimir-pedido, .Editar-pedido, .cancelar-pedido {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.ver-detalhes:hover, .alterar-status:hover, .imprimir-pedido:hover , .cancelar-pedido:hover{
+  transform: scale(1.1);
+}
+
+.cancelar-pedido{
+  background-color: red;
+}
+
+.Editar-pedido{
+  background-color: var(--info-color);
+}
+
+.Editar-pedido:hover{
+  background-color: #148fa1;
+}
+
+.ver-detalhes{
+  background-color: #610061;
+
+}
+
+.ver-detalhes:hover{
+  background-color: rgb(77, 0, 77);
+}
+
+.ver-detalhes img, .alterar-status img, .imprimir-pedido img, .pesquisar, .edit , .cancelar{
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+}
+
+.imprimir-pedido img{
+  position: relative;
+  top: 7%; /* Ajuste para o ponto desejado */
+  left: 12%;
+  transform: translate(-20%, -15%); /* Centraliza o ícone no ponto definido */
+}
+
+.ver-detalhes img{
+  position: relative;
+  top: 7%; /* Ajuste para o ponto desejado */
+  left: 12%;
+  transform: translate(-20%, -15%); /* Centraliza o ícone no ponto definido */
+}
+
+.fim img{
+  position: relative;
+  top: 8%; /* Ajuste para o ponto desejado */
+  left: 9%;
+  transform: translate(-20%, -15%); /* Centraliza o ícone no ponto definido */
+}
+
+.prod img{
+  position: relative;
+  top: 7%; /* Ajuste para o ponto desejado */
+  left: 15%;
+  transform: translate(-20%, -15%); /* Centraliza o ícone no ponto definido */
+}   
+
+/* Botões gerais */
+.botoes {
+  gap: 1em;
+}
 
 /* Container principal da paginação */
 .pagination {
@@ -238,11 +232,6 @@
   background-color: #4CAF50; /* Cor de destaque */
   color: #ffffff;
 }
-
-
-
-
-
 
 /* Botão de visualizar detalhes */  
 .ver-detalhes {
@@ -294,62 +283,57 @@
   background-color: #066d06; /* Verde escuro mais escuro */
 }
 
-  /* Modal */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
 
+.modal-content {
+  max-width: 800px;
+  width: 90%;
+  margin: 5% auto;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: #000;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
   .modal-content {
-    max-width: 800px;
     width: 90%;
-    margin: 5% auto;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    animation: fadeIn 0.3s ease-in-out;
-  }
-  
-
-  .close-button {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
   }
 
-  .close-button:hover {
-    color: #000;
+  .ver-detalhes, .alterar-status, .imprimir-pedido {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
   }
+}
 
-  /* Responsividade */
-  @media (max-width: 768px) {
-    .modal-content {
-      width: 90%;
-    }
+/*-----------------------------------------------------------------------------------------*/
 
-    .ver-detalhes, .alterar-status, .imprimir-pedido {
-      width: 35px;
-      height: 35px;
-      font-size: 1rem;
-    }
-  }
-
-
-
-  /*-----------------------------------------------------------------------------------------*/
-
-
-
-  /* CSS Moderno para o Modal de Detalhes */
+/* CSS Moderno para o Modal de Detalhes */
 
 :root {
   --modal-bg-color: #fff;
@@ -502,7 +486,6 @@
   }
 }
 
-
 /* Container para o cabeçalho do produto (código e nome lado a lado) */
 .produto-cabecalho {
   display: flex;
@@ -579,7 +562,6 @@
     flex-direction: column;
   }
 }
-
 
 /* Estilização geral do overlay do modal */
 .modal {
@@ -672,7 +654,6 @@
   outline: none;
 }
 
-
 /* Contêiner de Tamanhos */
 .containerQuadradinhos {
   display: flex;
@@ -704,4 +685,27 @@
   flex-direction: column; /* Botão em cima, número embaixo */
   align-items: center;
   gap: 0.5em; /* espaço vertical entre o botão e o número */
+}
+
+
+input.senha-gerente,
+textarea.motivo-cancelamento {
+  width: 94%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+input.senha-gerente:focus,
+textarea.motivo-cancelamento:focus {
+  border-color: #007BFF;
+  outline: none;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+textarea.motivo-cancelamento {
+  resize: none;
 }
