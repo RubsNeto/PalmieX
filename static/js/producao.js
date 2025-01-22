@@ -129,10 +129,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p><strong>Vendedor:</strong> ${data.vendedor_nome}</p>
                         <p><strong>Pedido:</strong> ${modal.dataset.pedidoId}</p>
                         <p><strong>Data:</strong> ${data.data}</p>
-                        <p><strong>Hora:</strong> ${data.hora}</p>
+                        <p><strong>Hora:</strong> aaaaa${data.hora}</p>
                         <p><strong>Status:</strong> 
                             <span id="status-pedido-modal">${data.status}</span>
                         </p>
+                        ${data.status === 'Cancelado' ? `
+                            <p><strong>Motivo do Cancelamento:</strong> 
+                                <span class="motivo-cancelamento">${data.motivo_cancelamento || 'N/A'}</span>
+                            </p>
+                            <p><strong>Autorizado por:</strong> 
+                                <span class="gerente-cancelamento">${data.gerente_cancelamento || 'N/A'}</span>
+                            </p>
+                        ` : ''}
                     </div>
                     <ul class="lista-itens">
                 `;
@@ -318,6 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeGerenteModal = document.getElementById('closeGerenteModal');
   const senhaGerenteInput = modalSenhaGerente.querySelector('.senha-gerente');
   const confirmarCancelamentoBtn = document.getElementById('confirmarCancelamentoBtn');
+  const motivoCancelamentoInput = modalSenhaGerente.querySelector('.motivo-cancelamento');
 
   // 2. Armazenaremos o pedidoId que o gerente quer cancelar
   let pedidoIdParaCancelar = null;
@@ -329,6 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
           pedidoIdParaCancelar = button.getAttribute('data-pedido-id');
           // Limpa a senha antes de abrir o modal
           senhaGerenteInput.value = '';
+          motivoCancelamentoInput.value = '';
           modalSenhaGerente.style.display = 'block';
       });
   });
@@ -354,8 +364,15 @@ document.addEventListener('DOMContentLoaded', function() {
           return;
       }
       const senhaDigitada = senhaGerenteInput.value.trim();
+      const motivoCancelamento = motivoCancelamentoInput.value.trim();
+      
       if (!senhaDigitada) {
           alert('Digite a senha de um usuário nível 3.');
+          return;
+      }
+
+      if (!motivoCancelamento) {
+          alert('Digite o motivo do cancelamento.');
           return;
       }
 
@@ -367,7 +384,10 @@ document.addEventListener('DOMContentLoaded', function() {
               'Content-Type': 'application/json',
               'X-CSRFToken': csrftoken
           },
-          body: JSON.stringify({ senhaNivel3: senhaDigitada })
+          body: JSON.stringify({ 
+              senhaNivel3: senhaDigitada,
+              motivoCancelamento: motivoCancelamento 
+          })
       })
       .then(response => {
           if (!response.ok) {

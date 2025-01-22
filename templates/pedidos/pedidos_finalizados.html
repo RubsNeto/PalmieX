@@ -45,7 +45,7 @@
             {% if pedido.status == 'Pendente' %}#ffc107
             {% elif pedido.status == 'Em Produção' %}#17a2b8
             {% elif pedido.status == 'Pedido Finalizado' %}#333
-            {% else %}#00b244{% endif %};">
+            {% else %}#ff0000{% endif %};">
           • <span style="text-decoration: underline;">{{ pedido.status }}</span>
         </td>
         
@@ -97,6 +97,21 @@
       <!-- Os detalhes do pedido serão inseridos aqui via JavaScript -->
     </div>
     <!-- Botões para alterar status podem ser removidos pois os pedidos já estão finalizados -->
+  </div>
+</div>
+
+<!-- Modal de Cancelamento do Gerente -->
+<div class="modal" id="modalSenhaGerente" style="display: none;">
+  <div class="modal-content">
+    <span class="close-button" id="closeGerenteModal">&times;</span>
+    <h2>Cancelar Pedido</h2>
+    <p>Solicite a senha com o gerente:</p>
+    <input type="password" class="senha-gerente" placeholder="Senha do gerente">
+    <br>
+    <p>Motivo do cancelamento:</p>
+    <textarea class="motivo-cancelamento" placeholder="Digite o motivo do cancelamento" rows="3"></textarea>
+    <br><br>
+    <button type="button" id="confirmarCancelamentoBtn">Confirmar Cancelamento</button>
   </div>
 </div>
 {% endblock content %}

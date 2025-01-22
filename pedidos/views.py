@@ -95,39 +95,53 @@ def imprimir_pedido(request, pedido_id):
     
 @require_GET
 def pedido_itens_api(request, pedido_id):
-    pedido = get_object_or_404(Pedido, id=pedido_id)
-    data_local = timezone.localtime(pedido.data)
+    try:
+        pedido = get_object_or_404(Pedido, id=pedido_id)
+        data_local = timezone.localtime(pedido.data)
+
+        logger.debug(f"Recuperando detalhes para o pedido {pedido_id}")
+
+        data = {
+            "cliente": pedido.cliente,
+            "vendedor_nome": pedido.vendedor.nome,
+            "vendedor_codigo": pedido.vendedor.codigo,
+            "data": data_local.strftime("%d/%m/%Y"),
+            "hora": data_local.strftime("%H:%M"),  
+            "status": pedido.status,
+            "motivo_cancelamento": pedido.cancelado,
+            "gerente_cancelamento": pedido.gerente_cancelamento.username if pedido.gerente_cancelamento else None,
+
+            "pedido_id": pedido.id,
+            "itens": []
+        }
+
+        # Log do gerente
+        if pedido.gerente_cancelamento:
+            logger.debug(f"Gerente que cancelou: {pedido.gerente_cancelamento.get_full_name()}")
+        else:
+            logger.debug("Nenhum gerente associado para este cancelamento.")
+
+        for item in pedido.itens.all():
+            data["itens"].append({
+                "codigo": item.produto.codigo,
+                "nome": item.produto.nome,
+                "tamanho": item.tamanho,
+                "quantidade": item.quantidade,
+                "tipo_servico": item.tipo_servico,
+                "sintetico": item.sintetico,
+                "cor": item.cor,
+                "obs": item.obs,
+                "ref_balancinho": item.ref_balancinho,
+                "mat_balancinho": item.mat_balancinho,
+                "ref_palmilha": item.ref_palmilha,
+                "mat_palmilha": item.mat_palmilha,
+            })
+        
+        return JsonResponse(data)
     
-    data = {
-        "cliente": pedido.cliente,
-        "vendedor_nome": pedido.vendedor.nome,
-        "vendedor_codigo": pedido.vendedor.codigo,
-        "data": data_local.strftime("%d/%m/%Y"),
-        "hora": data_local.strftime("%H:%M"),  
-        "status": pedido.status,
-        "itens": []
-    }
-    
-    for item in pedido.itens.all():
-        data["itens"].append({
-            "codigo": item.produto.codigo,
-            "nome": item.produto.nome,
-            "tamanho": item.tamanho,
-            "quantidade": item.quantidade,
-            "tipo_servico": item.tipo_servico,
-            "sintetico": item.sintetico,
-            "cor": item.cor,
-            "obs": item.obs,
-            "ref_balancinho": item.ref_balancinho,
-            "mat_balancinho": item.mat_balancinho,
-            "ref_palmilha": item.ref_palmilha,
-            "mat_palmilha": item.mat_palmilha,
-            "tipo_servico": item.tipo_servico
-        })
-    return JsonResponse(data)
-
-
-
+    except Exception as e:
+        logger.exception(f"Erro ao recuperar itens do pedido {pedido_id}: {str(e)}")
+        return JsonResponse({'erro': f'Erro ao recuperar itens do pedido: {str(e)}'}, status=500)
 
 @require_GET
 def buscar_vendedor(request):
@@ -330,34 +344,54 @@ def realizar_pedido_urgente(request):
 @require_POST
 @login_required
 def cancelar_pedido(request, pedido_id):
-    import json
-    from django.contrib.auth.models import User
-    from django.http import JsonResponse
-    from django.shortcuts import get_object_or_404
-    from .models import Pedido  # ajuste conforme seu local do modelo Pedido
+    try:
+        body = json.loads(request.body or '{}')
+        senha_digitada = body.get('senhaNivel3', '').strip()
+        motivo_cancelamento = body.get('motivoCancelamento', '').strip()
+        
+        logger.debug(f"Cancelando pedido {pedido_id} com motivo: {motivo_cancelamento}")
 
-    body = json.loads(request.body or '{}')
-    senha_digitada = body.get('senhaNivel3', '')  # considere renomear a chave se necessário
+        if not senha_digitada or not motivo_cancelamento:
+            logger.warning("Senha ou motivo de cancelamento não fornecido.")
+            return JsonResponse({'erro': 'Senha e motivo do cancelamento são obrigatórios.'}, status=400)
+        
+        pedido = get_object_or_404(Pedido, id=pedido_id)
 
-    pedido = get_object_or_404(Pedido, id=pedido_id)
+        # Buscar usuários autorizados (nível 3 ou 4)
+        usuarios_autorizados = User.objects.filter(
+            perfil__permission_level__in=[3, 4]
+        )
 
-    # Lista todos os usuários com nível 3 ou 4
-    usuarios_autorizados = User.objects.filter(perfil__permission_level__in=[3, 4])
+        logger.debug(f"Usuários autorizados para cancelar: {usuarios_autorizados}")
 
-    # Verifica se a senha digitada corresponde à senha de ALGUM usuário nível 3 ou 4
-    autorizado = False
-    for usuario in usuarios_autorizados:
-        if usuario.check_password(senha_digitada):
-            autorizado = True
-            break
+        # Verificar a senha com os usuários autorizados
+        gerente_autorizador = None
+        for usuario in usuarios_autorizados:
+            if check_password(senha_digitada, usuario.password):
+                gerente_autorizador = usuario
+                logger.debug(f"Gerente autorizado encontrado: {usuario.get_full_name()}")
+                break
 
-    if not autorizado:
-        return JsonResponse({'erro': 'Senha de gerente incorreta ou não encontrada.'}, status=403)
+        if not gerente_autorizador:
+            logger.warning("Senha incorreta ou usuário não encontrado.")
+            return JsonResponse({'erro': 'Senha de gerente incorreta ou não encontrada.'}, status=403)
 
-    # Se autorizado, cancela o pedido
-    pedido.status = 'Cancelado'
-    pedido.save()
-    return JsonResponse({'mensagem': f'Pedido {pedido_id} cancelado com sucesso.'})
+        # Cancelar o pedido
+        pedido.status = 'Cancelado'
+        pedido.cancelado = motivo_cancelamento
+        pedido.gerente_cancelamento = gerente_autorizador
+        pedido.save()
+        
+        logger.info(f"Pedido {pedido_id} cancelado por {gerente_autorizador.get_full_name()}")
+
+        return JsonResponse({
+            'mensagem': f'Pedido {pedido_id} cancelado com sucesso.',
+            'gerente': gerente_autorizador.get_full_name()
+        })
+        
+    except Exception as e:
+        logger.exception(f"Erro ao cancelar pedido {pedido_id}: {str(e)}")
+        return JsonResponse({'erro': f'Erro ao cancelar pedido: {str(e)}'}, status=500)
 
     
 
@@ -473,8 +507,8 @@ def atualizar_status_pedido(request):
 def pedidos_finalizados(request):
     search_query = request.GET.get('q', '').strip()
 
-    # Filtra os pedidos com status 'Pedido Finalizado' ou 'Cancelado'
-    pedidos = Pedido.objects.filter(
+    # Filtra os pedidos com status 'Pedido Finalizado' ou 'Cancelado' e inclui gerente_cancelamento
+    pedidos = Pedido.objects.select_related('gerente_cancelamento').filter(
         Q(status='Pedido Finalizado') | Q(status='Cancelado')
     )
 
@@ -483,7 +517,10 @@ def pedidos_finalizados(request):
         pedidos = pedidos.filter(
             Q(cliente__icontains=search_query) |
             Q(vendedor__nome__icontains=search_query) |
-            Q(id__icontains=search_query)
+            Q(id__icontains=search_query) |
+            Q(gerente_cancelamento__first_name__icontains=search_query) |
+            Q(gerente_cancelamento__last_name__icontains=search_query) |
+            Q(motivo_cancelamento__icontains=search_query)
         )
 
     # Pré-carregando itens e ordenando por data decrescente
@@ -491,7 +528,7 @@ def pedidos_finalizados(request):
 
     # ========== PAGINAÇÃO ==========
     page = request.GET.get('page', 1)
-    paginator = Paginator(pedidos, 10)  # 10 itens por página, ajuste conforme necessidade
+    paginator = Paginator(pedidos, 10)
 
     try:
         pedidos_paginados = paginator.page(page)

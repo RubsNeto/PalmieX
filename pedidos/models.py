@@ -3,6 +3,7 @@
 from django.db import models
 from vendedor.models import Vendedor
 from produto.models import Produto
+from django.contrib.auth.models import User
 
 class Pedido(models.Model):
     STATUS_CHOICES = [
@@ -27,10 +28,19 @@ class Pedido(models.Model):
         
     ]
 
-    cliente = models.CharField(max_length=100)
+    cliente = models.CharField(max_length=255)
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
     data = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pendente')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    cancelado = models.TextField(blank=True, null=True, verbose_name="Motivo do Cancelamento")
+    gerente_cancelamento = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='pedidos_cancelados',
+        verbose_name="Gerente que Autorizou o Cancelamento"
+    )
 
     def __str__(self):
         return f"Pedido #{self.pk} - Cliente: {self.cliente}"
@@ -57,9 +67,14 @@ class PedidoItem(models.Model):
         ('nenhum', 'Nenhum'),
         ('subpalmilha', 'Subpalmilha'),
         ('costura', 'Costura'),
+        ('subpalmlha Confot', 'Subpalmilha Confot'),
+        ('subpalmilha rv 17', 'Subpalmilha rv 17'),
+        ('subpalmlha com Geleia', 'Subpalmilha com Geleia'),
+        ('subpalmlha confort com cola', 'Subpalmilha confort com cola'),
+        
     ]
     tipo_servico = models.CharField(
-        max_length=20,
+        max_length=50,
         choices=TIPO_SERVICO_CHOICES,
         default='nenhum'
     )
