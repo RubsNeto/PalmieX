@@ -9,7 +9,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from openpyxl.chart.label import DataLabelList
 from openpyxl.chart.axis import DateAxis
-
 from openpyxl.styles import NamedStyle
 import openpyxl
 from django.http import JsonResponse
@@ -25,7 +24,6 @@ from django.http import HttpResponse
 import csv
 import datetime
 import calendar
-
 from pedidos.models import Pedido  # Ajuste conforme a localização do seu model
 
 def permission_required(min_level):
@@ -98,48 +96,6 @@ def deletar_vendedor(request, pk):
         return redirect('vendedor:lista_vendedores')
     else:
         return redirect('vendedor:lista_vendedores')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @login_required
 def download_excel_report(request, vendedor_id):
