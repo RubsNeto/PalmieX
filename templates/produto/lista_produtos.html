@@ -24,7 +24,9 @@
             <tr class="cabecalho">
                 <th>Nome</th>
                 <th>Referência</th>
+                {% if user.permission_level > 2 %}
                 <th>Ações</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -32,11 +34,13 @@
                 <tr id="produto-{{ produto.pk }}">
                     <td class="nome_produto">{{ produto.nome }}</td>
                     <td>{{ produto.codigo }}</td>
+                    {% if user.permission_level > 2 %}
                     <td>
                         <div class="acoes">
                             <a href="{% url 'produto:editar_produto' produto.pk %}" class="btn btn-secondary" title="Editar">
                                 <img class="edit" src="{% static 'img/edit.svg' %}" alt="Editar">
                             </a>
+                            
                             <!-- Botão para deletar o produto via AJAX -->
                             <button type="button" class="btn btn-danger delete-button" data-id="{{ produto.pk }}" title="Deletar">
                                 <img class="delete" src="{% static 'img/trash.svg' %}" alt="Deletar">
@@ -47,6 +51,7 @@
                             </a>
                         </div>
                     </td>
+                    {% endif %}
                 </tr>
             {% empty %}
                 <tr>

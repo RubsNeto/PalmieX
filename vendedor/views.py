@@ -41,7 +41,7 @@ def permission_required(min_level):
 # Restante das views (lista_vendedores, criar, editar, deletar) - igual
 # ---------------------------------------------------------------------
 
-@permission_required(4)
+@permission_required(1)
 def lista_vendedores(request):
     vendedores_list = Vendedor.objects.all().order_by('codigo')
     

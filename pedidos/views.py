@@ -34,6 +34,41 @@ def realiza_pedidos(request):
     numeros = range(1, 18)  # de 1 a 17
     return render(request, 'realiza_pedidos.html', {'numeros': numeros})
 
+def autocomplete_produto(request):
+    """
+    Retorna uma lista de nomes de produtos que contenham o texto digitado (GET param: q).
+    """
+    q = request.GET.get('q', '').strip()
+    results = []
+    if q:
+        # Filtra produtos cujo nome contenha 'q'
+        produtos = Produto.objects.filter(nome__icontains=q)[:20]
+        # Monta lista de nomes para retornar
+        results = [p.nome for p in produtos]
+    
+    return JsonResponse(results, safe=False)
+
+
+@require_GET
+def buscar_produto_por_nome(request):
+    """
+    Dado um nome de produto, retorna {codigo, nome} em JSON.
+    Se não encontrar, retorna erro.
+    """
+    nome = request.GET.get('nome', '').strip()
+    if not nome:
+        return JsonResponse({'erro': 'Nome não informado.'}, status=400)
+    
+    # Procura produto com nome exato (ignorando maiúsc/minúsc, via iexact)
+    produto = Produto.objects.filter(nome__iexact=nome).first()
+    if not produto:
+        return JsonResponse({'erro': 'Produto não encontrado.'}, status=404)
+    
+    return JsonResponse({
+        'codigo': produto.codigo,
+        'nome': produto.nome,
+    })
+
 @login_required
 @permission_required(1)
 def producao(request):

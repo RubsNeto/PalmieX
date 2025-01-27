@@ -25,7 +25,9 @@
                 <th>Nome</th>
                 <th>Código</th>
                 <th>Loja</th>
-                <th>Ações</th>
+                {% if user.permission_level > 2 %}
+                    <th>Ações</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -34,6 +36,7 @@
                     <td class="nome_vendedor">{{ vendedor.nome }}</td>
                     <td>{{ vendedor.codigo }}</td>
                     <td>{{ vendedor.loja}}</td>
+                    {% if user.permission_level > 2 %}
                     <td>
                         <div class="acoes">
                             <a href="{% url 'vendedor:editar_vendedor' vendedor.pk %}" class="btn btn-secondary" title="Editar">
@@ -50,9 +53,9 @@
                             <a href="{% url 'vendedor:download_excel_report' vendedor.pk %}" class="btn btn-success" title="Baixar Relatório Excel">
                                 <img src="{% static 'img/relatorio.svg' %}" alt="Baixar Excel">
                             </a>
-                            
                         </div>
                     </td>
+                    {% endif %}
                 </tr>
             {% empty %}
                 <tr>

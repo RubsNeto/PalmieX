@@ -44,7 +44,7 @@ def permission_required(min_level):
         return _wrapped_view
     return decorator
 
-@permission_required(4)
+@permission_required(1)
 def lista_produtos(request):
     produtos_list = Produto.objects.all().order_by('nome')
     
@@ -75,7 +75,7 @@ def criar_produto(request):
         form = ProdutoForm()
     return render(request, 'produto/form_produto.html', {'form': form})
 
-@permission_required(4)
+@permission_required(3)
 def editar_produto(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     if request.method == 'POST':

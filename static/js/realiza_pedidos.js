@@ -9,6 +9,137 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+// **************************
+// 1. Função de autocomplete
+// **************************
+function configureAutocomplete(input, datalistId) {
+    // Para cada vez que digitarmos no input
+    input.addEventListener('input', function () {
+        const texto = this.value.trim();
+
+        // Se não houver texto, limpa as opções do datalist e sai
+        if (texto.length < 1) {
+            const dl = document.getElementById(datalistId);
+            if (dl) dl.innerHTML = '';
+            return;
+        }
+
+        // Faz requisição para nossa rota Django (AJUSTE AQUI seu endpoint)
+        fetch(`/autocomplete-produto/?q=${encodeURIComponent(texto)}`)
+            .then(response => response.json())
+            .then(listaDeProdutos => {
+                const dl = document.getElementById(datalistId);
+                if (!dl) return;
+
+                // Limpa as opções anteriores
+                dl.innerHTML = '';
+
+                // Para cada produto, criamos um <option> com value = nome
+                listaDeProdutos.forEach(nome => {
+                    const option = document.createElement('option');
+                    option.value = nome;
+                    dl.appendChild(option);
+                });
+            })
+            .catch(err => {
+                console.error('Erro ao buscar autocomplete:', err);
+            });
+    });
+}
+
+// ***************************************************************
+// 2. Função para ativar autocomplete em todos os pedidos da tela
+// ***************************************************************
+function ativarAutocompleteEmTodosOsPedidos() {
+    // Seleciona todos os inputs de Balancinho
+    document.querySelectorAll('.matBalancinho').forEach(input => {
+        configureAutocomplete(input, 'listaBalancinho');
+    });
+
+    // Seleciona todos os inputs de Palmilha
+    document.querySelectorAll('.matPalmilha').forEach(input => {
+        configureAutocomplete(input, 'listaPalmilha');
+    });
+}
+
+// Busca o código do produto pelo NOME e preenche a "refBalancinho"
+function handleBalancinhoChange(event) {
+    const nomeProduto = event.target.value.trim();
+    if (!nomeProduto) return;
+
+    fetch(`/buscar-produto-por-nome/?nome=${encodeURIComponent(nomeProduto)}`)
+        .then(resp => resp.json())
+        .then(data => {
+            // Se houver 'erro' retornado pela view
+            if (data.erro) {
+                console.warn('Produto não encontrado ou outro problema:', data.erro);
+                return;
+            }
+            // Localiza o .pedido-item mais próximo
+            const pedidoItem = event.target.closest('.pedido-item');
+            if (!pedidoItem) return;
+
+            const refBal = pedidoItem.querySelector('.refBalancinho');
+            if (refBal) {
+                refBal.value = data.codigo;  // Preenche a referência
+            }
+        })
+        .catch(err => {
+            console.error('Erro ao buscar código do produto:', err);
+        });
+}
+
+// Busca o código do produto pelo NOME e preenche a "refPalmilha"
+function handlePalmilhaChange(event) {
+    const nomeProduto = event.target.value.trim();
+    if (!nomeProduto) return;
+
+    fetch(`/buscar-produto-por-nome/?nome=${encodeURIComponent(nomeProduto)}`)
+        .then(resp => resp.json())
+        .then(data => {
+            if (data.erro) {
+                console.warn('Produto não encontrado ou outro problema:', data.erro);
+                return;
+            }
+            const pedidoItem = event.target.closest('.pedido-item');
+            if (!pedidoItem) return;
+
+            const refPalm = pedidoItem.querySelector('.refPalmilha');
+            if (refPalm) {
+                refPalm.value = data.codigo; 
+            }
+        })
+        .catch(err => {
+            console.error('Erro ao buscar código do produto:', err);
+        });
+}
+
+
+// =====================
+// Função principal
+// =====================
+function ativarReferenciaAutomatica() {
+    // Para cada pedido-item, vamos associar os eventos
+    document.querySelectorAll('.pedido-item').forEach(pedido => {
+        // Input de material Balancinho
+        const matBalInput = pedido.querySelector('.matBalancinho');
+        if (matBalInput) {
+            // Quando o usuário "confirma" a escolha (change), chamamos handleBalancinhoChange
+            matBalInput.removeEventListener('change', handleBalancinhoChange); // remove se já tinha
+            matBalInput.addEventListener('change', handleBalancinhoChange);
+        }
+
+        // Input de material Palmilha
+        const matPalmInput = pedido.querySelector('.matPalmilha');
+        if (matPalmInput) {
+            matPalmInput.removeEventListener('change', handlePalmilhaChange);
+            matPalmInput.addEventListener('change', handlePalmilhaChange);
+        }
+    });
+}
+
+
+
 let proximoTabindex = 1;
 
 /**
@@ -570,6 +701,9 @@ document.addEventListener('DOMContentLoaded', () => {
     buttons.forEach((button, index) => {
       button.style.animationDelay = `${0.5 + index * 0.1}s`; // Delay progressivo nos botões
     });
+
+    ativarReferenciaAutomatica();
+    ativarAutocompleteEmTodosOsPedidos();
 
     document.querySelectorAll('.pedido-item').forEach(pedido => {
         const containerQuadradinhos = pedido.querySelector('.containerQuadradinhos');

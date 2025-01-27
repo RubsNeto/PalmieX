@@ -21,19 +21,14 @@
                     <a href="{% url 'pedidos:pedidos_finalizados' %}" tabindex='-1'><img width="13" height="13" style= "filter:brightness(0) invert(1);" src="https://img.icons8.com/material-outlined/24/task-completed.png" alt="task-completed"/> Finalizados</a>
                 </div>
 
-                {% if user.permission_level == 4 %}
+                
                 <h4 class="titulo gestao">Gestão</h4>
                 <div class="sub_menu">
                     <a href="{% url 'vendedor:lista_vendedores' %}" tabindex='-1'><img width="13" height="13"  style= "filter:brightness(0) invert(1);"  src="https://img.icons8.com/windows/32/sell-stock.png" alt="reseller"/> Vendedor</a>
                     <a href="{% url 'produtos:lista_produtos' %}" tabindex='-1'><img width="13" height="13"  style= "filter:brightness(0) invert(1);"  src="https://img.icons8.com/material-outlined/24/box--v1.png" alt="product"/> Produtos</a>
                     <a href="{% url 'logout' %}" tabindex='-1'><img width="13" height="13"  style= "filter:brightness(0) invert(1);"  src="https://img.icons8.com/pulsar-line/48/exit.png" alt="exit"/> Logout</a>
                 </div>
-                {% else %}
-                <!-- Exibe apenas Logout para outros níveis -->
-                <div class="sub_menu">
-                    <a href="{% url 'logout' %}" tabindex='-1'><img width="13" height="13"   style= "filter:brightness(0) invert(1);" src="https://img.icons8.com/pulsar-line/48/exit.png" alt="exit"/> Logout</a>
-                </div>
-                {% endif %}
+                
             </div>
             <img class="logo" src="{% static 'img/Logo_palmiex.png' %}" alt="Logo">
         </nav>
