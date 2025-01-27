@@ -129,16 +129,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p><strong>Vendedor:</strong> ${data.vendedor_nome}</p>
                         <p><strong>Pedido:</strong> ${modal.dataset.pedidoId}</p>
                         <p><strong>Data:</strong> ${data.data}</p>
-                        <p><strong>Hora:</strong> aaaaa${data.hora}</p>
+                        <p><strong>Hora:</strong> ${data.hora}</p>
                         <p><strong>Status:</strong> 
                             <span id="status-pedido-modal">${data.status}</span>
                         </p>
                         ${data.status === 'Cancelado' ? `
-                            <p><strong>Motivo do Cancelamento:</strong> 
-                                <span class="motivo-cancelamento">${data.motivo_cancelamento || 'N/A'}</span>
-                            </p>
                             <p><strong>Autorizado por:</strong> 
                                 <span class="gerente-cancelamento">${data.gerente_cancelamento || 'N/A'}</span>
+                            </p>
+                            <p><strong>Motivo do Cancelamento:</strong> 
+                                <span class="motivo-cancelamento">${data.motivo_cancelamento || 'N/A'}</span>
                             </p>
                         ` : ''}
                     </div>

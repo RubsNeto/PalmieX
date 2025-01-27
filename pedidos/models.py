@@ -68,7 +68,7 @@ class PedidoItem(models.Model):
         ('subpalmilha', 'Subpalmilha'),
         ('costura', 'Costura'),
         ('subpalmlha Confot', 'Subpalmilha Confot'),
-        ('subpalmilha rv 17', 'Subpalmilha rv 17'),
+        ('subpalmilha RV 17', 'Subpalmilha rv 17'),
         ('subpalmlha com Geleia', 'Subpalmilha com Geleia'),
         ('subpalmlha confort com cola', 'Subpalmilha confort com cola'),
         
