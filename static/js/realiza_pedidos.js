@@ -321,6 +321,11 @@ function adicionarEventosPedido(pedidoItem) {
                                     placeholder="MM" inputmode="numeric" pattern="[0-9]*" 
                                     title="Digite apenas números para o tamanho em milímetros">
                         </div>
+                        
+                        <div class="divCor">
+                            <span class="campo">Cor</span>
+                            <input type="text" class="cor">
+                        </div>
 
                         <div class="tipo-servico">
                             <span class="campo">Tipo de Serviço</span>
@@ -329,11 +334,6 @@ function adicionarEventosPedido(pedidoItem) {
                                 <option value="subpalmilha">Subpalmilha</option>
                                 <option value="costura">Costura</option>
                             </select>
-                        </div>
-
-                        <div class="divCor">
-                            <span class="campo">Cor</span>
-                            <input type="text" class="cor">
                         </div>
                         
                         <div class="campoObs">

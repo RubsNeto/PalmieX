@@ -97,6 +97,15 @@ def deletar_vendedor(request, pk):
     else:
         return redirect('vendedor:lista_vendedores')
 
+
+
+
+
+
+
+
+
+
 @login_required
 def download_excel_report(request, vendedor_id):
     """
@@ -274,7 +283,7 @@ def download_excel_report(request, vendedor_id):
             'Pedido ID', 'Cliente', 'Data', 'Status',
             'Produto', 'Quantidade', 'Tamanho',
             'Tipo serviço', 'Sintético', 'Material',
-            'Cor', 'Palmilha', 'MM Palmilha', 'Obs'
+            'Cor', 'Palmilha', 'MM Palmilha', 'Obs', 'AutorizadoPor', 'Motivo Cancelamento'
         ]
         row_header = 20
         for col_index, header_text in enumerate(headers, start=1):
@@ -290,6 +299,16 @@ def download_excel_report(request, vendedor_id):
         for pedido in sorted(pedidos_do_mes, key=lambda x: x.id, reverse=True):
             for item in pedido.itens.all():
                 data_str = pedido.data.strftime("%d/%m/%Y %H:%M")
+                gerente = str(item.pedido.gerente_cancelamento)
+                cancelado = str(item.pedido.cancelado)
+            
+                if cancelado == 'None':
+                    cancelado = 'Sem Motivo'
+                    
+                if gerente == 'None':
+                    gerente = '--'
+                
+                
                 row_data = [
                     pedido.pk,
                     pedido.cliente,
@@ -304,7 +323,9 @@ def download_excel_report(request, vendedor_id):
                     item.cor,
                     item.mat_palmilha,
                     item.tamanho_palmilha,
-                    item.obs
+                    item.obs,
+                    gerente,
+                    cancelado
                 ]
                 for col_index, valor in enumerate(row_data, start=1):
                     cell = ws.cell(row=linha_atual, column=col_index)
