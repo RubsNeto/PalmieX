@@ -51,7 +51,7 @@ function configureAutocomplete(input, datalistId) {
 // 2. Função para ativar autocomplete em todos os pedidos da tela
 // ***************************************************************
 function ativarAutocompleteEmTodosOsPedidos() {
-    // Seleciona todos os inputs de Balancinho
+    // Seleciona todos os inputs do Balancinho
     document.querySelectorAll('.matBalancinho').forEach(input => {
         configureAutocomplete(input, 'listaBalancinho');
     });

@@ -2,20 +2,10 @@
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 from django.contrib import messages
-from django.http import JsonResponse
-from .models import Produto
-from .forms import ProdutoForm
-
-from functools import wraps
-from django.http import JsonResponse, HttpResponseForbidden
-
-from django.shortcuts import get_object_or_404
+from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden
-from django.db.models import Sum
-from functools import wraps
+
 import openpyxl
 from openpyxl.styles import (
     Font, PatternFill, Alignment, Border, Side, GradientFill,
@@ -24,33 +14,46 @@ from openpyxl.styles import (
 from openpyxl.chart import BarChart, Reference
 from openpyxl.chart.label import DataLabelList
 from openpyxl.utils import get_column_letter
+
 from collections import defaultdict
 import datetime
 import calendar
 
+from functools import wraps
+
 from pedidos.models import PedidoItem, Pedido
-from vendedor.models import Vendedor  # se precisar exibir info do Vendedor
-from .models import Produto  # se precisar exibir info de Produto
+from vendedor.models import Vendedor  # caso precise exibir info do Vendedor
+from .models import Produto
+from .forms import ProdutoForm
 
 
+# ---------------------------------------------------
+# DECORATOR DE PERMISSÃO
+# ---------------------------------------------------
 def permission_required(min_level):
+    """
+    Verifica se o usuário possui um nível de permissão suficiente.
+    Caso contrário, retorna 403 (Forbidden).
+    """
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
-            # Verifica se o usuário está autenticado e possui o nível mínimo
             if not request.user.is_authenticated or request.user.permission_level < min_level:
                 return HttpResponseForbidden("Você não tem permissão para acessar esta página.")
             return view_func(request, *args, **kwargs)
         return _wrapped_view
     return decorator
 
+
+# ---------------------------------------------------
+# LISTAGEM DE PRODUTOS
+# ---------------------------------------------------
 @permission_required(1)
 def lista_produtos(request):
     produtos_list = Produto.objects.all().order_by('nome')
-    
     page = request.GET.get('page', 1)
-    paginator = Paginator(produtos_list, 10)  # 10 por página
-    
+    paginator = Paginator(produtos_list, 10)  # 10 itens por página
+
     try:
         produtos = paginator.page(page)
     except PageNotAnInteger:
@@ -63,6 +66,9 @@ def lista_produtos(request):
     })
 
 
+# ---------------------------------------------------
+# CRIAÇÃO DE PRODUTO
+# ---------------------------------------------------
 @permission_required(4)
 def criar_produto(request):
     if request.method == 'POST':
@@ -75,6 +81,10 @@ def criar_produto(request):
         form = ProdutoForm()
     return render(request, 'produto/form_produto.html', {'form': form})
 
+
+# ---------------------------------------------------
+# EDIÇÃO DE PRODUTO
+# ---------------------------------------------------
 @permission_required(3)
 def editar_produto(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
@@ -88,6 +98,10 @@ def editar_produto(request, pk):
         form = ProdutoForm(instance=produto)
     return render(request, 'produto/form_produto.html', {'form': form})
 
+
+# ---------------------------------------------------
+# EXCLUSÃO DE PRODUTO
+# ---------------------------------------------------
 @permission_required(4)
 def deletar_produto(request, pk):
     if request.method == 'POST':
@@ -97,48 +111,56 @@ def deletar_produto(request, pk):
     else:
         return JsonResponse({'success': False, 'error': 'Método não permitido.'}, status=405)
 
+
+# ---------------------------------------------------
+# DOWNLOAD DE EXCEL PARA UM PRODUTO ESPECÍFICO
+# ---------------------------------------------------
 @login_required
 @permission_required(4)
 def download_excel_produto(request, produto_id):
     """
-    Gera um relatório em Excel para **um produto específico**.
-    - Cria uma aba (sheet) para cada mês do ano atual que tenha vendas do produto.
-    - Lista todos os PedidoItem referentes a esse produto no mês.
-    - Gera um gráfico de "vendas diárias" (quantidade vendida por dia).
-    - Aplica o mesmo estilo e layout do relatório dos vendedores.
-    - Tudo (exceto o título) alinhado à esquerda.
+    Gera um relatório em Excel para um produto específico:
+      - Cria uma aba (sheet) para cada mês do ano atual com vendas.
+      - Lista todos os PedidoItem referentes a esse produto no mês.
+      - Gera um gráfico de "vendas diárias" (quantidade vendida por dia).
+      - Aplica estilos e layouts semelhantes aos relatórios de vendedores.
+      - Título centralizado, demais campos à esquerda, etc.
+      - Se não houver vendas para o produto, mantém a sheet padrão com uma mensagem.
     """
+
     produto = get_object_or_404(Produto, pk=produto_id)
     ano_atual = datetime.datetime.now().year
 
-    # Filtra todos os PedidoItems do ano atual apenas para este produto
+    # Filtra todos os PedidoItems do ano atual para este produto
     itens_do_produto = (
         PedidoItem.objects
-        .select_related('pedido', 'pedido__vendedor')
-        .filter(produto=produto, pedido__data__year=ano_atual)
-        .order_by('-pedido__id')
+                  .select_related('pedido', 'pedido__vendedor')
+                  .filter(produto=produto, pedido__data__year=ano_atual)
+                  .order_by('-pedido__id')
     )
 
-    # Agrupa por mês
+    # Agrupa itens por mês (1..12)
     itens_por_mes = defaultdict(list)
     for item in itens_do_produto:
         mes = item.pedido.data.month
         itens_por_mes[mes].append(item)
 
-    # Cria o workbook (planilha Excel)
+    # Cria o Workbook e pega a sheet padrão
     wb = openpyxl.Workbook()
     ws_padrao = wb.active
-    wb.remove(ws_padrao)  # remove a aba inicial padrão
+
+    # Variável para controlar se criamos alguma sheet de mês
+    criou_aba_vendas = False
 
     # ----------------------------------------------------
     # 1) Definição de estilos e fills
     # ----------------------------------------------------
-    # Título: centralizado
-    titulo_fill = GradientFill(stop=("017A39", "01A44D"))  # Fundo gradiente
+    # Estilo do título
+    titulo_fill = GradientFill(stop=("017A39", "01A44D"))  # Fundo gradiente (verde)
     titulo_font = Font(color="FFFFFF", size=16, bold=True)
     titulo_alignment = Alignment(horizontal="center", vertical="center")
 
-    # Bordas finas verde
+    # Bordas finas na cor verde
     thin_border = Border(
         left=Side(style="thin", color="017a39"),
         right=Side(style="thin", color="017a39"),
@@ -146,31 +168,32 @@ def download_excel_produto(request, produto_id):
         bottom=Side(style="thin", color="017a39")
     )
 
-    # Cabeçalho: fundo verde, texto branco, alinhado à esquerda
+    # Cabeçalho: fundo verde, texto branco
     cabecalho_fill = PatternFill(start_color="017A39", end_color="01A44D", fill_type="solid")
     cabecalho_font = Font(color="FFFFFF", bold=True)
     cabecalho_alignment = Alignment(horizontal="left", vertical="center")
 
-    # Estilo zebra (linhas pares)
+    # Estilo Zebra
     try:
         wb.remove_named_style("ZebraPar")
-    except Exception:
+    except:
         pass
     zebra_par = NamedStyle(name="ZebraPar")
     zebra_par.fill = PatternFill(start_color="E6FFFA", end_color="E6FFFA", fill_type="solid")
     zebra_par.border = thin_border
-    # Alinhado à esquerda também
     zebra_par.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
     wb.add_named_style(zebra_par)
 
     # Estilo para pedidos cancelados (vermelho claro)
     cancelado_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
 
-    # Nome dos meses e dicionário para dia da semana
+    # Nomes dos meses
     nomes_meses = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ]
+
+    # Dias da semana em pt-BR
     dias_semana_pt = {
         "Monday": "Segunda-feira",
         "Tuesday": "Terça-feira",
@@ -181,16 +204,20 @@ def download_excel_produto(request, produto_id):
         "Sunday": "Domingo"
     }
 
+    # ----------------------------------------------------
+    # Funções auxiliares
+    # ----------------------------------------------------
     def criar_planilha_mes(mes):
-        """Cria a aba e nomeia como 'Mes_Ano'."""
+        """
+        Cria a aba e nomeia como 'Mes_Ano'.
+        """
         nome_mes = nomes_meses[mes - 1] if 1 <= mes <= 12 else f"Mes_{mes}"
         ws = wb.create_sheet(title=f"{nome_mes}_{ano_atual}")
         return ws
 
     def write_info(ws, row_index, col_start, label, value, merge_range):
         """
-        Função auxiliar para escrever texto (rótulo/valor) em células mescladas
-        alinhado à esquerda (menos o título).
+        Escreve um rótulo e valor em células mescladas, alinhados à esquerda.
         """
         ws.merge_cells(merge_range)
         cell = ws.cell(row=row_index, column=col_start)
@@ -199,17 +226,21 @@ def download_excel_produto(request, produto_id):
         cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
         ws.row_dimensions[row_index].height = 25
 
-    # Loop pelos meses de 1..12, criando a subplanilha se existir item naquele mês
+    # ----------------------------------------------------
+    # 2) Loop pelos meses para gerar planilhas
+    # ----------------------------------------------------
     for mes in range(1, 13):
+        # Se não há itens no mês, pula
         if mes not in itens_por_mes:
             continue
 
         ws = criar_planilha_mes(mes)
+        criou_aba_vendas = True  # Criamos uma sheet com dados
         lista_itens = itens_por_mes[mes]
 
-        # --------------------------------
-        # 2) Cálculo de estatísticas do mês
-        # --------------------------------
+        # ------------------------------------------------
+        # Cálculo de estatísticas do mês
+        # ------------------------------------------------
         total_quantidades = 0
         cancelados = 0
         vendas_por_dia = defaultdict(int)
@@ -225,9 +256,9 @@ def download_excel_produto(request, produto_id):
             else:
                 dia = pedido.data.date()
                 vendas_por_dia[dia] += qty
-
                 pedido_soma_dict[pedido.id] += qty
 
+        # Maior pedido
         maior_pedido = None
         maior_pedido_qty = 0
         for pid, soma_qtde in pedido_soma_dict.items():
@@ -235,6 +266,7 @@ def download_excel_produto(request, produto_id):
                 maior_pedido_qty = soma_qtde
                 maior_pedido = pid
 
+        # Melhor dia
         if vendas_por_dia:
             best_day = max(vendas_por_dia, key=vendas_por_dia.get)
             best_day_count = vendas_por_dia[best_day]
@@ -246,41 +278,54 @@ def download_excel_produto(request, produto_id):
             melhor_dia_str = "N/A"
             best_day_count = 0
 
-        # ------------------------
-        # 3) Layout Título Mesclado (centralizado)
-        # ------------------------
+        # ------------------------------------------------
+        # Título (mesclado e centralizado)
+        # ------------------------------------------------
         nome_mes = nomes_meses[mes - 1]
         ws.merge_cells('A1:N3')
         cell_titulo = ws['A1']
-        cell_titulo.value = f"RELATÓRIO DE VENDAS DO PRODUTO - {produto.nome.upper()} - {nome_mes.upper()} {ano_atual}"
+        cell_titulo.value = (
+            f"RELATÓRIO DE VENDAS DO PRODUTO - {produto.nome.upper()} - "
+            f"{nome_mes.upper()} {ano_atual}"
+        )
         cell_titulo.font = titulo_font
-        cell_titulo.alignment = titulo_alignment  # centralizado só aqui
+        cell_titulo.alignment = titulo_alignment
         cell_titulo.fill = titulo_fill
         cell_titulo.border = thin_border
         ws.row_dimensions[1].height = 25
 
-        # Espaçamento
+        # Um espaçamento antes das infos
         ws.row_dimensions[4].height = 10
 
-        # -----------------------
-        # 4) Informações Resumo (à esquerda)
-        # -----------------------
+        # ------------------------------------------------
+        # Informações de Resumo
+        # ------------------------------------------------
         linha_info = 5
         write_info(ws, linha_info, 1, "Quantidade Total (mês)", total_quantidades, 'A5:D5')
-        write_info(ws, linha_info, 5, "Pedidos Cancelados", cancelados, 'E5:H5') 
-        linha_info+=1
-        write_info(ws, linha_info, 5, "Melhor Dia", f"{melhor_dia_str} ({best_day_count} itens)", 'E6:H6')
+        write_info(ws, linha_info, 5, "Pedidos Cancelados", cancelados, 'E5:H5')
+        linha_info += 1
+        write_info(
+            ws,
+            linha_info,
+            5,
+            "Melhor Dia",
+            f"{melhor_dia_str} ({best_day_count} itens)" if best_day_count else "N/A",
+            'E6:H6'
+        )
 
         info_maior_venda = "N/A"
         if maior_pedido:
             pedido_obj = Pedido.objects.filter(pk=maior_pedido).first()
             if pedido_obj:
-                info_maior_venda = f"Pedido #{pedido_obj.pk} - Cliente: {pedido_obj.cliente} ({maior_pedido_qty} itens)"
+                info_maior_venda = (
+                    f"Pedido #{pedido_obj.pk} - Cliente: {pedido_obj.cliente} "
+                    f"({maior_pedido_qty} itens)"
+                )
         write_info(ws, linha_info, 1, "Maior Pedido", info_maior_venda, 'A6:D6')
 
-        # -----------------------------------
-        # 5) Cabeçalho da Tabela de PedidoItem (à esquerda)
-        # -----------------------------------
+        # ------------------------------------------------
+        # Cabeçalho da Tabela de Itens
+        # ------------------------------------------------
         headers = [
             'Pedido ID', 'Data', 'Status', 'Cliente',
             'Vendedor', 'Quantidade', 'Tamanho', 'Tipo Serviço',
@@ -293,17 +338,19 @@ def download_excel_produto(request, produto_id):
             cell.value = header_text
             cell.font = cabecalho_font
             cell.fill = cabecalho_fill
-            cell.alignment = cabecalho_alignment  # à esquerda
+            cell.alignment = cabecalho_alignment
             cell.border = thin_border
         ws.row_dimensions[row_header].height = 25
 
-        # 6) Preenche as linhas da tabela (também à esquerda)
+        # ------------------------------------------------
+        # Linhas da Tabela
+        # ------------------------------------------------
         linha_atual = row_header + 1
         sorted_items = sorted(lista_itens, key=lambda it: it.pedido.id, reverse=True)
 
         for item in sorted_items:
             pedido = item.pedido
-            data_str = pedido.data.strftime("%d/%m/%Y %H:%M")
+            data_str = pedido.data.strftime("%d/%m/%Y %H:%M") if pedido.data else ""
             row_data = [
                 pedido.pk,
                 data_str,
@@ -325,18 +372,20 @@ def download_excel_produto(request, produto_id):
                 cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
                 cell.border = thin_border
 
-                # Zebra style em linhas pares
+                # Linha Zebra (pares)
                 if (linha_atual % 2) == 0:
-                    cell.style = "ZebraPar"  # já força left alignment pela NamedStyle
+                    cell.style = "ZebraPar"
 
-                # Se for pedido cancelado, destaque
+                # Destacar cancelados
                 if pedido.status == 'Cancelado':
                     cell.fill = cancelado_fill
 
             ws.row_dimensions[linha_atual].height = 20
             linha_atual += 1
 
-        # Ajusta a largura das colunas
+        # ------------------------------------------------
+        # Ajuste de largura das colunas
+        # ------------------------------------------------
         max_row = ws.max_row
         max_col = ws.max_column
         for col in range(1, max_col + 1):
@@ -350,19 +399,20 @@ def download_excel_produto(request, produto_id):
                         max_length = length
             ws.column_dimensions[col_letter].width = max_length + 2
 
-        # --------------------------
-        # 7) Gráfico de "vendas" diárias
-        # --------------------------
+        # ------------------------------------------------
+        # Gráfico de Vendas Diárias (BarChart)
+        # ------------------------------------------------
         if vendas_por_dia:
             last_day = calendar.monthrange(ano_atual, mes)[1]
             inicio_linha_grafico = linha_atual + 2
             linha_chart = inicio_linha_grafico + 1
 
+            # Preenche (Dia do mês / Quantidade)
             for day_num in range(1, last_day + 1):
                 current_date = datetime.date(ano_atual, mes, day_num)
                 qtd = vendas_por_dia.get(current_date, 0)
-                ws.cell(row=linha_chart, column=1, value=day_num)  # Dia do mês
-                ws.cell(row=linha_chart, column=2, value=qtd)      # Quantidade
+                ws.cell(row=linha_chart, column=1, value=day_num)
+                ws.cell(row=linha_chart, column=2, value=qtd)
                 linha_chart += 1
 
             chart = BarChart()
@@ -380,21 +430,21 @@ def download_excel_produto(request, produto_id):
             chart.dataLabels.showVal = True
             chart.legend = None
 
-            # Remove linhas de grade
+            # Remover linhas de grade
             chart.x_axis.majorGridlines = None
             chart.y_axis.majorGridlines = None
 
-            # Título e eixos
+            # Títulos e eixos
             chart.x_axis.title = "Dia do Mês"
             chart.y_axis.title = "Quantidade"
 
-            # Cor das barras
+            # Cor das barras (verde)
             if chart.series:
                 s = chart.series[0]
                 s.graphicalProperties.solidFill = "017a39"
                 s.graphicalProperties.line.solidFill = "017a39"
 
-            # Ajuste de largura do gráfico
+            # Ajuste básico de largura/altura
             max_width = 0
             for col_ in range(1, 16):
                 col_letter = get_column_letter(col_)
@@ -402,15 +452,25 @@ def download_excel_produto(request, produto_id):
                 max_width += col_width
             chart.width = max_width * 0.1
             chart.height = 6
-            
-            ws.column_dimensions['A'].width = 10
-            ws.column_dimensions['I'].width = 10
-            ws.column_dimensions['L'].width = 14
-            ws.column_dimensions['E'].width = 25    
-            
-            ws.add_chart(chart, f"A8")
 
-    # Retorna o arquivo Excel como resposta de download
+            # Coloca o gráfico em A + (linha)
+            ws.add_chart(chart, f"A7")
+
+    # ----------------------------------------------------
+    # 3) Verifica se criamos pelo menos uma sheet de vendas
+    # ----------------------------------------------------
+    if criou_aba_vendas:
+        # Remove a sheet padrão, pois já existem outras planilhas com dados
+        wb.remove(ws_padrao)
+    else:
+        # Não houve nenhum item de vendas para o produto neste ano
+        # Renomeia a sheet padrão e adiciona uma mensagem simples
+        ws_padrao.title = "Sem dados"
+        ws_padrao['A1'] = "Não há registros de vendas para este produto no ano atual."
+
+    # ----------------------------------------------------
+    # 4) Retorna o arquivo Excel como resposta de download
+    # ----------------------------------------------------
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )

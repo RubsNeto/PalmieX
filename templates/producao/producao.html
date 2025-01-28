@@ -108,6 +108,7 @@
       <a href="?page={{ pedidos.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">&laquo; Anterior</a>
     {% endif %}
 
+    
     {% for num in pedidos.paginator.page_range %}
       {% if pedidos.number == num %}
         <strong>{{ num }}</strong>
