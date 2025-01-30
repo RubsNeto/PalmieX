@@ -97,15 +97,6 @@ def deletar_vendedor(request, pk):
     else:
         return redirect('vendedor:lista_vendedores')
 
-
-
-
-
-
-
-
-
-
 @login_required
 def download_excel_report(request, vendedor_id):
     """
@@ -191,6 +182,7 @@ def download_excel_report(request, vendedor_id):
     pedidos_por_mes = defaultdict(list)
     for p in pedidos_todos:
         pedidos_por_mes[p.data.month].append(p)
+
 
     from openpyxl.chart import BarChart, Reference
     from openpyxl.utils import get_column_letter
