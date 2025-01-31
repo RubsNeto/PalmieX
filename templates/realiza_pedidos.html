@@ -36,7 +36,9 @@
         <div class="linha-pedido grid-3">
             <div>
               <span class="campo">Ref. Balancinho</span>
-              <input type="text" class="refBalancinho" required>
+              <input type="text" class="refBalancinho" required list="listaRefBalancinho">
+              <datalist id="listaRefBalancinho"></datalist>
+
             </div>
             <div>
               <span class="campo">Material Balancinho</span>
@@ -51,7 +53,8 @@
           
             <div>
               <span class="campo">Ref. Palmilha/Solado</span>
-              <input type="text" class="refPalmilha" required>
+              <input type="text" class="refPalmilha" required list="listaRefPalmilha">
+              <datalist id="listaRefPalmilha"></datalist>
             </div>
             <div>
               <span class="campo">Material Palmilha/Solado</span>
@@ -73,15 +76,7 @@
 
             <div class="tipo-servico">
               <span class="campo">Tipo de Serviço</span>
-              <select name="tipoServico" class="selectTipoServico">
-                <option value="nenhum">Nenhum</option>
-                <option value="costura">Costura</option>
-                <option value="subpalmilha">Subpalmilha</option>
-                <option value="subpalmilha RV 17">Subpalmilha RV 17</option>
-                <option value="subpalmilha Confot">Subpalmilha Confot</option>
-                <option value="subpalmilha com Geleia">Subpalmilha com Geleia</option>
-                <option value="subpalmilha confort com cola">Subpalmilha confort com cola</option>
-            </select>
+              <input type="text" name="tipoServico" class="selectTipoServico">
             
             </div>
             

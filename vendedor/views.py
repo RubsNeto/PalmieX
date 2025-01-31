@@ -14,6 +14,7 @@ import openpyxl
 from django.http import JsonResponse
 from collections import defaultdict
 from .models import Vendedor
+from pedidos.models import PedidoItem
 from .forms import VendedorForm
 from django.contrib.auth.decorators import login_required
 from openpyxl.styles import Font, PatternFill, Alignment
@@ -25,6 +26,7 @@ import csv
 import datetime
 import calendar
 from pedidos.models import Pedido  # Ajuste conforme a localização do seu model
+from pedidos.models import Referencia
 
 def permission_required(min_level):
     def decorator(view_func):

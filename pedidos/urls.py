@@ -21,5 +21,7 @@ urlpatterns = [
     path('finalizados/', views.pedidos_finalizados, name='pedidos_finalizados'),
     path('autocomplete-produto/', views.autocomplete_produto, name='autocomplete_produto'),
     path('buscar-produto-por-nome/', views.buscar_produto_por_nome, name='buscar_produto_por_nome'),
+    path('autocomplete-referencia/', views.autocomplete_referencia, name='autocomplete_referencia'),
+    path('buscar-material-por-referencia/', views.buscar_material_por_referencia, name='buscar_material_por_referencia'),
 ]
 

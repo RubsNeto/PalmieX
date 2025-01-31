@@ -73,16 +73,19 @@ class PedidoItem(models.Model):
         ('subpalmlha confort com cola', 'Subpalmilha confort com cola'),
         
     ]
-    tipo_servico = models.CharField(
-        max_length=50,
-        choices=TIPO_SERVICO_CHOICES,
-        default='nenhum'
-    )
-
+    tipo_servico = models.CharField(max_length=50, default='nenhum')
     sintetico = models.CharField(max_length=50, null=True, blank=True)
     cor = models.CharField(max_length=50, null=True, blank=True)
     obs = models.TextField(max_length=90,null=True, blank=True)
 
     def __str__(self):
         return f"{self.quantidade}x (Bal: {self.ref_balancinho}, Palm: {self.ref_palmilha})"
+
+
+class Referencia(models.Model):
+    nome = models.CharField(max_length=255)
+    descricao = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.nome
 

@@ -138,7 +138,64 @@ function ativarReferenciaAutomatica() {
     });
 }
 
+// **************************
+// 1. Função de autocomplete para REFERÊNCIA
+// **************************
+function configureReferenceAutocomplete(input, datalistId, materialClass) {
+    input.addEventListener('input', function () {
+        const texto = this.value.trim();
 
+        if (texto.length < 1) {
+            document.getElementById(datalistId).innerHTML = '';
+            return;
+        }
+
+        fetch(`/autocomplete-referencia/?q=${encodeURIComponent(texto)}`)
+            .then(response => response.json())
+            .then(referencias => {
+                const dl = document.getElementById(datalistId);
+                dl.innerHTML = '';
+                referencias.forEach(ref => {
+                    const option = document.createElement('option');
+                    option.value = ref;
+                    dl.appendChild(option);
+                });
+            })
+            .catch(err => console.error('Erro no autocomplete:', err));
+    });
+
+    input.addEventListener('change', function () {
+        const referencia = this.value.trim();
+        if (!referencia) return;
+
+        fetch(`/buscar-material-por-referencia/?codigo=${encodeURIComponent(referencia)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.nome) {
+                    const pedidoItem = input.closest('.pedido-item');
+                    const materialInput = pedidoItem.querySelector(materialClass);
+                    if (materialInput) {
+                        materialInput.value = data.nome;
+                    }
+                }
+            })
+            .catch(err => console.error('Erro ao buscar material:', err));
+    });
+}
+
+function ativarAutocompleteEmTodasAsReferencias() {
+    document.querySelectorAll('.refBalancinho').forEach(input => {
+        configureReferenceAutocomplete(input, 'listaRefBalancinho', '.matBalancinho');
+    });
+
+    document.querySelectorAll('.refPalmilha').forEach(input => {
+        configureReferenceAutocomplete(input, 'listaRefPalmilha', '.matPalmilha');
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    ativarAutocompleteEmTodasAsReferencias();
+});
 
 let proximoTabindex = 1;
 
@@ -514,7 +571,7 @@ function adicionarEventosPedido(pedidoItem) {
         });
     }
 
-
+    //Preenche automatico o material da palmilha
     const PalmilhareferenciaInput = pedidoItem.querySelector('.refPalmilha');
     const PalmilhamaterialInput = pedidoItem.querySelector('.matPalmilha');
     if (PalmilhareferenciaInput && PalmilhamaterialInput) {
@@ -532,6 +589,9 @@ function adicionarEventosPedido(pedidoItem) {
                 });
         });
     }
+
+
+    
 }
 
 function coletarDadosPedidos() {
@@ -704,6 +764,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ativarReferenciaAutomatica();
     ativarAutocompleteEmTodosOsPedidos();
+
+    ativarAutocompleteEmTodosOsPedidos();
+    ativarAutocompleteEmTodasAsReferencias();
 
     document.querySelectorAll('.pedido-item').forEach(pedido => {
         const containerQuadradinhos = pedido.querySelector('.containerQuadradinhos');

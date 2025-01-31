@@ -359,25 +359,7 @@ textarea:focus {
   flex: 1; /* Para expandir se quiser, enquanto o radio ocupa só o espaço dele */
 }
 
-/* Estilo para o dropdown que substitui os radios */
-.selectTipoServico {
-  flex: 1;
-  padding: 6px 8px;
-  border: 1px solid var(--main-color);
-  border-radius: 4px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  font-family: inherit;
-  font-size: inherit;
-  color: var(--dark-color);
-  background-color: #fff;
-  outline: none;
-  -webkit-appearance: none; /* Remove estilo padrão em alguns navegadores */
-  -moz-appearance: none;
-  appearance: none;
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 10px 7px;
-}
+
 
 /* Estado de foco para o dropdown */
 .selectTipoServico:focus {

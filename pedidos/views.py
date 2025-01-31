@@ -11,7 +11,7 @@ from django.contrib.auth.hashers import check_password
 from autenticacao.models import Perfil 
 from django.db.models import Q
 from functools import wraps
-from .models import Vendedor, Produto, Pedido, PedidoItem
+from .models import Vendedor, Produto, Pedido, PedidoItem, Referencia
 import json
 from django.utils import timezone
 import logging
@@ -576,3 +576,27 @@ def pedidos_finalizados(request):
         'pedidos': pedidos_paginados,
         'search_query': search_query
     })
+
+@require_GET
+def autocomplete_referencia(request):
+    """
+    Retorna uma lista de referências que começam com a string digitada pelo usuário.
+    """
+    query = request.GET.get('q', '').strip()
+    if not query:
+        return JsonResponse([], safe=False)
+
+    referencias = Produto.objects.filter(codigo__icontains=query).values_list('codigo', flat=True)[:10]
+    return JsonResponse(list(referencias), safe=False)
+
+@require_GET
+def buscar_material_por_referencia(request):
+    """
+    Retorna o material correspondente à referência informada.
+    """
+    codigo = request.GET.get('codigo', '').strip()
+    if not codigo:
+        return JsonResponse({'erro': 'Código não informado'}, status=400)
+
+    produto = get_object_or_404(Produto, codigo=codigo)
+    return JsonResponse({'codigo': produto.codigo, 'nome': produto.nome})
