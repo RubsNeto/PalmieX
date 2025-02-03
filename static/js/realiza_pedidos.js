@@ -225,17 +225,20 @@ function reorganizarTabindex() {
         const sintetico = pedido.querySelector('.sintetico');
         if (sintetico) sintetico.setAttribute('tabindex', proximoTabindex++);
 
+        const cor = pedido.querySelector('.cor');
+        if (cor) cor.setAttribute('tabindex', proximoTabindex++);
+
         const refPalmilha = pedido.querySelector('.refPalmilha');
         if (refPalmilha) refPalmilha.setAttribute('tabindex', proximoTabindex++);
 
         const matPalmilha = pedido.querySelector('.matPalmilha');
         if (matPalmilha) matPalmilha.setAttribute('tabindex', proximoTabindex++);
 
+        const marca = pedido.querySelector('.marca');
+        if (marca) marca.setAttribute('tabindex', proximoTabindex++);
+
         const tamPalmilha = pedido.querySelector('.tamPalmilha');
         if (tamPalmilha) tamPalmilha.setAttribute('tabindex', proximoTabindex++);
-
-        const cor = pedido.querySelector('.cor');
-        if (cor) cor.setAttribute('tabindex', proximoTabindex++);
         
         const selectTipoServico = pedido.querySelector('.selectTipoServico');
         if (selectTipoServico) selectTipoServico.setAttribute('tabindex', proximoTabindex++);
@@ -480,66 +483,85 @@ function adicionarEventosPedido(pedidoItem) {
                 <div class="pedido-conteudo">
                     <div class="linha-pedido grid-3">
                         <div>
-                            <span class="campo">Ref. Balancinho</span>
-                            <input type="text" class="refBalancinho" required>
+                        <span class="campo">Ref. Balancinho</span>
+                        <input type="text" class="refBalancinho" required list="listaRefBalancinho">
+                        <datalist id="listaRefBalancinho"></datalist>
                         </div>
+                        
                         <div>
-                          <span class="campo">Material Balancinho</span>
-                            <input type="text" class="matBalancinho" required>
+                        <span class="campo">Sintetico</span>
+                        <input type="text" class="matBalancinho" required list="listaBalancinho">
+                            <datalist id="listaBalancinho"></datalist>
                         </div>
 
                         <div>
-                            <span class="campo">Sintético</span>
-                            <input type="text" class="sintetico">
+                        <span class="campo">Cor</span>
+                        <input type="text" class="cor">
                         </div>
                     
                         <div>
-                            <span class="campo">Ref. Palmilha</span>
-                            <input type="text" class="refPalmilha" required>
+                        <span class="campo">Ref. Palmilha/Solado</span>
+                        <input type="text" class="refPalmilha" required list="listaRefPalmilha">
+                        <datalist id="listaRefPalmilha"></datalist>
+                        </div>
+                        <div>
+                        <span class="campo">Material Palmilha/Solado</span>
+                        <input type="text" class="matPalmilha" required list="listaPalmilha">
+                        <datalist id="listaPalmilha"></datalist>
                         </div>
 
-                        <div>
-                            <span class="campo">Material Palmilha</span>
-                            <input type="text" class="matPalmilha" required>
-                        </div>
-
-                        <div>
-                            <span class="campo">tamanho Palmilha</span>
-                            <input type="text" class="tamPalmilha" required 
-                                    placeholder="MM" inputmode="numeric" pattern="[0-9]*" 
-                                    title="Digite apenas números para o tamanho em milímetros">
-                        </div>
-                        
                         <div class="divCor">
-                            <span class="campo">Cor</span>
-                            <input type="text" class="cor">
+                        <span class="campo">Cor</span>
+                        <input type="text" class="corPalmilha">
                         </div>
 
-                        <div class="tipo-servico">
+                        <div class="tamanhos-container">
+                        <div class="campo-tamanho">
+                            <span class="campo">Tamanho Palmilha</span>
+                            <input type="text" class="tamPalmilha" required 
+                                placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
+                                title="Digite apenas números para o tamanho em milímetros">
+                        </div>
+                        <div class="campo-tamanho">
+                            <span class="campo">Espessura</span>
+                            <input type="text" class="espessura" required 
+                                placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
+                                title="Digite apenas números para a espessura em milímetros">
+                        </div>
+                        </div>
+
+                        <div class="tipo-servico-container">
+                        <div class="campo-tipo">
                             <span class="campo">Tipo de Serviço</span>
-                            <select name="tipoServico" class="selectTipoServico">
-                                <option value="nenhum">Nenhum</option>
-                                <option value="subpalmilha">Subpalmilha</option>
-                                <option value="costura">Costura</option>
+                            <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Costurado" default:"Costurado">
+                        </div>
+                        <div class="campo-tipo">
+                            <span class="campo">Marca</span>
+                            <select class="marca">
+                            <option value="fibra">Fibra</option>
+                            <option value="seltex">Seltex</option>
                             </select>
                         </div>
+                        </div>
+                        
                         
                         <div class="campoObs">
-                            <span class="campo">Obs:</span>
-                            <textarea class="obs"></textarea>
+                        <span class="campo">Obs:</span>
+                        <textarea class="obs"></textarea>
                         </div>
                     </div>
-                
+                    
                     <div class="linha-pedido">
-                        <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
-                        <div class="maisEmenos">
-                            <button type="button" class="adicionarPedido">+</button>
-                            <button type="button" class="removerPedido">-</button>
-                        </div>
+                    <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
+                    <div class="maisEmenos">
+                        <button type="button" class="adicionarPedido">+</button>
+                        <button type="button" class="removerPedido">-</button>
+                    </div>
                     </div>
                     <div class="container containerQuadradinhos"></div>
                 </div>
             `;
+
 
             lista.appendChild(novoPedido);
 
@@ -594,6 +616,7 @@ function adicionarEventosPedido(pedidoItem) {
     
 }
 
+
 function coletarDadosPedidos() {
     const dados = {};
     dados.cliente = document.querySelector('.cliente')?.value || '';
@@ -604,55 +627,69 @@ function coletarDadosPedidos() {
 
     const pedidoItens = document.querySelectorAll('.pedido-item');
     pedidoItens.forEach(pedido => {
+        // Campos dos produtos
         const refBalancinho = (pedido.querySelector('.refBalancinho')?.value || '').trim();
         const matBalancinho = (pedido.querySelector('.matBalancinho')?.value || '').trim();
-        const refPalmilha = (pedido.querySelector('.refPalmilha')?.value || '').trim();
-        const matPalmilha = (pedido.querySelector('.matPalmilha')?.value || '').trim();
-        const tamPalmilha = (pedido.querySelector('.tamPalmilha')?.value || '').trim();
+        const refPalmilha   = (pedido.querySelector('.refPalmilha')?.value || '').trim();
+        const matPalmilha   = (pedido.querySelector('.matPalmilha')?.value || '').trim();
 
+        // Campos para os tamanhos gerais (digitados fora dos quadradinhos)
+        const tamPalmilha = (pedido.querySelector('.tamPalmilha')?.value || '').trim();
+        const espessura   = (pedido.querySelector('.espessura')?.value || '').trim();
+
+        // Campo para a cor específica da palmilha
+        const corPalmilha = (pedido.querySelector('.corPalmilha')?.value || '').trim();
+
+        // Tipo de Serviço e Marca
         const selectServico = pedido.querySelector('.selectTipoServico');
-        let tipoServico = 'nenhum';
+        let tipoServico = 'Costurado';
         if (selectServico) {    
             tipoServico = selectServico.value;
         }
-        const sintetico = (pedido.querySelector('.sintetico')?.value || '').trim();
+        const marcaElement = pedido.querySelector('.tipo-servico-container .marca');
+        let marca = 'Fibra';
+        if (marcaElement) {
+            marca = marcaElement.value;
+        }
+
+        // Outros campos
         const cor = (pedido.querySelector('.cor')?.value || '').trim();
         const obs = (pedido.querySelector('.obs')?.value || '').trim();
 
-        console.log(cor);
-
+        // Coleta os tamanhos dos quadradinhos (que indicam os pares por tamanho)
         const tamanhos = {};
         const botaoContainers = pedido.querySelectorAll('.botao-container');
         botaoContainers.forEach(bc => {
             const btn = bc.querySelector('.botao');
             const numeroDiv = bc.querySelector('.numero');
             if (btn && numeroDiv) {
-                const tam = parseInt(btn.textContent.trim(), 10);
-                const val = parseInt(numeroDiv.textContent.trim(), 10) || 0;
-                if (val > 0) {
-                    tamanhos[tam] = val;
+                const tamanho = parseInt(btn.textContent.trim(), 10);
+                const quantidade = parseInt(numeroDiv.textContent.trim(), 10) || 0;
+                if (quantidade > 0) {
+                    tamanhos[tamanho] = quantidade;
                 }
             }
         });
 
+        // Adiciona os dados deste item ao array
         dados.itens.push({
             refBalancinho: refBalancinho,
             matBalancinho: matBalancinho,
             refPalmilha: refPalmilha,
             matPalmilha: matPalmilha,
+            marca: marca,
             tipoServico: tipoServico,
-            sintetico: sintetico,
             cor: cor,
+            corPalmilha: corPalmilha,
             obs: obs,
             tamPalmilha: tamPalmilha,
+            espessura: espessura,
             tamanhos: tamanhos
         });
-        console.log(dados)
     });
 
     return dados;
 }
-
 
 
 
@@ -677,7 +714,7 @@ function getCookie(name) {
 function enviarPedido(url, dados) {
     const csrftoken = getCookie('csrftoken');
     
-    // 1. Validação do nível "cliente / vendedor"
+    // Validações básicas
     if (!dados.cliente.trim()) {
         alert('Por favor, preencha o campo "Cliente".');
         return;
@@ -686,39 +723,32 @@ function enviarPedido(url, dados) {
         alert('Por favor, preencha os campos "Código do Vendedor" e "Vendedor".');
         return;
     }
-
-    // 2. Verifica se pelo menos 1 item existe
     if (dados.itens.length === 0) {
         alert('Por favor, adicione pelo menos um item ao pedido.');
         return;
     }
     
-    // 3. Validação de cada item
-   // 3. Validação de cada item
+    // Validação de cada item
     for (let i = 0; i < dados.itens.length; i++) {
         const item = dados.itens[i];
-        
-        // Atribuir e limpar espaços antes de validar
         const refBalancinho = (item.refBalancinho || '').trim();
         const matBalancinho = (item.matBalancinho || '').trim();
         const refPalmilha   = (item.refPalmilha   || '').trim();
         const matPalmilha   = (item.matPalmilha   || '').trim();
         
-        // Verificar cada campo individualmente e alertar se vazio
         if (!refBalancinho && !refPalmilha) {
-            alert(`Preencha pelo menos uma referência: Balancinho ou Palmilha.`);
+            alert('Preencha pelo menos uma referência: Balancinho ou Palmilha.');
             return;
         }
         if (refBalancinho && !matBalancinho) {
-            alert(`Preencha o material para o Balancinho.`);
+            alert('Preencha o material para o Balancinho.');
             return;
         }
         if (refPalmilha && !matPalmilha) {
-            alert(`Preencha o material para a Palmilha.`);
+            alert('Preencha o material para a Palmilha.');
             return;
         }
     }
-    
     
     fetch(url, {
         method: 'POST',
@@ -736,18 +766,14 @@ function enviarPedido(url, dados) {
     })
     .then(data => {
         alert('Pedido realizado com sucesso!');
-        console.log('Resposta do servidor:', data);
         window.location.href = '/producao/';
     })
     .catch(err => {
         console.error(err);
-        if (err.erro) {
-            alert(`Erro: ${err.erro}`);
-        } else {
-            alert('Ocorreu um erro ao realizar o pedido.');
-        }
+        alert(err.erro || 'Ocorreu um erro ao realizar o pedido.');
     });   
 }
+
 
 /**
  * Ao carregar a página

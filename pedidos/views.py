@@ -1,7 +1,7 @@
 # pedidos/views.py
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
-from django.db.models import Case, When, Value, IntegerField
+from django.db.models import Case, When, Value, IntegerField, Q
 from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -9,7 +9,6 @@ from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 from autenticacao.models import Perfil 
-from django.db.models import Q
 from functools import wraps
 from .models import Vendedor, Produto, Pedido, PedidoItem, Referencia
 import json
@@ -117,7 +116,7 @@ def producao(request):
         'search_query': search_query
     })
 
-#------------------impressao-------------------
+#------------------ Impressão -------------------
 
 @login_required
 def imprimir_pedido(request, pedido_id):
@@ -145,7 +144,6 @@ def pedido_itens_api(request, pedido_id):
             "status": pedido.status,
             "motivo_cancelamento": pedido.cancelado,
             "gerente_cancelamento": pedido.gerente_cancelamento.username if pedido.gerente_cancelamento else None,
-
             "pedido_id": pedido.id,
             "itens": []
         }
@@ -156,20 +154,28 @@ def pedido_itens_api(request, pedido_id):
         else:
             logger.debug("Nenhum gerente associado para este cancelamento.")
 
+        # Aqui ajustamos os nomes dos campos para camelCase,
+        # de forma que o JavaScript receba, por exemplo, 'tamPalmilha' em vez de 'tam_palmilha'.
         for item in pedido.itens.all():
             data["itens"].append({
                 "codigo": item.produto.codigo,
                 "nome": item.produto.nome,
                 "tamanho": item.tamanho,
+                "espessura": item.espessura,
                 "quantidade": item.quantidade,
                 "tipo_servico": item.tipo_servico,
-                "sintetico": item.sintetico,
+                # Caso seja necessário exibir um campo "sintético", mapeamos aqui (usando o valor de tipo_servico, por exemplo)
+                "sintetico": item.tipo_servico,
+                "marca": item.marca,
                 "cor": item.cor,
+                # Convertendo para camelCase conforme utilizado no JS:
+                "corPalmilha": item.cor_palmilha,
                 "obs": item.obs,
                 "ref_balancinho": item.ref_balancinho,
                 "mat_balancinho": item.mat_balancinho,
                 "ref_palmilha": item.ref_palmilha,
                 "mat_palmilha": item.mat_palmilha,
+                "tamPalmilha": item.tam_palmilha
             })
         
         return JsonResponse(data)
@@ -206,7 +212,7 @@ def buscar_produto(request):
         'codigo': produto_obj.codigo
     })
 
-# pedidos/views.py
+#-------------------- Função para criar pedido --------------------
 
 @require_POST
 @login_required
@@ -219,9 +225,7 @@ def realizar_pedido(request):
         vendedor_nome = body.get('vendedor', '').strip()
         status = body.get('status', 'Pendente').strip()
 
-        # Validações (omitidas para brevidade)...
-
-        # Busca/cria vendedor e cria o pedido
+        # Busca ou cria o vendedor e cria o pedido
         vendedor, _ = Vendedor.objects.get_or_create(
             codigo=codigo_vendedor,
             defaults={'nome': vendedor_nome}
@@ -232,27 +236,25 @@ def realizar_pedido(request):
             status=status
         )
 
-        # Percorre os itens
+        # Percorre os itens do pedido
         itens = body.get('itens', [])
         for item in itens:
             refBalancinho = item.get('refBalancinho', '').strip()
             matBalancinho = item.get('matBalancinho', '').strip()
-            refPalmilha = item.get('refPalmilha', '').strip()
-            matPalmilha = item.get('matPalmilha', '').strip()
+            refPalmilha   = item.get('refPalmilha', '').strip()
+            matPalmilha   = item.get('matPalmilha', '').strip()
+            marca         = item.get('marca', 'fibra').strip()
+            tipoServico   = item.get('tipoServico', 'Costurado').strip()
+            cor           = item.get('cor', '').strip()
+            cor_palmilha  = item.get('corPalmilha', '').strip()  # Novo campo
+            obs           = item.get('obs', '').strip()
+            tamPalmilha   = item.get('tamPalmilha', '').strip()  # Novo campo
+            espessura     = item.get('espessura', '').strip()    # Novo campo
 
-            tipoServico = item.get('tipoServico', 'nenhum').strip()
-            sintetico = item.get('sintetico', '').strip()
-            cor = item.get('cor', '').strip()
-            obs = item.get('obs', '').strip()
-
-            # Se quiser, checar refBalancinho ou refPalmilha antes de criar:
+            # Se não houver nenhuma referência, ignora o item
             if not refBalancinho and not refPalmilha:
-                # Nenhuma referência = item inválido, continue
                 continue
 
-            # Você pode escolher usar UMA das refs para criar "produto" principal,
-            # ou criar um Produto fictício "Bal/Palm"? Depende da lógica do seu sistema.
-            # Exemplo usando refBalancinho como "produto.codigo":
             referencia_principal = refBalancinho or refPalmilha
             nome_produto = matBalancinho or matPalmilha
 
@@ -261,7 +263,7 @@ def realizar_pedido(request):
                 defaults={'nome': nome_produto}
             )
 
-            # Tamanhos
+            # Tamanhos (obtidos dos botões quadradinhos)
             tamanhos = item.get('tamanhos', {})
             for tamanho, qtd in tamanhos.items():
                 if qtd <= 0:
@@ -271,16 +273,18 @@ def realizar_pedido(request):
                     pedido=pedido,
                     produto=produto,
                     quantidade=qtd,
-                    tamanho=tamanho,
-
+                    tamanho=tamanho,  # Tamanho do quadradinho
+                    marca=marca,
                     ref_balancinho=refBalancinho,
                     mat_balancinho=matBalancinho,
                     ref_palmilha=refPalmilha,
                     mat_palmilha=matPalmilha,
                     tipo_servico=tipoServico,
-                    sintetico=sintetico,
                     cor=cor,
-                    obs=obs
+                    cor_palmilha=cor_palmilha,
+                    obs=obs,
+                    tam_palmilha=tamPalmilha,
+                    espessura=espessura
                 )
 
         return JsonResponse({'mensagem': 'Pedido criado com sucesso!', 'pedido_id': pedido.pk})
@@ -289,6 +293,7 @@ def realizar_pedido(request):
         return JsonResponse({'erro': 'JSON inválido.'}, status=400)
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
+
 
 @require_POST
 @login_required
@@ -303,7 +308,6 @@ def realizar_pedido_urgente(request):
 
         # Validações (omitidas para brevidade)...
 
-        # Busca/cria vendedor e cria o pedido
         vendedor, _ = Vendedor.objects.get_or_create(
             codigo=codigo_vendedor,
             defaults={'nome': vendedor_nome}
@@ -314,27 +318,22 @@ def realizar_pedido_urgente(request):
             status=status
         )
 
-        # Percorre os itens
         itens = body.get('itens', [])
         for item in itens:
             refBalancinho = item.get('refBalancinho', '').strip()
             matBalancinho = item.get('matBalancinho', '').strip()
-            refPalmilha = item.get('refPalmilha', '').strip()
-            matPalmilha = item.get('matPalmilha', '').strip()
+            refPalmilha   = item.get('refPalmilha', '').strip()
+            matPalmilha   = item.get('matPalmilha', '').strip()
+            marca         = item.get('marca', 'Fibra').strip()
+            tipoServico   = item.get('tipoServico', 'nenhum').strip()
+            cor           = item.get('cor', '').strip()
+            cor_palmilha  = item.get('corPalmilha', '').strip()  # Novo
+            obs           = item.get('obs', '').strip()
+            tamPalmilha   = item.get('tamPalmilha', '').strip()  # Novo campo
 
-            tipoServico = item.get('tipoServico', 'nenhum').strip()
-            sintetico = item.get('sintetico', '').strip()
-            cor = item.get('cor', '').strip()
-            obs = item.get('obs', '').strip()
-
-            # Se quiser, checar refBalancinho ou refPalmilha antes de criar:
             if not refBalancinho and not refPalmilha:
-                # Nenhuma referência = item inválido, continue
                 continue
 
-            # Você pode escolher usar UMA das refs para criar "produto" principal,
-            # ou criar um Produto fictício "Bal/Palm"? Depende da lógica do seu sistema.
-            # Exemplo usando refBalancinho como "produto.codigo":
             referencia_principal = refBalancinho or refPalmilha
             nome_produto = matBalancinho or matPalmilha
 
@@ -343,7 +342,6 @@ def realizar_pedido_urgente(request):
                 defaults={'nome': nome_produto}
             )
 
-            # Tamanhos
             tamanhos = item.get('tamanhos', {})
             for tamanho, qtd in tamanhos.items():
                 if qtd <= 0:
@@ -354,15 +352,16 @@ def realizar_pedido_urgente(request):
                     produto=produto,
                     quantidade=qtd,
                     tamanho=tamanho,
-
+                    marca=marca,
                     ref_balancinho=refBalancinho,
                     mat_balancinho=matBalancinho,
                     ref_palmilha=refPalmilha,
                     mat_palmilha=matPalmilha,
                     tipo_servico=tipoServico,
-                    sintetico=sintetico,
                     cor=cor,
-                    obs=obs
+                    cor_palmilha=cor_palmilha,  # Novo
+                    obs=obs,
+                    tam_palmilha=tamPalmilha    # Novo
                 )
 
         return JsonResponse({'mensagem': 'Pedido criado com sucesso!', 'pedido_id': pedido.pk})
@@ -371,8 +370,6 @@ def realizar_pedido_urgente(request):
         return JsonResponse({'erro': 'JSON inválido.'}, status=400)
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
-
-
 
 
 @csrf_exempt  
@@ -427,7 +424,6 @@ def cancelar_pedido(request, pedido_id):
     except Exception as e:
         logger.exception(f"Erro ao cancelar pedido {pedido_id}: {str(e)}")
         return JsonResponse({'erro': f'Erro ao cancelar pedido: {str(e)}'}, status=500)
-
     
 
 @login_required
@@ -535,7 +531,7 @@ def atualizar_status_pedido(request):
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
     
     
-#-------------------------------Finalzados--------------------------------  
+#------------------------------- Finalizados --------------------------------  
 
 @login_required
 @permission_required(1)

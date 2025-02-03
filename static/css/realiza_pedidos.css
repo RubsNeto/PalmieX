@@ -5,41 +5,41 @@
   --light-color: #f8f9fa;
   --dark-color: #343a40;
   --hover-color: #019657;
-  --font-family: 'Arial', sans-serif;
 }
-/* Remover outline padrão e ajustar estilos de foco para inputs, selects e textareas */
+
+/* Estilos globais de foco para inputs, selects e textareas */
 input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  /* Opcional: ajuste a borda e box-shadow para destacar o foco como desejado */
   border-color: #28a745;
   box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.15);
 }
 
+/* Estilos básicos para inputs, textareas e selects para padronizar aparência */
+input[type="text"],
+textarea,
+select {
+  padding: 6px 8px;
+  border: 1px solid var(--main-color);
+  border-radius: 4px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: #fff;
+}
 
-/* Tipografia base dentro do container .ordem */
+/* Container principal */
 .ordem {
-  /* Fonte bonita e suave */
   font-family: 'Poppins', sans-serif;
   color: var(--main-color);
-
-  /* Largura para centralizar o conteúdo */
   width: 94%;
   max-width: 1300px;
-
-  /* Fundo branco sutil com leve borda */
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 6px;
-
-  /* Espaço interno */
   padding: 2rem;
 }
 
-
-
-/* Título principal */
+/* Título da ordem de serviço */
 .OrdemServico {
   font-size: 1.4rem;
   font-weight: 600;
@@ -47,14 +47,14 @@ textarea:focus {
   color: var(--main-color);
 }
 
-/* Seção .ficha (informações iniciais) */
+
+/* Informações do Cliente */
 .ficha {
   margin-bottom: 1.5rem;
   border-bottom: 1px solid #ddd;
   padding-bottom: 1rem;
 }
 
-/* Disposição flex para a linha de inputs iniciais */
 .linha1 {
   display: flex;
   flex-wrap: wrap;
@@ -62,55 +62,28 @@ textarea:focus {
   align-items: center;
 }
 
-/* Inputs da linha1 */
 .linha1 input[type="text"] {
-  /* Tamanho mínimo e um pouco de preenchimento */
   min-width: 120px;
-  padding: 6px 8px;
-
-  /* Borda e borda arredondada */
-  border: 1px solid var(--main-color);
-  border-radius: 4px;
-
-  /* Transição suave */
-  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.linha1 input[type="text"]:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.15);
-}
-
-/* TOTAL e valor total */
+/* Estilização dos totais */
 .total {
-  margin-left: auto; /* Empurra para direita */
-  color: #000000;
+  margin-left: auto;
+  color: #000;
   font-size: 30px;
 }
 .valorTotal {
-  font-size: 1.1rem;
-  color: #28a745; /* cor principal verde */
   font-size: 30px;
+  color: #28a745;
 }
 
-/****************************************
-*       ÁREA DE PEDIDOS (pedido-item)
-****************************************/
+/* Área de Pedidos */
 .pedido-item {
   border-radius: 4px;
   margin-bottom: 1rem;
   padding: 0.5rem;
 }
 
-.numero{
-  text-align: center;
-}
-
-.pedidos {
-  margin-bottom: 1rem;
-}
-
-/* Cada linha de informações */
 .linha-pedido {
   display: flex;
   flex-wrap: wrap;
@@ -125,74 +98,20 @@ textarea:focus {
   color: var(--main-color);
 }
 
-/* Inputs e textarea */
+/* Inputs e textarea dentro da área de pedidos já herdam o estilo global */
 .linha-pedido input[type="text"],
 .linha-pedido textarea {
   flex: 1;
-  padding: 6px 8px;
-  border: 1px solid var(--main-color);
-  border-radius: 4px;
-  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.linha-pedido input[type="text"]:focus,
-.linha-pedido textarea:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.15);
-}
-
+/* Textarea para observações */
 .obs {
   resize: vertical;
   min-height: 36px;
   max-height: 95px;
 }
 
-/****************************************
-*          RÁDIOS (radio)
-****************************************/
-
-/* Remover aparência padrão do radio */
-.radio input[type="radio"] {
-  all: unset;
-  position: absolute;
-  width: 0;
-  height: 0;
-  margin-top: 2em;
-}
-
-/* Cada label */
-.radio label {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  position: relative;
-}
-
-/* Círculo customizado */
-.radio label input[type="radio"]::before {
-  content: '';
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #666;
-  border-radius: 50%;
-  background-color: #fff;
-  transition: all 0.2s ease;
-}
-
-.radio label input[type="radio"]:checked::before {
-  border-color: #28a745;
-  background-color: #28a745;
-}
-
-.radio label:hover input[type="radio"]::before {
-  border-color: #28a745;
-}
-
-/****************************************
-*   PARES E BOTÕES +, -, Inf
-****************************************/
+/* Seção de pares e botões de adicionar/remover */
 .pares {
   font-weight: 500;
   color: #444;
@@ -211,23 +130,20 @@ textarea:focus {
   font-size: 0.9rem;
   font-weight: 500;
   border-radius: 4px;
-  background-color: #28a745; /* verde principal */
+  background-color: #28a745;
   color: #fff;
   transition: background-color 0.2s, transform 0.1s;
 }
 
 .maisEmenos button:hover {
-  background-color: #218838; /* verde um pouco mais escuro */
+  background-color: #218838;
 }
 
 .maisEmenos button:active {
   transform: scale(0.95);
 }
 
-/****************************************
-*  CONTAINER DE QUADRADINHOS (JS)
-****************************************/
-
+/* Container de quadradinhos (usado via JavaScript) */
 .container {
   display: flex;
   flex-wrap: wrap;
@@ -235,17 +151,15 @@ textarea:focus {
   margin-bottom: 1em;
 }
 
-/* Contêiner de Tamanhos */
 .containerQuadradinhos {
   display: flex;
   flex-wrap: wrap;
   margin-top: 0.5rem;
-  
 }
 
 .containerQuadradinhos button {
   background-color: var(--secondary-color);
-  color: white;
+  color: #fff;
   border: none;
   font-size: 1rem;
   cursor: pointer;
@@ -257,16 +171,12 @@ textarea:focus {
   transform: scale(1.1);
 }
 
-/****************************************
-*   LISTA DE PEDIDOS ADICIONAIS
-****************************************/
+/* Lista de pedidos adicionados */
 .lista-pedidos {
   margin-top: 1rem;
 }
 
-/****************************************
-*     BOTÕES DE COMANDO (final)
-****************************************/
+/* Botões de comando */
 .botoesComando {
   display: flex;
   gap: 1rem;
@@ -285,11 +195,6 @@ textarea:focus {
   transition: background-color 0.2s, transform 0.1s;
 }
 
-.clienteloja:hover{
-  border-color: #017a39;
-}
-
-/* Botão "Cliente em loja" */
 .clienteloja {
   background-color: #28a745;
 }
@@ -302,7 +207,6 @@ textarea:focus {
   transform: scale(0.96);
 }
 
-/* Botão "Realizar Pedido" - um tom mais escuro */
 .realizarPedido {
   background-color: #28a745;
 }
@@ -315,54 +219,71 @@ textarea:focus {
   transform: scale(0.96);
 }
 
-
-/****************************************
-*  GRID PARA 3 COLUNAS (6 CAMPOS)
-****************************************/
+/* Grid para disposição em 3 colunas */
 .grid-3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);  /* 3 colunas iguais */
-  gap: 1rem;                              /* espaçamento entre colunas */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
 }
 
-/* Deixe cada "coluna" interna com flex-direction column, se quiser 
-   que "campo" e "input" fiquem em cima/embaixo organizados. */
 .grid-3 div {
   display: flex;
   flex-direction: column;
 }
 
-/****************************************
-*  RADIO + OBS (lado a lado)
-****************************************/
-.radio-obs {
-  display: flex;         /* coloca radio e obs lado a lado */
-  gap: 1rem;             /* espaçamento entre eles */
-  align-items: center; /* alinha topo, caso o textarea seja maior */
-  align-content: center;
-  flex-direction: row !important;
-  margin-top: -1.6em;
-}
-
-/* A div que contém o radio permanece com a classe .radio
-   e a div que contém a obs permanece com .campoObs (por exemplo).
-   Ajuste se necessário. */
+/* Campo de observações expandido */
 .campoObs {
   display: flex;
   flex-direction: column;
-  flex: 1; /* Para expandir se quiser, enquanto o radio ocupa só o espaço dele */
+  flex: 1;
 }
 
+/* Container para o select (por exemplo, na marca) */
 .divCor {
   display: flex;
   flex-direction: column;
-  flex: 1; /* Para expandir se quiser, enquanto o radio ocupa só o espaço dele */
+  flex: 1;
 }
 
 
+.tamanhos-container {
+  display: flex;
+  flex-direction: row !important;
+  gap: 1rem;             /* Espaçamento entre os campos */
+  align-items: baseline;    /* Alinha verticalmente os itens */
+  flex-wrap: wrap;        /* Caso o espaço seja insuficiente, os itens quebram para a próxima linha */
+}
 
-/* Estado de foco para o dropdown */
-.selectTipoServico:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.15);
+.campo-tamanho {
+  flex: 1;                /* Cada campo ocupará igualmente o espaço disponível */
+  min-width: 150px;       /* Define uma largura mínima para evitar que fiquem muito estreitos */
+  box-sizing: border-box;
+}
+
+.campo-tamanho .campo {
+  display: block;         /* Garante que o label ocupe toda a largura do contêiner */
+}
+
+.tamPalmilha, .tamSolado{
+  width:max-content
+}
+
+
+.tipo-servico-container {
+  display: flex;
+  flex-direction: row !important;
+  gap: 1rem;            /* Espaçamento entre os campos */
+  align-items: center;   /* Alinha verticalmente os itens */
+  flex-wrap: wrap;       /* Caso o espaço seja insuficiente, os itens quebram para a próxima linha */
+}
+
+.campo-tipo {
+  flex: 1;              /* Cada campo ocupará igualmente o espaço disponível */
+  min-width: 150px;     /* Largura mínima para evitar que fiquem muito estreitos */
+  box-sizing: border-box;
+}
+
+.campo-tipo .campo {
+  display: block;       /* Garante que o label ocupe toda a largura do contêiner */
+
 }
