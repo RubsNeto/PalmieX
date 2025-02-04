@@ -33,8 +33,6 @@
 
 .item-nome {
   justify-content: space-between;
-  word-spacing: 8px;
-
 }
 
 /* Animação para o container de pedidos */
@@ -509,16 +507,10 @@
 
 .produto-cabecalho .item-nome {
   display: flex;
-  flex-direction: column;
   gap: 0.5rem; /* Espaço entre as duas linhas */
   width: 100%;
 }
 
-.produto-cabecalho .item-nome > div {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
 
 .produto-cabecalho .item-nome strong {
   color: var(--button-bg-color);

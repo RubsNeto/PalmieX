@@ -10,10 +10,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='pedidoitem',
-            name='tam_solado',
-        ),
+        #migrations.RemoveField(
+        #    model_name='pedidoitem',
+        #    name='tam_solado',
+        #),
         migrations.AddField(
             model_name='pedidoitem',
             name='espessura',

@@ -234,14 +234,21 @@ function reorganizarTabindex() {
         const matPalmilha = pedido.querySelector('.matPalmilha');
         if (matPalmilha) matPalmilha.setAttribute('tabindex', proximoTabindex++);
 
-        const marca = pedido.querySelector('.marca');
-        if (marca) marca.setAttribute('tabindex', proximoTabindex++);
+        const corPalmilha = pedido.querySelector('.corPalmilha');
+        if (corPalmilha) corPalmilha.setAttribute('tabindex', proximoTabindex++);
 
         const tamPalmilha = pedido.querySelector('.tamPalmilha');
         if (tamPalmilha) tamPalmilha.setAttribute('tabindex', proximoTabindex++);
+
+        const espessura = pedido.querySelector('.espessura');
+        if (espessura) espessura.setAttribute('tabindex', proximoTabindex++);
         
         const selectTipoServico = pedido.querySelector('.selectTipoServico');
         if (selectTipoServico) selectTipoServico.setAttribute('tabindex', proximoTabindex++);
+        
+        const marca = pedido.querySelector('.marca');
+        if (marca) marca.setAttribute('tabindex', proximoTabindex++);
+        
 
         const obs = pedido.querySelector('.obs');
         if (obs) obs.setAttribute('tabindex', proximoTabindex++);
@@ -728,7 +735,17 @@ function enviarPedido(url, dados) {
         return;
     }
     
-    // Validação de cada item
+    // Validação de cada item: verifica se há quantidade informada
+    for (let i = 0; i < dados.itens.length; i++) {
+        const item = dados.itens[i];
+        // Se o objeto "tamanhos" estiver vazio, nenhum quadradinho foi preenchido
+        if (Object.keys(item.tamanhos).length === 0) {
+            alert('Informe o tamanho.');
+            return;
+        }
+    }
+    
+    // Validação de referências e materiais
     for (let i = 0; i < dados.itens.length; i++) {
         const item = dados.itens[i];
         const refBalancinho = (item.refBalancinho || '').trim();

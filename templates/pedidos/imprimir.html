@@ -16,22 +16,47 @@
   </div>
 
   <hr>
-  {% regroup pedido.itens.all by produto as itens_por_produto %}
 
+  {# Agrupa os itens por produto; se preferir, adapte conforme a sua lógica de agrupamento #}
+  {% regroup pedido.itens.all by produto as itens_por_produto %}
   {% for grupo in itens_por_produto %}
     <div class="pedido-item">
-      <div class="pedidos">
-          <span class="campo"><b>Ref. Balancinho:</b> {{ grupo.list.0.ref_balancinho }}</span>
-          <span class="campo"><b>Mat. Balancinho:</b> {{ grupo.list.0.mat_balancinho }}</span>
-          <span class="campo"><b>Ref. Palmilha:</b> {{ grupo.list.0.ref_palmilha }}</span>
-          <span class="campo"><b>Mat. Palmilha:</b> {{ grupo.list.0.mat_palmilha }}</span>
+      <div class="produto-cabecalho">
+        <span class="item-nome">
+          <div>
+            <p><strong>Ref. Balancinho:</strong> {{ grupo.list.0.ref_balancinho|default:"" }}</p>
+            <p><strong>Ref. Palmilha:</strong> {{ grupo.list.0.ref_palmilha|default:"" }}</p>
+          </div>
+                          
+          <div>
+            <p><strong>Sintetico:</strong> {{ grupo.list.0.produto.nome|default:"" }}</p>
+            <p><strong>Palmilha:</strong> {{ grupo.list.0.mat_palmilha|default:"" }}</p>
+          </div>
+                          
+          <div>
+            <p><strong>Cor Balancinho:</strong> {{ grupo.list.0.cor|default:"" }}</p>
+            <p><strong>Cor Solado:</strong> {{ grupo.list.0.cor_palmilha|default:"" }}</p>
 
-          <span class="campo"><b>Serviço:</b> {{ grupo.list.0.tipo_servico }}</span>
-          <span class="campo"><b>Sintético:</b> {{ grupo.list.0.sintetico }}</span>
-          <span class="campo"><b>Cor:</b> {{ grupo.list.0.cor }}</span>
-          <span class="campo"><b>Obs:</b> {{ grupo.list.0.obs }}</span>        
+          </div>
+                          
+          <div>
+            <p><strong>Serviço:</strong> {{ grupo.list.0.tipo_servico|default:"Nenhum" }}</p>
+            <p><strong>Marca:</strong> {{ grupo.list.0.marca|default:"" }}</p>
+          </div>
+                          
+          <div>
+            <p><strong>Espessura Palmilha:</strong> {{ grupo.list.0.tam_palmilha|default:"0" }} mm</p>
+            <p><strong>Espessura Solado:</strong> {{ grupo.list.0.espessura|default:"0" }} mm</p>
+          </div>
+        </span>
+        <span class="item-nome">
+          {% if grupo.list.0.obs %}
+            <p><strong>Obs:</strong> {{ grupo.list.0.obs }}</p>
+          {% endif %}
+        </span>
       </div>
 
+      <!-- Grid de tamanhos e quantidades -->
       <div class="container containerQuadradinhos">
         {% for tamanho in tamanhos %}
           <div class="botao-container">
@@ -54,7 +79,6 @@
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     let globalTotal = 0;
-
     document.querySelectorAll(".pedido-item").forEach(function(item) {
       let materialTotal = 0;
       item.querySelectorAll(".numero").forEach(function(numDiv) {
@@ -70,7 +94,6 @@
       totalElem.textContent = "Total deste material: " + materialTotal;
       item.appendChild(totalElem);
     });
-
     document.getElementById("total-geral").textContent = globalTotal;
     window.print();
   });

@@ -99,12 +99,15 @@ def deletar_vendedor(request, pk):
     else:
         return redirect('vendedor:lista_vendedores')
 
+
 @login_required
 def download_excel_report(request, vendedor_id):
     """
-    Gera um relatório Excel detalhado para cada mês que possua pedidos,
-    incluindo informações de melhor dia, maior venda e um gráfico de barras minimalista de vendas por dia,
-    com rótulos de dados exibindo a quantidade de vendas.
+    Gera um relatório Excel detalhado para cada mês que possua pedidos do vendedor,
+    incluindo estatísticas (melhor dia, maior venda, etc.) e um gráfico de barras
+    de vendas por dia. Nesta versão:
+      - O campo que antes usava "mat_balancinho" é substituído por "Sintético" (nome do produto).
+      - São incluídas as colunas para os itens faltantes.
     """
     vendedor = get_object_or_404(Vendedor, pk=vendedor_id)
     ano_atual = datetime.datetime.now().year
@@ -117,7 +120,7 @@ def download_excel_report(request, vendedor_id):
 
     wb = openpyxl.Workbook()
     ws_padrao = wb.active
-    wb.remove(ws_padrao)
+    wb.remove(ws_padrao)  # Remove a planilha padrão
 
     # -----------------------------
     # Definição de estilos globais
@@ -137,7 +140,7 @@ def download_excel_report(request, vendedor_id):
     cabecalho_font = Font(color="FFFFFF", bold=True)
     cabecalho_alignment = Alignment(horizontal="center", vertical="center")
 
-    # Estilo zebra para linhas pares
+    # Define estilo zebra para linhas pares
     try:
         wb.remove_named_style("ZebraPar")
     except Exception:
@@ -171,24 +174,35 @@ def download_excel_report(request, vendedor_id):
         return ws
 
     def write_info(ws, row_index, col_start, label, value, merge_range):
-        """
-        Função para escrever informações na planilha com mesclagem de células.
-        """
         ws.merge_cells(merge_range)
         cell = ws.cell(row=row_index, column=col_start)
         cell.value = f"{label}: {value if value is not None else 'N/A'}"
         cell.font = Font(size=12, bold=True, color="333333")
         cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
-        ws.row_dimensions[row_index].height = 25  # Ajustar altura para caber o texto
+        ws.row_dimensions[row_index].height = 25
 
+    # Agrupa os pedidos por mês (usando o campo data)
+    from collections import defaultdict
     pedidos_por_mes = defaultdict(list)
     for p in pedidos_todos:
         pedidos_por_mes[p.data.month].append(p)
 
-
+    # Importações para o gráfico
     from openpyxl.chart import BarChart, Reference
+    from openpyxl.chart.label import DataLabelList
     from openpyxl.utils import get_column_letter
 
+    # Definindo os headers (20 colunas)
+    headers = [
+        'Pedido ID', 'Cliente', 'Data', 'Status',
+        'Sintético', 'Ref. Balancinho', 'Cor Balancinho',
+        'Quantidade', 'Tamanho', 'Tipo serviço', 
+        'Ref. Palmilha', 'Palmilha',  'Cor Solado',
+        'Marca', 'MM Palmilha', 'Espessura Solado',
+        'AutorizadoPor', 'Motivo Cancelamento', 'Obs'
+    ]
+
+    # Para cada mês com pedidos
     for mes in range(1, 13):
         if mes not in pedidos_por_mes:
             continue
@@ -196,16 +210,10 @@ def download_excel_report(request, vendedor_id):
         ws = criar_planilha_mes(mes)
         pedidos_do_mes = pedidos_por_mes[mes]
 
-        # Cálculo de estatísticas para o mês
+        # Estatísticas do mês (desconsiderando pedidos cancelados para as vendas)
         pedidos_analise = [pd for pd in pedidos_do_mes if pd.status != 'Cancelado']
         total_vendas = len(pedidos_analise)
         cancelados = sum(1 for pd in pedidos_do_mes if pd.status == 'Cancelado')
-        vendas_por_dia = defaultdict(int)
-        total_itens_mes = 0
-        maior_venda = None
-        maior_venda_itens = 0
-        
-
         vendas_por_dia = defaultdict(int)
         total_itens_mes = 0
         maior_venda = None
@@ -215,24 +223,15 @@ def download_excel_report(request, vendedor_id):
             if pedido.status != 'Cancelado':
                 dia = pedido.data.date()
                 soma_itens = sum(it.quantidade for it in pedido.itens.all())
-
-                # Incrementa a quantidade vendida por dia
                 vendas_por_dia[dia] += soma_itens
-
-                # Soma geral do mês
                 total_itens_mes += soma_itens
-
-                # --- Aqui está o ajuste principal ---
-                # Verifica se esse pedido é a "maior venda"
                 if soma_itens > maior_venda_itens:
                     maior_venda_itens = soma_itens
-                    maior_venda = pedido 
-        
-        # Agora, best_day_count refletirá a soma de pares vendidos
+                    maior_venda = pedido
+
         if vendas_por_dia:
             best_day = max(vendas_por_dia, key=vendas_por_dia.get)
             best_day_count = vendas_por_dia[best_day]
-
             data_formatada = best_day.strftime("%d/%m/%Y")
             dia_semana_en = best_day.strftime("%A")
             dia_semana_extenso = dias_semana_pt.get(dia_semana_en, dia_semana_en)
@@ -241,9 +240,8 @@ def download_excel_report(request, vendedor_id):
             melhor_dia_str = "N/A"
             best_day_count = 0
 
-
         nome_mes = nomes_meses[mes - 1]
-        # Título Mesclado
+        # Título mesclado
         ws.merge_cells('A1:N3')
         cell_titulo = ws['A1']
         cell_titulo.value = f"RELATÓRIO - {nome_mes.upper()} {ano_atual} - Vendedor: {vendedor.nome.upper()}"
@@ -253,17 +251,13 @@ def download_excel_report(request, vendedor_id):
         cell_titulo.border = thin_border
         ws.row_dimensions[1].height = 25
 
-        # Espaçamento
-        ws.row_dimensions[4].height = 10
+        ws.row_dimensions[4].height = 10  # Espaçamento
 
-        # Informações Resumo
-        linha_info = 5  # Começo na linha 5
-        # Linha 5
+        linha_info = 5
         write_info(ws, linha_info, 1, "Loja", vendedor.loja, 'A5:D5')
         write_info(ws, linha_info, 5, "Pedidos Cancelados", cancelados, 'E5:H5')
         write_info(ws, linha_info, 9, "Total de Pares Vendidos", total_itens_mes, 'I5:L5')
-
-        linha_info += 1  # Linha 6
+        linha_info += 1
         write_info(ws, linha_info, 1, "Total de Vendas", total_vendas, 'A6:D6')
         write_info(ws, linha_info, 5, "Melhor Dia", f"{melhor_dia_str} ({best_day_count} pares)", 'E6:H6')
         if maior_venda:
@@ -272,13 +266,7 @@ def download_excel_report(request, vendedor_id):
             info_maior_venda = "N/A"
         write_info(ws, linha_info, 9, "Maior Venda", info_maior_venda, 'I6:L6')
 
-        # Cabeçalho da Tabela de Pedidos
-        headers = [
-            'Pedido ID', 'Cliente', 'Data', 'Status',
-            'Produto', 'Quantidade', 'Tamanho',
-            'Tipo serviço', 'Sintético', 'Material',
-            'Cor', 'Palmilha', 'MM Palmilha', 'Obs', 'AutorizadoPor', 'Motivo Cancelamento'
-        ]
+        # Cabeçalho da tabela de pedidos
         row_header = 20
         for col_index, header_text in enumerate(headers, start=1):
             cell = ws.cell(row=row_header, column=col_index)
@@ -293,55 +281,47 @@ def download_excel_report(request, vendedor_id):
         for pedido in sorted(pedidos_do_mes, key=lambda x: x.id, reverse=True):
             for item in pedido.itens.all():
                 data_str = pedido.data.strftime("%d/%m/%Y %H:%M")
-                gerente = str(item.pedido.gerente_cancelamento)
-                cancelado = str(item.pedido.cancelado)
-            
-                if cancelado == 'None':
-                    cancelado = 'Sem Motivo'
-                    
-                if gerente == 'None':
-                    gerente = '--'
-                
-                
+                gerente = str(pedido.gerente_cancelamento) if pedido.gerente_cancelamento else '--'
+                cancelado_text = pedido.cancelado if pedido.cancelado else 'Sem Motivo'
+
+                # Construindo a linha com 20 colunas:
                 row_data = [
-                    pedido.pk,
-                    pedido.cliente,
-                    data_str,
-                    pedido.status,
-                    item.produto.nome,
-                    item.quantidade,
-                    item.tamanho,
-                    item.tipo_servico,
-                    item.sintetico,
-                    item.mat_balancinho,
-                    item.cor,
-                    item.mat_palmilha,
-                    item.tamanho_palmilha,
-                    item.obs,
-                    gerente,
-                    cancelado
+                    pedido.pk,                   # Pedido ID
+                    pedido.cliente,              # Cliente
+                    data_str,                    # Data
+                    pedido.status,               # Status
+                    item.produto.nome,           # Sintético (nome do produto)
+                    item.quantidade,             # Quantidade
+                    item.tamanho,                # Tamanho
+                    item.tipo_servico,           # Tipo serviço
+                    item.ref_balancinho,         # Ref. Balancinho
+                    item.ref_palmilha,           # Ref. Palmilha
+                    item.mat_palmilha,           # Palmilha
+                    item.cor,                    # Cor Balancinho
+                    item.cor_palmilha,           # Cor Solado
+                    item.marca,                  # Marca
+                    item.tam_palmilha,           # MM Palmilha
+                    gerente,                     # AutorizadoPor
+                    cancelado_text,               # Motivo Cancelamento
+                    item.espessura,              # Espessura Solado
+                    item.obs                    # Obs
                 ]
                 for col_index, valor in enumerate(row_data, start=1):
                     cell = ws.cell(row=linha_atual, column=col_index)
                     if isinstance(valor, (int, float)):
-                        # Exibe inteiros usando '.' como separador de milhar
                         cell.value = f"{int(valor):,}".replace(",", ".")
                     else:
                         cell.value = valor
                     cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
                     cell.border = thin_border
-
-                    # Zebra style em linhas pares
                     if (linha_atual % 2) == 0:
                         cell.style = "ZebraPar"
-                    # Destaque em caso de cancelado
                     if pedido.status == 'Cancelado':
                         cell.fill = cancelado_fill
-
                 ws.row_dimensions[linha_atual].height = 20
                 linha_atual += 1
 
-        # Ajuste de largura das colunas
+        # Ajuste a largura das colunas com base no conteúdo
         max_row = ws.max_row
         max_col = ws.max_column
         for col in range(2, max_col + 1):
@@ -357,75 +337,42 @@ def download_excel_report(request, vendedor_id):
         ws.column_dimensions['A'].width = 10
 
         # -------------------------
-        # Criação do Gráfico
+        # Criação do Gráfico de Vendas por Dia
+        # -------------------------
         if vendas_por_dia:
-            last_day = calendar.monthrange(ano_atual, mes)[1]  # Descobre quantos dias tem no mês
-            inicio_linha_grafico = linha_atual + 2
-            linha_chart = inicio_linha_grafico + 1
-
-            # Preenche a coluna com TODOS os dias do mês (1..last_day)
+            last_day = calendar.monthrange(ano_atual, mes)[1]
+            chart_data_start = linha_atual + 2  # Linha onde os dados do gráfico serão escritos
             for day_num in range(1, last_day + 1):
                 current_date = datetime.date(ano_atual, mes, day_num)
-                qtd = vendas_por_dia.get(current_date, 0)  # Se não houver registro, 0
-                ws.cell(row=linha_chart, column=1, value=day_num)  # Dia do mês
-                ws.cell(row=linha_chart, column=2, value=qtd)      # Quantidade
-                linha_chart += 1
+                qtd = vendas_por_dia.get(current_date, 0)
+                ws.cell(row=chart_data_start + day_num - 1, column=1, value=day_num)
+                ws.cell(row=chart_data_start + day_num - 1, column=2, value=qtd)
 
-            # Cria o gráfico
             chart = BarChart()
             chart.title = "Vendas por Dia"
-
-            # Eixos e configurações básicas
-            chart.x_axis.axId = 10
-            chart.y_axis.axId = 20
-            chart.x_axis.crossAx = 20
-            chart.y_axis.crossAx = 10
-
-            # Intervalos de dados e categorias
-            data = Reference(ws, min_col=2, min_row=inicio_linha_grafico + 1, max_row=linha_chart - 1)
-            cats = Reference(ws, min_col=1, min_row=inicio_linha_grafico + 1, max_row=linha_chart - 1)
+            chart.x_axis.title = "Dia do Mês"
+            chart.y_axis.title = "Quantidade de Vendas"
+            data = Reference(ws, min_col=2, min_row=chart_data_start, max_row=chart_data_start + last_day - 1)
+            cats = Reference(ws, min_col=1, min_row=chart_data_start, max_row=chart_data_start + last_day - 1)
             chart.add_data(data, titles_from_data=False)
             chart.set_categories(cats)
-
-            # Rótulos de dados (valores) em cada barra
             chart.dataLabels = DataLabelList()
-            chart.dataLabels.showVal = True  # Exibe a quantidade na barra
-            chart.dataLabels.showCatName = False
-            chart.legend = None  # Sem legenda (só há uma série)
-
-            # Remove linhas de grade
+            chart.dataLabels.showVal = True
+            chart.legend = None
             chart.x_axis.majorGridlines = None
             chart.y_axis.majorGridlines = None
 
-            # Títulos dos eixos
-            chart.x_axis.title = "Dia do Mês"
-            chart.y_axis.title = "Quantidade de Vendas"
-
-            # Cor das barras
-            if chart.series:
-                s = chart.series[0]
-                s.graphicalProperties.solidFill = "017a39"
-                s.graphicalProperties.line.solidFill = "017a39"
-
-            # ---------------------------------------------
-            # Ajuste de largura do gráfico de A até N
-            # ---------------------------------------------
+            # Ajuste do tamanho do gráfico
             max_width = 0
-            # Loop das colunas de A (1) até N (14)
             for col_ in range(1, 15):
                 col_letter = get_column_letter(col_)
                 col_width = ws.column_dimensions[col_letter].width or 10
                 max_width += col_width
-
-            # Exemplo de fator de ajuste
-            chart.width = max_width *0.145
-            
+            chart.width = max_width * 0.145
             ws.column_dimensions['E'].width = 20
             ws.column_dimensions['I'].width = 20
-            
             chart.height = 6
 
-            # Posiciona o gráfico em A8 (pode ajustar se desejar)
             ws.add_chart(chart, "A8")
 
     response = HttpResponse(

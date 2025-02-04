@@ -152,21 +152,33 @@ document.addEventListener('DOMContentLoaded', function() {
                   <li class="item-list">
                     <div class="produto-cabecalho">
                       <span class="item-nome">
-                        <div class="cima">
+                        <div>
                           <p><strong>Ref. Balancinho:</strong> ${produto.ref_balancinho || ''}</p>
-                          <p><strong>Sintetico:</strong> ${produto.nome || ''}</p>
-                          <p><strong>Cor Balancinho:</strong> ${produto.cor || ''}</p>
                           <p><strong>Ref. Palmilha:</strong> ${produto.ref_palmilha || ''}</p>
+                        </div>
+                          
+                        <div>
+                          <p><strong>Sintetico:</strong> ${produto.nome || ''}</p>
                           <p><strong>Palmilha:</strong> ${produto.mat_palmilha || ''}</p>
                         </div>
-                        <div class="baixo">
-                          <p><strong>Espessur Palmilha:</strong> ${produto.tam_palmilha || ''}</p>
-                          <p><strong>Marca:</strong> ${produto.marca || ''}</p>
-                          <p><strong>Serviço:</strong> ${produto.tipo_servico || 'Nenhum'}</p>
-                          <p><strong>Espessura Solado:</strong> ${produto.espessura || ''}</p>
+                          
+                        <div>
+                          <p><strong>Cor Balancinho:</strong> ${produto.cor || ''}</p>
                           <p><strong>Cor Solado:</strong> ${produto.corPalmilha || ''}</p>
-                          ${produto.obs ? `<p><strong>Obs:</strong> ${produto.obs}</p>` : ''}
                         </div>
+                          
+                        <div>
+                          <p><strong>Serviço:</strong> ${produto.tipo_servico || 'Nenhum'}</p>
+                          <p><strong>Marca:</strong> ${produto.marca || ''}</p>
+                        </div>
+                          
+                        <div>
+                          <p><strong>Espessura Palmilha:</strong> ${produto.tam_palmilha || '0'} mm</p>
+                          <p><strong>Espessura Solado:</strong> ${produto.espessura || '0'} mm</p>
+                        </div>
+                      </span>
+                      <span class="item-nome">
+                        ${produto.obs ? `<p><strong>Obs:</strong> ${produto.obs}</p>` : ''}
                       </span>
                     </div>
                     <div class="container containerQuadradinhos">

@@ -287,3 +287,8 @@ select {
   display: block;       /* Garante que o label ocupe toda a largura do contêiner */
 
 }
+
+.item-nome{
+  display: flex;
+  flex-direction: column;
+}

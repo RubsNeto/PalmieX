@@ -28,8 +28,12 @@
           <th>Data</th>
           <th>Hora</th>
           <th>Status</th>
-          <th>Controle</th>
-          <th>Operação</th>
+          {% if user.permission_level > 1 %}
+            <th>Controle</th>
+            <th>Operação</th>
+          {% else %}
+            <th>Ações</th>
+          {% endif %}
         </tr>
       </thead>
       <tbody>
@@ -45,23 +49,37 @@
             <td class="botoes">
               <div class="coluna-esquerda">
                 <!-- Botão para ver detalhes -->
+                {% if user.permission_level == 1 %}
                 <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
                   <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
                 </button>
+
+                <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}" title="Cancelar">
+                  <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
+                </button>
+                <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
+                  <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
+                </button>
+                {% endif %}
+
                 {% if user.permission_level > 1 %}
-                  <!-- Botões para alterar status (ex.: para Produção, Pedido Pronto, Reposição) -->
-                  <button type="button" class="alterar-status prod" data-pedido-id="{{ pedido.id }}" data-novo-status="Em Produção" title="Produção">
-                    <img class="producao" src="{% static 'img/producao.svg' %}" alt="Produção">
-                  </button>
-                  <button type="button" class="alterar-status separado" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Pronto" title="Separado">
-                    <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
-                  </button>
-                  <button type="button" class="alterar-status reposicao" data-pedido-id="{{ pedido.id }}" data-novo-status="Reposição Pendente" title="Reposição">
-                    <img class="rep" src="{% static 'img/empty.svg' %}" alt="Reposição">
-                  </button>
+                <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
+                  <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
+                </button>
+                <!-- Botões para alterar status (ex.: para Produção, Pedido Pronto, Reposição) -->
+                <button type="button" class="alterar-status prod" data-pedido-id="{{ pedido.id }}" data-novo-status="Em Produção" title="Produção">
+                  <img class="producao" src="{% static 'img/producao.svg' %}" alt="Produção">
+                </button>
+                <button type="button" class="alterar-status separado" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Pronto" title="Separado">
+                  <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
+                </button>
+                <button type="button" class="alterar-status reposicao" data-pedido-id="{{ pedido.id }}" data-novo-status="Reposição Pendente" title="Reposição">
+                  <img class="rep" src="{% static 'img/empty.svg' %}" alt="Reposição">
+                </button>
                 {% endif %}
               </div>
             </td>
+            {% if user.permission_level > 1 %}
             <td>
               <!-- Botões para cancelar, imprimir e finalizar o pedido -->
               <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}" title="Cancelar">
@@ -70,13 +88,13 @@
               <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
                 <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
               </button>
-              {% if user.permission_level > 1 %}
+              
                 <button type="button" class="alterar-status fim" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Finalizado" title="Concluído">
                   <img class="concluido" src="{% static 'img/concluido.svg' %}" alt="Concluído">
                 </button>
+              </td>
               {% endif %}
-            </td>
-          </tr>
+            </tr>
         {% endfor %}
       </tbody>
     </table>

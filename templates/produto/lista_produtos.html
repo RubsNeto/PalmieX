@@ -82,9 +82,11 @@
     </div>
     {% endif %}
 
+    {% if user.permission_level > 2 %}
     <div class="botoesComando">
         <a href="{% url 'produto:criar_produto' %}" class="btn btn-primary adicionarProduto">Adicionar Produto</a>
     </div>
+    {% endif %}
 
     <script src="{% static 'js/deletar_produto.js' %}"></script>
 {% endblock %}

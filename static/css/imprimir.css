@@ -79,18 +79,64 @@
     color: var(--main-color);
     text-align: right;
   }
-  
+  /* Cada bloco de informação com a classe .item-nome */
+.item-nome {
+  justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Para cada div interna dentro do span.item-nome */
+.item-nome > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Estilo para os parágrafos */
+.item-nome p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+  /* Estilização do cabeçalho do produto */
+.produto-cabecalho {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  box-sizing: border-box;
+  margin-top: 0.5em;
+  margin-bottom: 0.5rem;
+}
+
   /* Pedido Inicial */
+  /* Cada grupo de produto (pedido-item) ocupa 100% */
   .pedido-item {
-    background-color: #f9f9f9;
-    padding: 0.5rem;
-    border-radius: 8px;
-    margin-top: 0.2rem;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
   }
+
+  /* Ajuste dos dados do produto (campos) para alinhamento à esquerda */
   .pedidos {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Itens alinhados à esquerda */
+    gap: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Garante que o container principal ocupe toda a largura */
+  .pedido-imprimir {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1em;
   }
   
   .maisEmenos {
@@ -282,7 +328,6 @@ input.vendedor {
 
 span {
     font-size: 14px;
-    font-weight: bold;
 }
 
 .total {

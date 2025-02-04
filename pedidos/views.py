@@ -154,8 +154,7 @@ def pedido_itens_api(request, pedido_id):
         else:
             logger.debug("Nenhum gerente associado para este cancelamento.")
 
-        # Aqui ajustamos os nomes dos campos para camelCase,
-        # de forma que o JavaScript receba, por exemplo, 'tamPalmilha' em vez de 'tam_palmilha'.
+
         for item in pedido.itens.all():
             data["itens"].append({
                 "codigo": item.produto.codigo,
@@ -164,11 +163,9 @@ def pedido_itens_api(request, pedido_id):
                 "espessura": item.espessura,
                 "quantidade": item.quantidade,
                 "tipo_servico": item.tipo_servico,
-                # Caso seja necessário exibir um campo "sintético", mapeamos aqui (usando o valor de tipo_servico, por exemplo)
                 "sintetico": item.tipo_servico,
                 "marca": item.marca,
                 "cor": item.cor,
-                # Convertendo para camelCase conforme utilizado no JS:
                 "corPalmilha": item.cor_palmilha,
                 "obs": item.obs,
                 "ref_balancinho": item.ref_balancinho,
