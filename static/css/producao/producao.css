@@ -532,36 +532,43 @@
    serão dispostos na mesma linha com espaço distribuído igualmente (space-between).
    Essa regra não afeta os quadradinhos.
 ---------------------------- */
-.produto-cabecalho .item-nome .cima,
-.produto-cabecalho .item-nome .baixo {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* O cabeçalho do produto deve ocupar 100% e alinhar os textos à esquerda */
+.produto-cabecalho,
+.produto-cabecalho .item-nome {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
 }
 
-.produto-cabecalho .item-nome .cima p,
-.produto-cabecalho .item-nome .baixo p {
-  margin: 0;
+/* Se desejar que as divs interna (.cima e .baixo) também fiquem com 100% */
+.produto-cabecalho .cima,
+.produto-cabecalho .baixo {
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Estilização da lista principal de itens */
+/* Faz com que a lista ocupe 100% da largura do container principal */
 .lista-itens {
-  list-style: none;
+  width: 100%;
   padding: 0;
   margin: 20px 0;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  box-sizing: border-box;
 }
 
-/* Estilo para cada item da lista principal (produto) */
+/* Cada item (produto) ocupará toda a largura e terá os elementos alinhados à esquerda */
 .item-list {
-  background-color: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Alinha os itens à esquerda */
   padding: 1rem;
+  background-color: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .item-list:hover {

@@ -155,17 +155,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="cima">
                           <p><strong>Ref. Balancinho:</strong> ${produto.ref_balancinho || ''}</p>
                           <p><strong>Sintetico:</strong> ${produto.nome || ''}</p>
+                          <p><strong>Cor Balancinho:</strong> ${produto.cor || ''}</p>
                           <p><strong>Ref. Palmilha:</strong> ${produto.ref_palmilha || ''}</p>
                           <p><strong>Palmilha:</strong> ${produto.mat_palmilha || ''}</p>
-                          <p><strong>Serviço:</strong> ${produto.tipo_servico || 'Nenhum'}</p>
                         </div>
                         <div class="baixo">
-                          <p><strong>Tamanho Palmilha:</strong> ${produto.tam_palmilha || ''}</p>
-                          <p><strong>Espessura:</strong> ${produto.espessura || ''}</p>
+                          <p><strong>Espessur Palmilha:</strong> ${produto.tam_palmilha || ''}</p>
                           <p><strong>Marca:</strong> ${produto.marca || ''}</p>
-                          <p><strong>Cor Balancinho:</strong> ${produto.cor || ''}</p>
-                          <p><strong>Cor Palmilha:</strong> ${produto.corPalmilha || ''}</p>
-                          <p><strong>Obs:</strong> ${produto.obs || ''}</p>
+                          <p><strong>Serviço:</strong> ${produto.tipo_servico || 'Nenhum'}</p>
+                          <p><strong>Espessura Solado:</strong> ${produto.espessura || ''}</p>
+                          <p><strong>Cor Solado:</strong> ${produto.corPalmilha || ''}</p>
+                          ${produto.obs ? `<p><strong>Obs:</strong> ${produto.obs}</p>` : ''}
                         </div>
                       </span>
                     </div>
