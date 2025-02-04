@@ -54,7 +54,8 @@
 /* Buscador */
 .search-container {
   display: flex;
-  max-width: 400px;
+  
+  width: 365px;
   margin-bottom: 1em;
   border: 1px solid #ddd;
   border-radius: 25px;
@@ -62,19 +63,43 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.search-input {
+.separator{
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
+.container-date{
+  display: flex;
+  max-width:170px;
+  margin-bottom: 1em;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-input, .search-input-date {
   flex-grow: 1;
   padding: 0.5em 1em;
   border: none;
   outline: none;
   font-size: 1rem;
 }
+.search-input-date{
+  font-size: 12px;
+  padding: 0.5em 0.5em;
+}
 
 .search-input::placeholder {
   color: #999;
 }
 
-.search-button {
+.search-input-date::placeholder {
+  color: #999;
+}
+
+.search-button, .search-button-date {
   background-color: var(--button-bg-color);
   border: none;
   padding: 0 1em;
@@ -87,7 +112,7 @@
   transition: background-color 0.3s ease;
 }
 
-.search-button:hover {
+.search-button, .search-button-date:hover {
   background-color: var(--button-hover-bg-color);
 }
 
@@ -179,7 +204,7 @@
 .ver-detalhes img,
 .alterar-status img,
 .imprimir-pedido img,
-.pesquisar,
+.pesquisar,.pesquisar-data,
 .edit,
 .cancelar {
   width: 20px;

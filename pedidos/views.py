@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 from autenticacao.models import Perfil 
 from functools import wraps
+import datetime
 from .models import Vendedor, Produto, Pedido, PedidoItem, Referencia
 import json
 from django.utils import timezone
@@ -72,8 +73,8 @@ def buscar_produto_por_nome(request):
 @permission_required(1)
 def producao(request):
     search_query = request.GET.get('q', '').strip()
+    data_search = request.GET.get('data', '').strip()  # Novo parâmetro para data
 
-    # Consulta base com prefetch e anotação para ordenação de status
     pedidos = Pedido.objects.prefetch_related('itens__produto').annotate(
         status_order=Case(
             When(status='Em Produção', then=Value(1)),
@@ -81,9 +82,8 @@ def producao(request):
             When(status='Pedido Finalizado', then=Value(3)),
             output_field=IntegerField()
         )
-    ).filter(~Q(status='Pedido Finalizado') & ~Q(status='Cancelado'))	
+    ).filter(~Q(status='Pedido Finalizado') & ~Q(status='Cancelado'))
 
-    # Aplica filtros de pesquisa se um termo for fornecido
     if search_query:
         pedidos = pedidos.filter(
             Q(cliente__icontains=search_query) |
@@ -92,28 +92,41 @@ def producao(request):
             Q(vendedor__loja__icontains=search_query)
         )
 
-    # Ordena os resultados conforme status_order e data
+    if data_search:
+        try:
+            # Detecta o formato:
+            if "-" in data_search:
+                # Exemplo: "2023-03-15"
+                date_obj = datetime.datetime.strptime(data_search, '%Y-%m-%d').date()
+            elif "/" in data_search:
+                # Exemplo: "15/03/2023"
+                date_obj = datetime.datetime.strptime(data_search, '%d/%m/%Y').date()
+            else:
+                # Se não contiver hífens nem barras, tenta um fallback (ou ignora)
+                date_obj = None
+
+            if date_obj:
+                pedidos = pedidos.filter(data__date=date_obj)
+        except ValueError:
+            # Se ocorrer erro na conversão, você pode optar por ignorar ou informar o usuário.
+            pass
+
     pedidos = pedidos.order_by('status_order', '-data')
 
-    # ========== PAGINAÇÃO ==========
-    # Recupera o número da página via GET
     page = request.GET.get('page', 1)
-
-    # Cria o paginator, definindo quantos itens por página
-    paginator = Paginator(pedidos, 10)  # Exemplo: 10 por página
+    paginator = Paginator(pedidos, 10)
 
     try:
         pedidos_paginados = paginator.page(page)
     except PageNotAnInteger:
-        # Se page não for um inteiro, exibe a primeira página
         pedidos_paginados = paginator.page(1)
     except EmptyPage:
-        # Se page estiver fora do intervalo, exibe a última página
         pedidos_paginados = paginator.page(paginator.num_pages)
 
     return render(request, 'producao/producao.html', {
-        'pedidos': pedidos_paginados,  # Passa o objeto paginado para o template
-        'search_query': search_query
+        'pedidos': pedidos_paginados,
+        'search_query': search_query,
+        'data_search': data_search  # Envia para o template o valor digitado
     })
 
 #------------------ Impressão -------------------
@@ -530,17 +543,18 @@ def atualizar_status_pedido(request):
     
 #------------------------------- Finalizados --------------------------------  
 
+
 @login_required
-@permission_required(1)
 def pedidos_finalizados(request):
     search_query = request.GET.get('q', '').strip()
+    data_search = request.GET.get('data', '').strip()  # Novo parâmetro para data (formato ISO: YYYY-MM-DD)
 
-    # Filtra os pedidos com status 'Pedido Finalizado' ou 'Cancelado' e inclui gerente_cancelamento
+    # Filtra os pedidos com status 'Pedido Finalizado' ou 'Cancelado'
     pedidos = Pedido.objects.select_related('gerente_cancelamento').filter(
         Q(status='Pedido Finalizado') | Q(status='Cancelado')
     )
 
-    # Filtro de busca
+    # Filtro de busca textual
     if search_query:
         pedidos = pedidos.filter(
             Q(cliente__icontains=search_query) |
@@ -548,13 +562,20 @@ def pedidos_finalizados(request):
             Q(id__icontains=search_query) |
             Q(gerente_cancelamento__first_name__icontains=search_query) |
             Q(gerente_cancelamento__last_name__icontains=search_query) |
-            Q(motivo_cancelamento__icontains=search_query)
+            Q(cancelado__icontains=search_query)
         )
 
-    # Pré-carregando itens e ordenando por data decrescente
-    pedidos = pedidos.prefetch_related('itens__produto').order_by('-data')
+    # Filtro por data usando o formato ISO (YYYY-MM-DD)
+    if data_search:
+        try:
+            date_obj = datetime.datetime.strptime(data_search, '%Y-%m-%d').date()
+            pedidos = pedidos.filter(data__date=date_obj)
+        except ValueError:
+            # Se ocorrer erro na conversão, ignore o filtro ou exiba uma mensagem de erro
+            pass
 
-    # ========== PAGINAÇÃO ==========
+    pedidos = pedidos.order_by('-data')
+
     page = request.GET.get('page', 1)
     paginator = Paginator(pedidos, 10)
 
@@ -567,7 +588,8 @@ def pedidos_finalizados(request):
 
     return render(request, 'pedidos/pedidos_finalizados.html', {
         'pedidos': pedidos_paginados,
-        'search_query': search_query
+        'search_query': search_query,
+        'data_search': data_search,  # Envia o valor da data para o template
     })
 
 @require_GET

@@ -14,11 +14,23 @@
 <div class="container-pedidos">
   <h1>Pedidos Finalizados</h1>
 
-  <!-- Formulário de busca -->
+  <div class='separator'>
+    <!-- Formulário de busca textual -->
   <form method="get" action="{% url 'pedidos:pedidos_finalizados' %}" class="search-container">
     <input type="text" name="q" placeholder="Buscar por cliente, vendedor ou código" value="{{ search_query }}" class="search-input">
-    <button type="submit" class="search-button"><img src="{% static 'img/pesquisar.svg'%}" class=" pesquisar"></button>
+    <button type="submit" class="search-button" title="Pesquisar">
+      <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar" alt="Pesquisar">
+    </button>
   </form>
+
+  <!-- Formulário de busca por data utilizando input type="date" -->
+  <form method="get" action="{% url 'pedidos:pedidos_finalizados' %}" class="search-container container-date">
+    <input type="date" name="data" value="{{ data_search }}" class="search-input-date" title="Buscar por data">
+      <button type="submit" class="search-button-date" title="Pesquisar por data">
+        <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar-data" alt="Pesquisar por data">
+      </button>
+  </form>
+  </div>
 
 
   {% if pedidos %}

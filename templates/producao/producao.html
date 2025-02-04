@@ -8,17 +8,26 @@
 {% endblock extra_css %}
 
 {% block content %}
-<div class="container-pedidos">
-  <h1>Produção</h1>
+  <div class="container-pedidos">
+    <h1>Produção</h1>
 
-  <!-- Formulário de busca -->
-  <form method="get" action="{% url 'pedidos:producao' %}" class="search-container">
-    <input type="text" name="q" placeholder="Buscar por cliente, vendedor ou código" value="{{ search_query }}" class="search-input">
-    <button type="submit" class="search-button">
-      <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar" alt="Pesquisar">
-    </button>
-  </form>
+    <div class='separator'>
+      <!-- Formulário de busca: por texto e por data -->
+      <form method="get" action="{% url 'pedidos:producao' %}" class="search-container">
+        <!-- Pesquisa textual -->
+        <input type="text" name="q" placeholder="Buscar por cliente, vendedor ou código" value="{{ search_query }}" class="search-input">
+        <button type="submit" class="search-button" title="Pesquisar">
+          <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar" alt="Pesquisar">
+        </button>
+      </form>
 
+      <form method="get" action="{% url 'pedidos:producao' %}" class="search-container container-date">
+        <input type="date" name="data" value="{{ data_search }}" class="search-input-date" title="Buscar por data">
+          <button type="submit" class="search-button-date" title="Pesquisar por data">
+            <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar-data" alt="Pesquisar por data">
+          </button>
+      </form>
+    </div>
   {% if pedidos %}
     <table class="pedidos-table">
       <thead>
@@ -48,53 +57,48 @@
             </td>
             <td class="botoes">
               <div class="coluna-esquerda">
-                <!-- Botão para ver detalhes -->
                 {% if user.permission_level == 1 %}
-                <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
-                  <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
-                </button>
-
-                <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}" title="Cancelar">
-                  <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
-                </button>
-                <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
-                  <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
-                </button>
+                  <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
+                    <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
+                  </button>
+                  <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}" title="Cancelar">
+                    <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
+                  </button>
+                  <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
+                    <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
+                  </button>
                 {% endif %}
 
                 {% if user.permission_level > 1 %}
-                <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
-                  <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
-                </button>
-                <!-- Botões para alterar status (ex.: para Produção, Pedido Pronto, Reposição) -->
-                <button type="button" class="alterar-status prod" data-pedido-id="{{ pedido.id }}" data-novo-status="Em Produção" title="Produção">
-                  <img class="producao" src="{% static 'img/producao.svg' %}" alt="Produção">
-                </button>
-                <button type="button" class="alterar-status separado" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Pronto" title="Separado">
-                  <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
-                </button>
-                <button type="button" class="alterar-status reposicao" data-pedido-id="{{ pedido.id }}" data-novo-status="Reposição Pendente" title="Reposição">
-                  <img class="rep" src="{% static 'img/empty.svg' %}" alt="Reposição">
-                </button>
+                  <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
+                    <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
+                  </button>
+                  <button type="button" class="alterar-status prod" data-pedido-id="{{ pedido.id }}" data-novo-status="Em Produção" title="Produção">
+                    <img class="producao" src="{% static 'img/producao.svg' %}" alt="Produção">
+                  </button>
+                  <button type="button" class="alterar-status separado" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Pronto" title="Separado">
+                    <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
+                  </button>
+                  <button type="button" class="alterar-status reposicao" data-pedido-id="{{ pedido.id }}" data-novo-status="Reposição Pendente" title="Reposição">
+                    <img class="rep" src="{% static 'img/empty.svg' %}" alt="Reposição">
+                  </button>
                 {% endif %}
               </div>
             </td>
             {% if user.permission_level > 1 %}
             <td>
-              <!-- Botões para cancelar, imprimir e finalizar o pedido -->
               <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}" title="Cancelar">
                 <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
               </button>
               <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
                 <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
               </button>
-              
-                <button type="button" class="alterar-status fim" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Finalizado" title="Concluído">
-                  <img class="concluido" src="{% static 'img/concluido.svg' %}" alt="Concluído">
-                </button>
-              </td>
-              {% endif %}
-            </tr>
+              <button type="button" class="alterar-status fim" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Finalizado" title="Concluído">
+                <img class="concluido" src="{% static 'img/concluido.svg' %}" alt="Concluído">
+              </button>
+            </td>
+            {% endif %}
+          </tr>
         {% endfor %}
       </tbody>
     </table>
@@ -102,19 +106,19 @@
     <!-- Paginação -->
     <div class="pagination">
       {% if pedidos.has_previous %}
-        <a href="?page={{ pedidos.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">&laquo; Anterior</a>
+        <a href="?page={{ pedidos.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if data_search %}&data={{ data_search }}{% endif %}">&laquo; Anterior</a>
       {% endif %}
 
       {% for num in pedidos.paginator.page_range %}
         {% if pedidos.number == num %}
           <strong>{{ num }}</strong>
         {% else %}
-          <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ num }}</a>
+          <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if data_search %}&data={{ data_search }}{% endif %}">{{ num }}</a>
         {% endif %}
       {% endfor %}
 
       {% if pedidos.has_next %}
-        <a href="?page={{ pedidos.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">Próximo &raquo;</a>
+        <a href="?page={{ pedidos.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if data_search %}&data={{ data_search }}{% endif %}">Próximo &raquo;</a>
       {% endif %}
     </div>
   {% else %}
@@ -146,6 +150,8 @@
     <button type="button" id="confirmarCancelamentoBtn">Confirmar Cancelamento</button>
   </div>
 </div>
+
+<!-- Modal e demais scripts permanecem inalterados -->
 {% endblock content %}
 
 {% block extra_js %}
