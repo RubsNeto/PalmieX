@@ -111,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     mat_palmilha: item.mat_palmilha,
                     tipo_servico: item.tipo_servico,
                     marca: item.marca,
-                    tam_palmilha: item.tamPalmilha || '', // Usa o valor de tamPalmilha enviado
                     tamanhos: []
                   };
                 }
@@ -173,8 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                           
                         <div>
-                          <p><strong>Espessura Palmilha:</strong> ${produto.tam_palmilha || '0'} mm</p>
-                          <p><strong>Espessura Solado:</strong> ${produto.espessura || '0'} mm</p>
+                          <p><strong>Espessura Palmilha:</strong> ${produto.espessura || '0'} mm</p>
                         </div>
                       </span>
                       <span class="item-nome">

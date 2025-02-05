@@ -264,9 +264,6 @@ select {
   display: block;         /* Garante que o label ocupe toda a largura do contêiner */
 }
 
-.tamPalmilha, .tamSolado{
-  width:max-content
-}
 
 
 .tipo-servico-container {

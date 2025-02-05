@@ -237,9 +237,6 @@ function reorganizarTabindex() {
         const corPalmilha = pedido.querySelector('.corPalmilha');
         if (corPalmilha) corPalmilha.setAttribute('tabindex', proximoTabindex++);
 
-        const tamPalmilha = pedido.querySelector('.tamPalmilha');
-        if (tamPalmilha) tamPalmilha.setAttribute('tabindex', proximoTabindex++);
-
         const espessura = pedido.querySelector('.espessura');
         if (espessura) espessura.setAttribute('tabindex', proximoTabindex++);
         
@@ -523,12 +520,7 @@ function adicionarEventosPedido(pedidoItem) {
                         </div>
 
                         <div class="tamanhos-container">
-                        <div class="campo-tamanho">
-                            <span class="campo">Tamanho Palmilha</span>
-                            <input type="text" class="tamPalmilha" required 
-                                placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
-                                title="Digite apenas números para o tamanho em milímetros">
-                        </div>
+                
                         <div class="campo-tamanho">
                             <span class="campo">Espessura</span>
                             <input type="text" class="espessura" required 
@@ -641,7 +633,6 @@ function coletarDadosPedidos() {
         const matPalmilha   = (pedido.querySelector('.matPalmilha')?.value || '').trim();
 
         // Campos para os tamanhos gerais (digitados fora dos quadradinhos)
-        const tamPalmilha = (pedido.querySelector('.tamPalmilha')?.value || '').trim();
         const espessura   = (pedido.querySelector('.espessura')?.value || '').trim();
 
         // Campo para a cor específica da palmilha
@@ -689,7 +680,6 @@ function coletarDadosPedidos() {
             cor: cor,
             corPalmilha: corPalmilha,
             obs: obs,
-            tamPalmilha: tamPalmilha,
             espessura: espessura,
             tamanhos: tamanhos
         });

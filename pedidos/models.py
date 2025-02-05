@@ -49,7 +49,6 @@ class PedidoItem(models.Model):
     mat_palmilha = models.CharField(max_length=50, null=True, blank=True)
     
     # Novos campos para tamanhos e cor específica da palmilha
-    tam_palmilha = models.CharField(max_length=20, null=True, blank=True, verbose_name="Tamanho Palmilha (mm)")
     espessura = models.CharField(max_length=20, null=True, blank=True, verbose_name="Espessura Solado (mm)")
     
     cor_palmilha = models.CharField(max_length=50, null=True, blank=True, verbose_name="Cor da Palmilha")

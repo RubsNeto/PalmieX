@@ -185,7 +185,6 @@ def pedido_itens_api(request, pedido_id):
                 "mat_balancinho": item.mat_balancinho,
                 "ref_palmilha": item.ref_palmilha,
                 "mat_palmilha": item.mat_palmilha,
-                "tamPalmilha": item.tam_palmilha
             })
         
         return JsonResponse(data)
@@ -371,7 +370,6 @@ def realizar_pedido_urgente(request):
                     cor=cor,
                     cor_palmilha=cor_palmilha,  # Novo
                     obs=obs,
-                    tam_palmilha=tamPalmilha    # Novo
                 )
 
         return JsonResponse({'mensagem': 'Pedido criado com sucesso!', 'pedido_id': pedido.pk})
