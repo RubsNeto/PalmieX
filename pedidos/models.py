@@ -15,11 +15,34 @@ class Pedido(models.Model):
         ('Pedido Pronto', 'Pedido Pronto'),
         ('Reposição Pendente', 'Reposição Pendente')
     ]
-
+    
+    # Status geral ou comum (se necessário)
     cliente = models.CharField(max_length=255)
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
     data = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    
+    # Campos para status específicos
+    status_balancinho = models.CharField(
+        max_length=30,
+        choices=[
+            ('Pendente', 'Pendente'),
+            ('Em Produção', 'Em Produção'),
+            ('Pedido Finalizado', 'Pedido Finalizado'),
+            ('Cancelado', 'Cancelado'),
+        ],
+        default='Pendente'
+    )
+    status_solado = models.CharField(
+        max_length=30,
+        choices=[
+            ('Pendente', 'Pendente'),
+            ('Em Produção', 'Em Produção'),
+            ('Pedido Finalizado', 'Pedido Finalizado'),
+            ('Cancelado', 'Cancelado'),
+        ],
+        default='Pendente'
+    )
+    
     cancelado = models.TextField(blank=True, null=True, verbose_name="Motivo do Cancelamento")
     gerente_cancelamento = models.ForeignKey(
         User,

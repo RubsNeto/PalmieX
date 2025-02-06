@@ -5,4 +5,4 @@ from .models import Perfil
 
 @admin.register(Perfil)
 class PerfilAdmin(admin.ModelAdmin):
-    list_display = ('user', 'permission_level')
+    list_display = ('user', 'permission_level','production_area')

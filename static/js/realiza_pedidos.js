@@ -610,8 +610,6 @@ function adicionarEventosPedido(pedidoItem) {
                 });
         });
     }
-
-
     
 }
 
@@ -622,39 +620,21 @@ function coletarDadosPedidos() {
     dados.codigoVendedor = document.querySelector('.codVendedor')?.value || '';
     dados.vendedor = document.querySelector('.vendedor')?.value || '';
     
+    // Aqui você coleta os status para Balancinho e Solado.
+    dados.status_balancinho = document.querySelector('.status-balancinho')?.value || 'Pendente';
+    dados.status_solado = document.querySelector('.status-solado')?.value || 'Pendente';
+    
     dados.itens = [];
 
     const pedidoItens = document.querySelectorAll('.pedido-item');
     pedidoItens.forEach(pedido => {
-        // Campos dos produtos
+        // Coleta dos campos referentes ao balancinho e palmilha/solado:
         const refBalancinho = (pedido.querySelector('.refBalancinho')?.value || '').trim();
         const matBalancinho = (pedido.querySelector('.matBalancinho')?.value || '').trim();
         const refPalmilha   = (pedido.querySelector('.refPalmilha')?.value || '').trim();
         const matPalmilha   = (pedido.querySelector('.matPalmilha')?.value || '').trim();
-
-        // Campos para os tamanhos gerais (digitados fora dos quadradinhos)
-        const espessura   = (pedido.querySelector('.espessura')?.value || '').trim();
-
-        // Campo para a cor específica da palmilha
-        const corPalmilha = (pedido.querySelector('.corPalmilha')?.value || '').trim();
-
-        // Tipo de Serviço e Marca
-        const selectServico = pedido.querySelector('.selectTipoServico');
-        let tipoServico = 'Costurado';
-        if (selectServico) {    
-            tipoServico = selectServico.value;
-        }
-        const marcaElement = pedido.querySelector('.tipo-servico-container .marca');
-        let marca = 'Fibra';
-        if (marcaElement) {
-            marca = marcaElement.value;
-        }
-
-        // Outros campos
-        const cor = (pedido.querySelector('.cor')?.value || '').trim();
-        const obs = (pedido.querySelector('.obs')?.value || '').trim();
-
-        // Coleta os tamanhos dos quadradinhos (que indicam os pares por tamanho)
+        
+        // Outros campos que você já coleta (ex.: tamanhos)
         const tamanhos = {};
         const botaoContainers = pedido.querySelectorAll('.botao-container');
         botaoContainers.forEach(bc => {
@@ -669,24 +649,21 @@ function coletarDadosPedidos() {
             }
         });
 
-        // Adiciona os dados deste item ao array
+        // Adiciona os dados deste item ao array, incluindo os campos que antes não eram enviados:
         dados.itens.push({
             refBalancinho: refBalancinho,
             matBalancinho: matBalancinho,
             refPalmilha: refPalmilha,
             matPalmilha: matPalmilha,
-            marca: marca,
-            tipoServico: tipoServico,
-            cor: cor,
-            corPalmilha: corPalmilha,
-            obs: obs,
-            espessura: espessura,
+            // Você pode incluir outros campos aqui, como:
+            // cor, corPalmilha, espessura, tipoServico, marca, obs, etc.
             tamanhos: tamanhos
         });
     });
 
     return dados;
 }
+
 
 
 

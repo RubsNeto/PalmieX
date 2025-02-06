@@ -8,26 +8,27 @@
 {% endblock extra_css %}
 
 {% block content %}
-  <div class="container-pedidos">
-    <h1>Produção</h1>
+<div class="container-pedidos">
+  <h1 class="area-prod">Produção: <strong>{{ production_area|capfirst }}</strong></h1>
 
-    <div class='separator'>
-      <!-- Formulário de busca: por texto e por data -->
-      <form method="get" action="{% url 'pedidos:producao' %}" class="search-container">
-        <!-- Pesquisa textual -->
-        <input type="text" name="q" placeholder="Buscar por cliente, vendedor ou código" value="{{ search_query }}" class="search-input">
-        <button type="submit" class="search-button" title="Pesquisar">
-          <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar" alt="Pesquisar">
-        </button>
-      </form>
+  <div class="separator">
+    <!-- Formulário de busca: por texto -->
+    <form method="get" action="{% url 'pedidos:producao' %}" class="search-container">
+      <input type="text" name="q" placeholder="Buscar por cliente, vendedor ou código" value="{{ search_query }}" class="search-input">
+      <button type="submit" class="search-button" title="Pesquisar">
+        <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar" alt="Pesquisar">
+      </button>
+    </form>
 
-      <form method="get" action="{% url 'pedidos:producao' %}" class="search-container container-date">
-        <input type="date" name="data" value="{{ data_search }}" class="search-input-date" title="Buscar por data">
-          <button type="submit" class="search-button-date" title="Pesquisar por data">
-            <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar-data" alt="Pesquisar por data">
-          </button>
-      </form>
-    </div>
+    <!-- Formulário de busca por data -->
+    <form method="get" action="{% url 'pedidos:producao' %}" class="search-container container-date">
+      <input type="date" name="data" value="{{ data_search }}" class="search-input-date" title="Buscar por data">
+      <button type="submit" class="search-button-date" title="Pesquisar por data">
+        <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar-data" alt="Pesquisar por data">
+      </button>
+    </form>
+  </div>
+
   {% if pedidos %}
     <table class="pedidos-table">
       <thead>
@@ -36,7 +37,9 @@
           <th>Código</th>
           <th>Data</th>
           <th>Hora</th>
-          <th>Status</th>
+          <!-- Colunas para os dois status -->
+          <th>Status Balancinho</th>
+          <th>Status Solado</th>
           {% if user.permission_level > 1 %}
             <th>Controle</th>
             <th>Operação</th>
@@ -52,8 +55,12 @@
             <td>{{ pedido.id }}</td>
             <td>{{ pedido.data|date:"d/m/Y" }}</td>
             <td>{{ pedido.data|date:"H:i" }}</td>
-            <td class="status-pedido">
-              • <span style="text-decoration: underline;">{{ pedido.status }}</span>
+            <!-- Exibe os dois status -->
+            <td class="status-balancinho">
+              • <span style="text-decoration: underline;">{{ pedido.status_balancinho }}</span>
+            </td>
+            <td class="status-solado">
+              • <span style="text-decoration: underline;">{{ pedido.status_solado }}</span>
             </td>
             <td class="botoes">
               <div class="coluna-esquerda">
@@ -73,13 +80,14 @@
                   <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
                     <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
                   </button>
-                  <button type="button" class="alterar-status prod" data-pedido-id="{{ pedido.id }}" data-novo-status="Em Produção" title="Produção">
+                  <!-- Botões de alteração de status; a view atualizará somente o campo da área do usuário -->
+                  <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-novo-status="Em Produção" title="Produção">
                     <img class="producao" src="{% static 'img/producao.svg' %}" alt="Produção">
                   </button>
-                  <button type="button" class="alterar-status separado" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Pronto" title="Separado">
+                  <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Pronto" title="Separado">
                     <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
                   </button>
-                  <button type="button" class="alterar-status reposicao" data-pedido-id="{{ pedido.id }}" data-novo-status="Reposição Pendente" title="Reposição">
+                  <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-novo-status="Reposição Pendente" title="Reposição">
                     <img class="rep" src="{% static 'img/empty.svg' %}" alt="Reposição">
                   </button>
                 {% endif %}
@@ -93,7 +101,7 @@
               <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
                 <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
               </button>
-              <button type="button" class="alterar-status fim" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Finalizado" title="Concluído">
+              <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-novo-status="Pedido Finalizado" title="Concluído">
                 <img class="concluido" src="{% static 'img/concluido.svg' %}" alt="Concluído">
               </button>
             </td>
@@ -151,9 +159,12 @@
   </div>
 </div>
 
-<!-- Modal e demais scripts permanecem inalterados -->
+<!-- Injeção da variável productionArea para o JavaScript -->
+<script>
+  const productionArea = "{{ production_area }}";  // Valor: "solado" ou "balancinho"
+</script>
 {% endblock content %}
 
 {% block extra_js %}
-<script src="{% static 'js/producao.js' %}"></script>
+  <script src="{% static 'js/producao.js' %}"></script>
 {% endblock extra_js %}

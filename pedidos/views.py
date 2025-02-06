@@ -69,20 +69,17 @@ def buscar_produto_por_nome(request):
         'nome': produto.nome,
     })
 
+
 @login_required
 @permission_required(1)
 def producao(request):
     search_query = request.GET.get('q', '').strip()
     data_search = request.GET.get('data', '').strip()  # Novo parâmetro para data
 
-    pedidos = Pedido.objects.prefetch_related('itens__produto').annotate(
-        status_order=Case(
-            When(status='Em Produção', then=Value(1)),
-            When(status='Pendente', then=Value(2)),
-            When(status='Pedido Finalizado', then=Value(3)),
-            output_field=IntegerField()
-        )
-    ).filter(~Q(status='Pedido Finalizado') & ~Q(status='Cancelado'))
+    # Filtra os pedidos com base no status_balancinho (você pode ajustar para status_solado se necessário)
+    pedidos = Pedido.objects.prefetch_related('itens__produto').filter(
+        ~Q(status_balancinho='Pedido Finalizado') & ~Q(status_balancinho='Cancelado')
+    )
 
     if search_query:
         pedidos = pedidos.filter(
@@ -94,24 +91,20 @@ def producao(request):
 
     if data_search:
         try:
-            # Detecta o formato:
             if "-" in data_search:
-                # Exemplo: "2023-03-15"
                 date_obj = datetime.datetime.strptime(data_search, '%Y-%m-%d').date()
             elif "/" in data_search:
-                # Exemplo: "15/03/2023"
                 date_obj = datetime.datetime.strptime(data_search, '%d/%m/%Y').date()
             else:
-                # Se não contiver hífens nem barras, tenta um fallback (ou ignora)
                 date_obj = None
 
             if date_obj:
                 pedidos = pedidos.filter(data__date=date_obj)
         except ValueError:
-            # Se ocorrer erro na conversão, você pode optar por ignorar ou informar o usuário.
             pass
 
-    pedidos = pedidos.order_by('status_order', '-data')
+    # Ordena pelos status (neste exemplo, apenas usando status_balancinho) e pela data (você pode ajustar conforme sua regra)
+    pedidos = pedidos.order_by('status_balancinho', '-data')
 
     page = request.GET.get('page', 1)
     paginator = Paginator(pedidos, 10)
@@ -123,10 +116,18 @@ def producao(request):
     except EmptyPage:
         pedidos_paginados = paginator.page(paginator.num_pages)
 
+    # Exemplo: obtendo a área de produção do usuário (caso você queira usá-la no template)
+    production_area = getattr(request.user, 'perfil', None)
+    if production_area:
+        production_area = request.user.perfil.production_area
+    else:
+        production_area = 'solado'
+
     return render(request, 'producao/producao.html', {
         'pedidos': pedidos_paginados,
         'search_query': search_query,
-        'data_search': data_search  # Envia para o template o valor digitado
+        'data_search': data_search,
+        'production_area': production_area,
     })
 
 #------------------ Impressão -------------------
@@ -232,17 +233,25 @@ def realizar_pedido(request):
         cliente = body.get('cliente', '').strip()
         codigo_vendedor = body.get('codigoVendedor', '').strip()
         vendedor_nome = body.get('vendedor', '').strip()
-        status = body.get('status', 'Pendente').strip()
+
+        # Agora recebemos os status individuais para cada setor.
+        # Se nenhum status for informado, define como "Pendente"
+        status_balancinho = body.get('status_balancinho', 'Pendente').strip()
+        status_solado = body.get('status_solado', 'Pendente').strip()
 
         # Busca ou cria o vendedor e cria o pedido
         vendedor, _ = Vendedor.objects.get_or_create(
             codigo=codigo_vendedor,
             defaults={'nome': vendedor_nome}
         )
+        # Cria o pedido com os dois status
         pedido = Pedido.objects.create(
             cliente=cliente,
             vendedor=vendedor,
-            status=status
+            # Se você mantiver um campo "status" geral, poderá setá-lo também,
+            # mas aqui estamos usando os dois campos específicos:
+            status_balancinho=status_balancinho,
+            status_solado=status_solado
         )
 
         # Percorre os itens do pedido
@@ -255,10 +264,10 @@ def realizar_pedido(request):
             marca         = item.get('marca', 'fibra').strip()
             tipoServico   = item.get('tipoServico', 'Costurado').strip()
             cor           = item.get('cor', '').strip()
-            cor_palmilha  = item.get('corPalmilha', '').strip()  # Novo campo
+            cor_palmilha  = item.get('corPalmilha', '').strip()
             obs           = item.get('obs', '').strip()
-            tamPalmilha   = item.get('tamPalmilha', '').strip()  # Novo campo
-            espessura     = item.get('espessura', '').strip()    # Novo campo
+            tamPalmilha   = item.get('tamPalmilha', '').strip()
+            espessura     = item.get('espessura', '').strip()
 
             # Se não houver nenhuma referência, ignora o item
             if not refBalancinho and not refPalmilha:
@@ -292,7 +301,6 @@ def realizar_pedido(request):
                     cor=cor,
                     cor_palmilha=cor_palmilha,
                     obs=obs,
-                    tam_palmilha=tamPalmilha,
                     espessura=espessura
                 )
 
@@ -304,6 +312,7 @@ def realizar_pedido(request):
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
 
 
+
 @require_POST
 @login_required
 def realizar_pedido_urgente(request):
@@ -313,7 +322,9 @@ def realizar_pedido_urgente(request):
         cliente = body.get('cliente', '').strip()
         codigo_vendedor = body.get('codigoVendedor', '').strip()
         vendedor_nome = body.get('vendedor', '').strip()
-        status = body.get('status', 'Cliente em Espera').strip()
+        # Para pedidos urgentes, se preferir, você pode definir um status padrão específico.
+        status_balancinho = body.get('status_balancinho', 'Cliente em Espera').strip()
+        status_solado = body.get('status_solado', 'Cliente em Espera').strip()
 
         # Validações (omitidas para brevidade)...
 
@@ -324,7 +335,8 @@ def realizar_pedido_urgente(request):
         pedido = Pedido.objects.create(
             cliente=cliente,
             vendedor=vendedor,
-            status=status
+            status_balancinho=status_balancinho,
+            status_solado=status_solado
         )
 
         itens = body.get('itens', [])
@@ -336,9 +348,9 @@ def realizar_pedido_urgente(request):
             marca         = item.get('marca', 'Fibra').strip()
             tipoServico   = item.get('tipoServico', 'nenhum').strip()
             cor           = item.get('cor', '').strip()
-            cor_palmilha  = item.get('corPalmilha', '').strip()  # Novo
+            cor_palmilha  = item.get('corPalmilha', '').strip()
             obs           = item.get('obs', '').strip()
-            tamPalmilha   = item.get('tamPalmilha', '').strip()  # Novo campo
+            tamPalmilha   = item.get('tamPalmilha', '').strip()
 
             if not refBalancinho and not refPalmilha:
                 continue
@@ -368,7 +380,7 @@ def realizar_pedido_urgente(request):
                     mat_palmilha=matPalmilha,
                     tipo_servico=tipoServico,
                     cor=cor,
-                    cor_palmilha=cor_palmilha,  # Novo
+                    cor_palmilha=cor_palmilha,
                     obs=obs,
                 )
 
@@ -378,6 +390,7 @@ def realizar_pedido_urgente(request):
         return JsonResponse({'erro': 'JSON inválido.'}, status=400)
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
+
 
 
 @csrf_exempt  
@@ -499,13 +512,13 @@ def editar_pedido(request, pedido_id):
     }
     return render(request, 'pedidos/editar_pedido.html', context)
 
+
 @require_POST
 @login_required
 @permission_required(2)
 def atualizar_status_pedido(request):
     try:
         body = json.loads(request.body or '{}')
-
         pedido_id = body.get('pedido_id')
         novo_status = body.get('novo_status', '').strip()
 
@@ -514,19 +527,32 @@ def atualizar_status_pedido(request):
         if not novo_status:
             return JsonResponse({'erro': 'Novo status não fornecido.'}, status=400)
 
-        # Verificar se o status é válido
         pedido = get_object_or_404(Pedido, id=pedido_id)
-        status_valido = dict(Pedido.STATUS_CHOICES).get(novo_status)
-        if not status_valido:
-            return JsonResponse({'erro': 'Status inválido.'}, status=400)
 
-        # Atualizar o status
-        pedido.status = novo_status
+        # Obtém a área de produção do usuário a partir do perfil
+        user_area = getattr(request.user, 'perfil', None)
+        if user_area:
+            user_area = request.user.perfil.production_area
+        else:
+            return JsonResponse({'erro': 'Área de produção não definida para o usuário.'}, status=400)
+
+        # Atualiza apenas o campo correspondente à área do usuário
+        if user_area == 'solado':
+            pedido.status_solado = novo_status
+        elif user_area == 'balancinho':
+            pedido.status_balancinho = novo_status
+        else:
+            return JsonResponse({'erro': 'Área de produção desconhecida.'}, status=400)
+
         pedido.save()
 
-        logger.info(f"Pedido #{pedido_id} atualizado para o status '{novo_status}' por {request.user.username}.")
+        logger.info(
+            f"Pedido #{pedido_id} atualizado para o status '{novo_status}' na área '{user_area}' por {request.user.username}."
+        )
 
-        return JsonResponse({'mensagem': f"Status do pedido atualizado para '{novo_status}'."})
+        return JsonResponse({
+            'mensagem': f"Status do pedido atualizado para '{novo_status}' na área '{user_area}'."
+        })
 
     except json.JSONDecodeError:
         logger.error("JSON inválido na requisição para atualizar status.")
@@ -537,7 +563,8 @@ def atualizar_status_pedido(request):
     except Exception as e:
         logger.exception("Erro ao atualizar o status do pedido.")
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
-    
+
+   
     
 #------------------------------- Finalizados --------------------------------  
 

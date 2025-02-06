@@ -1,12 +1,12 @@
 # pedidos/admin.py
 
 from django.contrib import admin
-from .models import Pedido, PedidoItem
+from .models import Pedido, PedidoItem, Referencia
 
 @admin.register(Pedido)
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cliente', 'vendedor', 'data', 'status')
-    list_filter = ('status', 'vendedor')
+    list_display = ('cliente', 'vendedor', 'data', 'status_balancinho')
+    list_filter = ('status_balancinho',)
     search_fields = ('cliente', 'vendedor__nome')
 
 @admin.register(PedidoItem)
