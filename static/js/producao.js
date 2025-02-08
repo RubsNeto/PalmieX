@@ -87,6 +87,13 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ------------------------------------------------------------
+  // DEFININDO productionArea (se não estiver injetada pelo template)
+  // ------------------------------------------------------------
+  if (typeof productionArea === 'undefined') {
+    var productionArea = 'balancinho'; // valor padrão; altere para 'solado' se necessário
+  }
+
+  // ------------------------------------------------------------
   // EXIBIR DETALHES DO PEDIDO (MODAL)
   // ------------------------------------------------------------
   const buttonsDetalhes = document.querySelectorAll('.ver-detalhes');
@@ -156,9 +163,6 @@ document.addEventListener('DOMContentLoaded', function() {
               <p><strong>Pedido:</strong> ${data.pedido_id}</p>
               <p><strong>Data:</strong> ${data.data}</p>
               <p><strong>Hora:</strong> ${data.hora}</p>
-              <p><strong>Status:</strong> 
-                <span id="status-pedido-modal">${data.status}</span>
-              </p>
               ${data.status === 'Cancelado' ? `
                 <p><strong>Autorizado por:</strong> 
                   <span class="gerente-cancelamento">${data.gerente_cancelamento || 'N/A'}</span>
@@ -271,14 +275,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // ------------------------------------------------------------
   // productionArea foi injetado no template (ex: "solado" ou "balancinho")
   const botoesAlterarStatus = document.querySelectorAll('.alterar-status');
-  function atualizarStatusPedido(novoStatus, pedidoId) {
+  function atualizarStatusPedido(novoStatus, pedidoId, area) {
     if (!pedidoId) {
       alert("ID do pedido não encontrado.");
       return;
     }
-
+  
     const csrftoken = getCookie('csrftoken');
-
+  
     fetch('/atualizar-status-pedido/', {
       method: 'POST',
       headers: { 
@@ -298,28 +302,30 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(data => {
       alert(data.mensagem);
-
+  
+      // Atualiza a linha do pedido apenas na coluna correspondente à área
       const pedidoRow = document.querySelector(`.pedido-resumo[data-pedido-id="${pedidoId}"]`);
       if (pedidoRow) {
-        if (productionArea === 'solado') {
-          const statusCell = pedidoRow.querySelector('.status-solado span');
-          if (statusCell) {
-            statusCell.textContent = novoStatus;
-            statusCell.parentElement.style.color = obterCorPorStatus(novoStatus, productionArea);
+        if (area === 'solado') {
+          const soladoCell = pedidoRow.querySelector("td.status-solado span");
+          if (soladoCell) {
+            soladoCell.textContent = novoStatus;
+            soladoCell.parentElement.style.color = obterCorPorStatus(novoStatus, 'solado');
           }
-        } else if (productionArea === 'balancinho') {
-          const statusCell = pedidoRow.querySelector('.status-balancinho span');
-          if (statusCell) {
-            statusCell.textContent = novoStatus;
-            statusCell.parentElement.style.color = obterCorPorStatus(novoStatus, productionArea);
+        } else if (area === 'balancinho') {
+          const balancinhoCell = pedidoRow.querySelector("td.status-balancinho span");
+          if (balancinhoCell) {
+            balancinhoCell.textContent = novoStatus;
+            balancinhoCell.parentElement.style.color = obterCorPorStatus(novoStatus, 'balancinho');
           }
         }
       }
-
+  
+      // Se existir um modal aberto, atualiza também nele
       const statusModal = document.getElementById('status-pedido-modal');
       if (statusModal) {
         statusModal.textContent = novoStatus;
-        statusModal.style.color = obterCorPorStatus(novoStatus, productionArea);
+        statusModal.style.color = obterCorPorStatus(novoStatus, area);
       }
     })
     .catch(err => {
@@ -327,16 +333,24 @@ document.addEventListener('DOMContentLoaded', function() {
       alert(err.erro || 'Erro ao atualizar o status do pedido.');
     });
   }
+  
+  
+  
+
 
   botoesAlterarStatus.forEach(button => {
     button.addEventListener('click', function() {
       const pedidoId = this.getAttribute('data-pedido-id');
       const novoStatus = this.getAttribute('data-novo-status');
+      // Obtém a área diretamente do botão
+      const area = this.getAttribute('data-area');
       if (confirm(`Deseja realmente marcar o pedido como '${novoStatus}'?`)) {
-        atualizarStatusPedido(novoStatus, pedidoId);
+        atualizarStatusPedido(novoStatus, pedidoId, area);
       }
     });
   });
+
+
 
   // ------------------------------------------------------------
   // CANCELAMENTO COM SENHA DE GERENTE

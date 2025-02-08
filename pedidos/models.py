@@ -16,12 +16,15 @@ class Pedido(models.Model):
         ('Reposição Pendente', 'Reposição Pendente')
     ]
     
-    # Status geral ou comum (se necessário)
+    # Dados do pedido
     cliente = models.CharField(max_length=255)
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
-    data = models.DateTimeField(auto_now_add=True)
+    data = models.DateTimeField(auto_now_add=True)  # Data do pedido
+
+    # Novo campo para data de finalização/cancelamento
+    data_finalizado = models.DateTimeField(null=True, blank=True, verbose_name="Data de Finalização/Cancellation")
     
-    # Campos para status específicos
+    # Status para áreas diferentes
     status_balancinho = models.CharField(
         max_length=30,
         choices=[

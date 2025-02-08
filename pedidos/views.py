@@ -70,15 +70,19 @@ def buscar_produto_por_nome(request):
     })
 
 
-@login_required
-@permission_required(1)
+login_required
 def producao(request):
     search_query = request.GET.get('q', '').strip()
     data_search = request.GET.get('data', '').strip()  # Novo parâmetro para data
 
-    # Filtra os pedidos com base no status_balancinho (você pode ajustar para status_solado se necessário)
+    # Filtra os pedidos que NÃO estão finalizados COMPLETAMENTE.
+    # Ou seja, o pedido permanece em produção se:
+    #    -> pelo menos um dos status (balancinho ou solado) NÃO estiver em ['Pedido Finalizado', 'Cancelado']
     pedidos = Pedido.objects.prefetch_related('itens__produto').filter(
-        ~Q(status_balancinho='Pedido Finalizado') & ~Q(status_balancinho='Cancelado')
+        ~(
+            Q(status_balancinho__in=['Pedido Finalizado', 'Cancelado']) &
+            Q(status_solado__in=['Pedido Finalizado', 'Cancelado'])
+        )
     )
 
     if search_query:
@@ -103,12 +107,10 @@ def producao(request):
         except ValueError:
             pass
 
-    # Ordena pelos status (neste exemplo, apenas usando status_balancinho) e pela data (você pode ajustar conforme sua regra)
     pedidos = pedidos.order_by('status_balancinho', '-data')
 
     page = request.GET.get('page', 1)
     paginator = Paginator(pedidos, 10)
-
     try:
         pedidos_paginados = paginator.page(page)
     except PageNotAnInteger:
@@ -116,7 +118,7 @@ def producao(request):
     except EmptyPage:
         pedidos_paginados = paginator.page(paginator.num_pages)
 
-    # Exemplo: obtendo a área de produção do usuário (caso você queira usá-la no template)
+    # Obtém a área de produção do usuário
     production_area = getattr(request.user, 'perfil', None)
     if production_area:
         production_area = request.user.perfil.production_area
@@ -129,6 +131,8 @@ def producao(request):
         'data_search': data_search,
         'production_area': production_area,
     })
+
+
 
 #------------------ Impressão -------------------
 
@@ -155,7 +159,7 @@ def pedido_itens_api(request, pedido_id):
             "vendedor_codigo": pedido.vendedor.codigo,
             "data": data_local.strftime("%d/%m/%Y"),
             "hora": data_local.strftime("%H:%M"),  
-            "status": pedido.status,
+            "status Balancinho": pedido.status_balancinho,
             "motivo_cancelamento": pedido.cancelado,
             "gerente_cancelamento": pedido.gerente_cancelamento.username if pedido.gerente_cancelamento else None,
             "pedido_id": pedido.id,
@@ -402,10 +406,8 @@ def cancelar_pedido(request, pedido_id):
         senha_digitada = body.get('senhaNivel3', '').strip()
         motivo_cancelamento = body.get('motivoCancelamento', '').strip()
         
-        logger.debug(f"Cancelando pedido {pedido_id} com motivo: {motivo_cancelamento}")
-
+        # Validações...
         if not senha_digitada or not motivo_cancelamento:
-            logger.warning("Senha ou motivo de cancelamento não fornecido.")
             return JsonResponse({'erro': 'Senha e motivo do cancelamento são obrigatórios.'}, status=400)
         
         pedido = get_object_or_404(Pedido, id=pedido_id)
@@ -415,37 +417,31 @@ def cancelar_pedido(request, pedido_id):
             perfil__permission_level__in=[3, 4]
         )
 
-        logger.debug(f"Usuários autorizados para cancelar: {usuarios_autorizados}")
-
-        # Verificar a senha com os usuários autorizados
         gerente_autorizador = None
         for usuario in usuarios_autorizados:
             if check_password(senha_digitada, usuario.password):
                 gerente_autorizador = usuario
-                logger.debug(f"Gerente autorizado encontrado: {usuario.get_full_name()}")
                 break
 
         if not gerente_autorizador:
-            logger.warning("Senha incorreta ou usuário não encontrado.")
             return JsonResponse({'erro': 'Senha de gerente incorreta ou não encontrada.'}, status=403)
 
-        # Cancelar o pedido
-        pedido.status = 'Cancelado'
+        # Cancelar o pedido e registrar a data de finalização
+        pedido.status_balancinho = 'Cancelado'
+        pedido.status_solado = 'Cancelado'
         pedido.cancelado = motivo_cancelamento
         pedido.gerente_cancelamento = gerente_autorizador
+        pedido.data_finalizado = timezone.now()  # Registra a data/hora atual
         pedido.save()
         
-        logger.info(f"Pedido {pedido_id} cancelado por {gerente_autorizador.get_full_name()}")
-
         return JsonResponse({
             'mensagem': f'Pedido {pedido_id} cancelado com sucesso.',
             'gerente': gerente_autorizador.get_full_name()
         })
         
     except Exception as e:
-        logger.exception(f"Erro ao cancelar pedido {pedido_id}: {str(e)}")
         return JsonResponse({'erro': f'Erro ao cancelar pedido: {str(e)}'}, status=500)
-    
+   
 
 @login_required
 def editar_pedido(request, pedido_id):
@@ -529,42 +525,36 @@ def atualizar_status_pedido(request):
 
         pedido = get_object_or_404(Pedido, id=pedido_id)
 
-        # Obtém a área de produção do usuário a partir do perfil
         user_area = getattr(request.user, 'perfil', None)
         if user_area:
             user_area = request.user.perfil.production_area
         else:
             return JsonResponse({'erro': 'Área de produção não definida para o usuário.'}, status=400)
 
-        # Atualiza apenas o campo correspondente à área do usuário
         if user_area == 'solado':
             pedido.status_solado = novo_status
         elif user_area == 'balancinho':
             pedido.status_balancinho = novo_status
         else:
             return JsonResponse({'erro': 'Área de produção desconhecida.'}, status=400)
+        
+        # Se o status for finalizado ou cancelado, registra a data de finalização
+        if novo_status in ['Pedido Finalizado', 'Cancelado']:
+            pedido.data_finalizado = timezone.now()
 
         pedido.save()
-
-        logger.info(
-            f"Pedido #{pedido_id} atualizado para o status '{novo_status}' na área '{user_area}' por {request.user.username}."
-        )
 
         return JsonResponse({
             'mensagem': f"Status do pedido atualizado para '{novo_status}' na área '{user_area}'."
         })
 
     except json.JSONDecodeError:
-        logger.error("JSON inválido na requisição para atualizar status.")
         return JsonResponse({'erro': 'JSON inválido.'}, status=400)
     except Pedido.DoesNotExist:
-        logger.error(f"Pedido com ID {pedido_id} não encontrado.")
         return JsonResponse({'erro': 'Pedido não encontrado.'}, status=404)
     except Exception as e:
-        logger.exception("Erro ao atualizar o status do pedido.")
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
 
-   
     
 #------------------------------- Finalizados --------------------------------  
 
@@ -572,11 +562,12 @@ def atualizar_status_pedido(request):
 @login_required
 def pedidos_finalizados(request):
     search_query = request.GET.get('q', '').strip()
-    data_search = request.GET.get('data', '').strip()  # Novo parâmetro para data (formato ISO: YYYY-MM-DD)
+    data_search = request.GET.get('data', '').strip()  # Formato ISO: YYYY-MM-DD
 
-    # Filtra os pedidos com status 'Pedido Finalizado' ou 'Cancelado'
+    # Filtra os pedidos em que ambos os status são "Pedido Finalizado" ou "Cancelado"
     pedidos = Pedido.objects.select_related('gerente_cancelamento').filter(
-        Q(status='Pedido Finalizado') | Q(status='Cancelado')
+        Q(status_balancinho__in=['Pedido Finalizado', 'Cancelado']),
+        Q(status_solado__in=['Pedido Finalizado', 'Cancelado'])
     )
 
     # Filtro de busca textual
@@ -596,7 +587,6 @@ def pedidos_finalizados(request):
             date_obj = datetime.datetime.strptime(data_search, '%Y-%m-%d').date()
             pedidos = pedidos.filter(data__date=date_obj)
         except ValueError:
-            # Se ocorrer erro na conversão, ignore o filtro ou exiba uma mensagem de erro
             pass
 
     pedidos = pedidos.order_by('-data')
@@ -614,8 +604,11 @@ def pedidos_finalizados(request):
     return render(request, 'pedidos/pedidos_finalizados.html', {
         'pedidos': pedidos_paginados,
         'search_query': search_query,
-        'data_search': data_search,  # Envia o valor da data para o template
+        'data_search': data_search,
     })
+
+
+
 
 @require_GET
 def autocomplete_referencia(request):
