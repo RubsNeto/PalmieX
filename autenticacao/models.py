@@ -6,6 +6,7 @@ from django.dispatch import receiver
 PRODUCTION_AREAS = (
     ('solado', 'Solado'),
     ('balancinho', 'Balancinho'),
+    ('vendedor', 'vendedor'),
 )
 
 class Perfil(models.Model):

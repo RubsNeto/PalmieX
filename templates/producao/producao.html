@@ -1,170 +1,183 @@
-{% extends 'base.html' %}
-{% load static %}
+  {% extends 'base.html' %}
+  {% load static %}
 
-{% block title %}Produção{% endblock title %}
+  {% block title %}Produção{% endblock title %}
 
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/producao/producao.css' %}">
-{% endblock extra_css %}
+  {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/producao/producao.css' %}">
+  {% endblock extra_css %}
 
-{% block content %}
-<div class="container-pedidos">
-  <h1 class="area-prod">Produção: <strong>{{ production_area|capfirst }}</strong></h1>
+  {% block content %}
+  <div class="container-pedidos">
+    <h1 class="area-prod">Produção: <strong>{{ production_area|capfirst }}</strong></h1>
 
-  <div class="separator">
-    <!-- Formulário de busca: por texto -->
-    <form method="get" action="{% url 'pedidos:producao' %}" class="search-container">
-      <input type="text" name="q" placeholder="Buscar por cliente, vendedor ou código" value="{{ search_query }}" class="search-input">
-      <button type="submit" class="search-button" title="Pesquisar">
-        <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar" alt="Pesquisar">
-      </button>
-    </form>
+    <div class="separator">
+      <!-- Formulário de busca: por texto -->
+      <form method="get" action="{% url 'pedidos:producao' %}" class="search-container">
+        <input type="text" name="q" placeholder="Buscar por cliente, vendedor ou código" value="{{ search_query }}" class="search-input">
+        <button type="submit" class="search-button" title="Pesquisar">
+          <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar" alt="Pesquisar">
+        </button>
+      </form>
 
-    <!-- Formulário de busca por data -->
-    <form method="get" action="{% url 'pedidos:producao' %}" class="search-container container-date">
-      <input type="date" name="data" value="{{ data_search }}" class="search-input-date" title="Buscar por data">
-      <button type="submit" class="search-button-date" title="Pesquisar por data">
-        <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar-data" alt="Pesquisar por data">
-      </button>
-    </form>
-  </div>
+      <!-- Formulário de busca por data -->
+      <form method="get" action="{% url 'pedidos:producao' %}" class="search-container container-date">
+        <input type="date" name="data" value="{{ data_search }}" class="search-input-date" title="Buscar por data">
+        <button type="submit" class="search-button-date" title="Pesquisar por data">
+          <img src="{% static 'img/pesquisar.svg' %}" class="pesquisar-data" alt="Pesquisar por data">
+        </button>
+      </form>
+    </div>
 
-  {% if pedidos %}
-    <table class="pedidos-table">
-      <thead>
-        <tr>
-          <th>Cliente</th>
-          <th>Código</th>
-          <th>Data</th>
-          <th>Hora</th>
-          <!-- Colunas para os dois status -->
-          <th>Status Balancinho</th>
-          <th>Status Solado</th>
-          {% if user.permission_level > 1 %}
-            <th>Controle</th>
-            <th>Operação</th>
-          {% else %}
-            <th>Ações</th>
-          {% endif %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for pedido in pedidos %}
-          <tr class="pedido-resumo" data-pedido-id="{{ pedido.id }}">
-            <td class="cliente">{{ pedido.cliente }}</td>
-            <td>{{ pedido.id }}</td>
-            <td>{{ pedido.data|date:"d/m/Y" }}</td>
-            <td>{{ pedido.data|date:"H:i" }}</td>
-            <!-- Exibe os dois status -->
-            <td class="status-balancinho">
-              • <span style="text-decoration: underline;">{{ pedido.status_balancinho }}</span>
-            </td>
-            <td class="status-solado">
-              • <span style="text-decoration: underline;">{{ pedido.status_solado }}</span>
-            </td>
-            <td class="botoes">
-              <div class="coluna-esquerda">
-                {% if user.permission_level == 1 %}
-                  <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
-                    <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
-                  </button>
-                  <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}" title="Cancelar">
-                    <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
-                  </button>
-                  <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
-                    <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
-                  </button>
-                {% endif %}
+    {% if pedidos %}
+      <table class="pedidos-table">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Código</th>
+            <th>Data</th>
+            <th>Hora</th>
+            <!-- Colunas para os dois status -->
+            {% if production_area == "balancinho" or production_area == "vendedor" %}
+                <th>Status Balancinho</th>
+            {% endif %}
 
-                {% if user.permission_level > 1 %}
-                  <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
-                    <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
-                  </button>
-                  <!-- Botões de alteração de status; a view atualizará somente o campo da área do usuário -->
-                  <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Em Produção" title="Produção">
-                    <img class="producao" src="{% static 'img/producao.svg' %}" alt="Produção">
-                  </button>
-                  <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Pedido Pronto" title="Separado">
-                    <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
-                  </button>
-                  <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Reposição Pendente" title="Reposição">
-                    <img class="rep" src="{% static 'img/empty.svg' %}" alt="Reposição">
-                  </button>
-                {% endif %}
-              </div>
-            </td>
+            {% if production_area == "solado" or production_area == "vendedor" %}
+                <th>Status Solado</th>
+            {% endif %}
+
+            
             {% if user.permission_level > 1 %}
-            <td>
-              <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}"  data-area="{{ production_area }}" title="Cancelar">
-                <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
-              </button>
-              <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}"  data-area="{{ production_area }}" title="Imprimir">
-                <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
-              </button>
-              <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}"  data-area="{{ production_area }}" data-novo-status="Pedido Finalizado" title="Concluído">
-                <img class="concluido" src="{% static 'img/concluido.svg' %}" alt="Concluído">
-              </button>
-            </td>
+              <th>Controle</th>
+              <th>Operação</th>
+            {% else %}
+              <th>Ações</th>
             {% endif %}
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {% for pedido in pedidos %}
+            <tr class="pedido-resumo" data-pedido-id="{{ pedido.id }}">
+              <td class="cliente">{{ pedido.cliente }}</td>
+              <td>{{ pedido.id }}</td>
+              <td>{{ pedido.data|date:"d/m/Y" }}</td>
+              <td>{{ pedido.data|date:"H:i" }}</td>
+              <!-- Exibe os dois status -->
+              {% if production_area == "balancinho" or production_area == "vendedor" %}
+                  <td class="status-balancinho">
+                      • <span style="text-decoration: underline;">{{ pedido.status_balancinho }}</span>
+                  </td>
+              {% endif %}
 
-    <!-- Paginação -->
-    <div class="pagination">
-      {% if pedidos.has_previous %}
-        <a href="?page={{ pedidos.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if data_search %}&data={{ data_search }}{% endif %}">&laquo; Anterior</a>
-      {% endif %}
+              {% if production_area == "solado" or production_area == "vendedor" %}
+                  <td class="status-solado">
+                      • <span style="text-decoration: underline;">{{ pedido.status_solado }}</span>
+                  </td>
+              {% endif %}
 
-      {% for num in pedidos.paginator.page_range %}
-        {% if pedidos.number == num %}
-          <strong>{{ num }}</strong>
-        {% else %}
-          <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if data_search %}&data={{ data_search }}{% endif %}">{{ num }}</a>
+              <td class="botoes">
+                <div class="coluna-esquerda">
+                  {% if user.permission_level == 1 %}
+                    <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
+                      <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
+                    </button>
+                    <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}" title="Cancelar">
+                      <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
+                    </button>
+                    <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
+                      <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
+                    </button>
+                  {% endif %}
+
+                  {% if user.permission_level > 1 %}
+                    <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
+                      <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
+                    </button>
+                    <!-- Botões de alteração de status; a view atualizará somente o campo da área do usuário -->
+                    <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Em Produção" title="Produção">
+                      <img class="producao" src="{% static 'img/producao.svg' %}" alt="Produção">
+                    </button>
+                    <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Pedido Pronto" title="Separado">
+                      <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
+                    </button>
+                    <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Reposição Pendente" title="Reposição">
+                      <img class="rep" src="{% static 'img/empty.svg' %}" alt="Reposição">
+                    </button>
+                  {% endif %}
+                </div>
+              </td>
+              {% if user.permission_level > 1 %}
+              <td>
+                <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}"  data-area="{{ production_area }}" title="Cancelar">
+                  <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
+                </button>
+                <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}"  data-area="{{ production_area }}" title="Imprimir">
+                  <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
+                </button>
+                <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}"  data-area="{{ production_area }}" data-novo-status="Pedido Finalizado" title="Concluído">
+                  <img class="concluido" src="{% static 'img/concluido.svg' %}" alt="Concluído">
+                </button>
+              </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Paginação -->
+      <div class="pagination">
+        {% if pedidos.has_previous %}
+          <a href="?page={{ pedidos.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if data_search %}&data={{ data_search }}{% endif %}">&laquo; Anterior</a>
         {% endif %}
-      {% endfor %}
 
-      {% if pedidos.has_next %}
-        <a href="?page={{ pedidos.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if data_search %}&data={{ data_search }}{% endif %}">Próximo &raquo;</a>
-      {% endif %}
-    </div>
-  {% else %}
-    <p>Nenhum pedido encontrado.</p>
-  {% endif %}
-</div>
+        {% for num in pedidos.paginator.page_range %}
+          {% if pedidos.number == num %}
+            <strong>{{ num }}</strong>
+          {% else %}
+            <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if data_search %}&data={{ data_search }}{% endif %}">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
 
-<!-- Modal para exibir os detalhes do pedido -->
-<div id="detalhesModal" class="modal">
-  <div class="modal-content-cancelar">
-    <span class="close-button">&times;</span>
-    <div class="itens-do-pedido-modal">
-      <!-- Os detalhes do pedido serão inseridos aqui via JavaScript -->
+        {% if pedidos.has_next %}
+          <a href="?page={{ pedidos.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if data_search %}&data={{ data_search }}{% endif %}">Próximo &raquo;</a>
+        {% endif %}
+      </div>
+    {% else %}
+      <p>Nenhum pedido encontrado.</p>
+    {% endif %}
+  </div>
+
+  <!-- Modal para exibir os detalhes do pedido -->
+  <div id="detalhesModal" class="modal">
+    <div class="modal-content-cancelar">
+      <span class="close-button">&times;</span>
+      <div class="itens-do-pedido-modal">
+        <!-- Os detalhes do pedido serão inseridos aqui via JavaScript -->
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Modal para cancelamento com senha de gerente -->
-<div class="modal" id="modalSenhaGerente" style="display: none;">
-  <div class="modal-content">
-    <span class="close-button" id="closeGerenteModal">&times;</span>
-    <h2>Cancelar Pedido</h2>
-    <p>Solicite a senha com o gerente:</p>
-    <input type="password" class="senha-gerente" placeholder="Senha do gerente">
-    <br>
-    <p>Motivo do cancelamento:</p>
-    <textarea class="motivo-cancelamento" placeholder="Digite o motivo do cancelamento" rows="3"></textarea>
-    <br><br>
-    <button type="button" id="confirmarCancelamentoBtn">Confirmar Cancelamento</button>
+  <!-- Modal para cancelamento com senha de gerente -->
+  <div class="modal" id="modalSenhaGerente" style="display: none;">
+    <div class="modal-content">
+      <span class="close-button" id="closeGerenteModal">&times;</span>
+      <h2>Cancelar Pedido</h2>
+      <p>Solicite a senha com o gerente:</p>
+      <input type="password" class="senha-gerente" placeholder="Senha do gerente">
+      <br>
+      <p>Motivo do cancelamento:</p>
+      <textarea class="motivo-cancelamento" placeholder="Digite o motivo do cancelamento" rows="3"></textarea>
+      <br><br>
+      <button type="button" id="confirmarCancelamentoBtn">Confirmar Cancelamento</button>
+    </div>
   </div>
-</div>
 
-<!-- Injeção da variável productionArea para o JavaScript -->
-<script>
-  const productionArea = "{{ production_area }}";  // Valor: "solado" ou "balancinho"
-</script>
-{% endblock content %}
+  <!-- Injeção da variável productionArea para o JavaScript -->
+  <script>
+    const productionArea = "{{ production_area }}";  // Valor: "solado" ou "balancinho"
+  </script>
+  {% endblock content %}
 
-{% block extra_js %}
-  <script src="{% static 'js/producao.js' %}"></script>
-{% endblock extra_js %}
+  {% block extra_js %}
+    <script src="{% static 'js/producao.js' %}"></script>
+  {% endblock extra_js %}

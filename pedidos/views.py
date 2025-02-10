@@ -31,8 +31,7 @@ def permission_required(min_level):
     return decorator
 
 def realiza_pedidos(request):
-    numeros = range(1, 18)  # de 1 a 17
-    return render(request, 'realiza_pedidos.html', {'numeros': numeros})
+    return render(request, 'realiza_pedidos.html', {})
 
 def autocomplete_produto(request):
     """
@@ -70,7 +69,7 @@ def buscar_produto_por_nome(request):
     })
 
 
-login_required
+@login_required
 def producao(request):
     search_query = request.GET.get('q', '').strip()
     data_search = request.GET.get('data', '').strip()  # Novo parâmetro para data
