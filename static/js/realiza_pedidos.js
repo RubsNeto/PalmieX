@@ -487,11 +487,11 @@ function adicionarEventosPedido(pedidoItem) {
                 <div class="pedido-conteudo">
                     <div class="linha-pedido grid-3">
                         <div>
-                        <span class="campo">Ref. Balancinho</span>
+                        <span class="campo">Referência Sintetico</span>
                         <input type="text" class="refBalancinho" required list="listaRefBalancinho">
                         <datalist id="listaRefBalancinho"></datalist>
+
                         </div>
-                        
                         <div>
                         <span class="campo">Sintetico</span>
                         <input type="text" class="matBalancinho" required list="listaBalancinho">
@@ -499,40 +499,37 @@ function adicionarEventosPedido(pedidoItem) {
                         </div>
 
                         <div>
-                        <span class="campo">Cor</span>
+                        <span class="campo">Cor Sintetico</span>
                         <input type="text" class="cor">
                         </div>
                     
                         <div>
-                        <span class="campo">Ref. Palmilha/Solado</span>
+                        <span class="campo">Referência Palmilha/Solado</span>
                         <input type="text" class="refPalmilha" required list="listaRefPalmilha">
                         <datalist id="listaRefPalmilha"></datalist>
                         </div>
                         <div>
-                        <span class="campo">Material Palmilha/Solado</span>
+                        <span class="campo">Material Solado</span>
                         <input type="text" class="matPalmilha" required list="listaPalmilha">
                         <datalist id="listaPalmilha"></datalist>
                         </div>
 
                         <div class="divCor">
-                        <span class="campo">Cor</span>
+                        <span class="campo">Cor Solado</span>
                         <input type="text" class="corPalmilha">
                         </div>
 
-                        <div class="tamanhos-container">
-                
-                        <div class="campo-tamanho">
-                            <span class="campo">Espessura</span>
-                            <input type="text" class="espessura" required 
+                        <div class="">
+                        <span class="campo">Espessura Palmilha</span>
+                        <input type="text" class="tamPalmilha" required 
                                 placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
-                                title="Digite apenas números para a espessura em milímetros">
+                                title="Digite apenas números para o tamanho em milímetros">
                         </div>
-                        </div>
-
-                        <div class="tipo-servico-container">
+                        
+                        
                         <div class="campo-tipo">
                             <span class="campo">Tipo de Serviço</span>
-                            <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Costurado" default:"Costurado">
+                            <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Ex. Costurado" default:"Costurado">
                         </div>
                         <div class="campo-tipo">
                             <span class="campo">Marca</span>
@@ -543,14 +540,12 @@ function adicionarEventosPedido(pedidoItem) {
                         </div>
                         </div>
                         
-                        
                         <div class="campoObs">
                         <span class="campo">Obs:</span>
                         <textarea class="obs"></textarea>
                         </div>
-                    </div>
-                    
-                    <div class="linha-pedido">
+                        
+                        <div class="linha-pedido">
                     <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
                     <div class="maisEmenos">
                         <button type="button" class="adicionarPedido">+</button>
@@ -659,7 +654,6 @@ function coletarDadosPedidos() {
             tamanhos
         });
     });
-
     return dados;
 }
 

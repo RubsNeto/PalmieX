@@ -98,6 +98,10 @@ select {
   color: var(--main-color);
 }
 
+.numero{
+  text-align: center;
+}
+
 /* Inputs e textarea dentro da área de pedidos já herdam o estilo global */
 .linha-pedido input[type="text"],
 .linha-pedido textarea {
@@ -109,6 +113,7 @@ select {
   resize: vertical;
   min-height: 36px;
   max-height: 95px;
+  margin-bottom: 1em;
 }
 
 /* Seção de pares e botões de adicionar/remover */
