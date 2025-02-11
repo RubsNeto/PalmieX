@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // ------------------------------------------------------------
   // FUNÇÕES GERAIS
   // ------------------------------------------------------------
-
   // Função para obter o valor de um cookie (usado para CSRF)
   function getCookie(name) {
     let cookieValue = null;
@@ -21,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Função que mapeia os status para cores de acordo com a área
   function obterCorPorStatus(status, area) {
-    if (area === 'balancinho') {
+    if (area === 'balancinho' || area === 'solado') {
       if (status === 'Pendente') {
         return '#f3a600';  // amarelo
       } else if (status === 'Em Produção') {
@@ -39,35 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
       } else {
         return '#333';     // cor padrão
       }
-    } else if (area === 'solado') {
-      if (status === 'Pendente') {
-        return '#ffc107';  // dourado
-      } else if (status === 'Em Produção') {
-        return '#007bff';  // azul forte
-      } else if (status === 'Pedido Finalizado') {
-        return '#28a745';  // verde forte
-      } else if (status === 'Cliente em Espera') {
-        return '#6f42c1';  // roxo claro
-      } else if (status === 'Cancelado') {
-        return '#dc3545';  // vermelho forte
-      } else if (status === 'Pedido Pronto') {
-        return '#20c997';  // verde-água
-      } else if (status === 'Reposição Pendente') {
-        return '#6610f2';  // roxo forte
-      } else {
-        return '#333';     // cor padrão
-      }
     } else {
       return '#333';
     }
   }
 
-  // Função para atualizar as cores dos status já presentes no DOM
+  // Atualiza as cores dos status já presentes no DOM
   function atualizarCoresStatus() {
     // Atualiza os status da coluna "Balancinho"
     document.querySelectorAll('.status-balancinho span').forEach(cell => {
       const statusTexto = cell.textContent.trim();
-      // Para coluna balancinho, fixamos a área "balancinho"
       cell.parentElement.style.color = obterCorPorStatus(statusTexto, 'balancinho');
     });
     // Atualiza os status da coluna "Solado"
@@ -76,21 +56,19 @@ document.addEventListener('DOMContentLoaded', function() {
       cell.parentElement.style.color = obterCorPorStatus(statusTexto, 'solado');
     });
   }
-
-  // Chama a função para atualizar as cores dos status assim que o DOM estiver carregado
   atualizarCoresStatus();
 
   // Aplica um delay progressivo na animação de cada linha da tabela
   const rows = document.querySelectorAll('.pedidos-table tbody tr');
   rows.forEach((row, index) => {
-    row.style.animationDelay = `${index * 0.15}s`;
+    row.style.animationDelay = (index * 0.15) + 's';
   });
 
   // ------------------------------------------------------------
-  // DEFININDO productionArea (se não estiver injetada pelo template)
+  // DEFININDO productionArea (caso não seja injetada pelo template)
   // ------------------------------------------------------------
   if (typeof productionArea === 'undefined') {
-    var productionArea = 'balancinho'; // valor padrão; altere para 'solado' se necessário
+    var productionArea = 'balancinho'; // ou 'solado', conforme seu padrão
   }
 
   // ------------------------------------------------------------
@@ -118,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             throw new Error('Resposta da API com estrutura inesperada.');
           }
 
-          // Ordena e agrupa os itens para exibição
+          // Agrupa e ordena os itens para exibição
           data.itens.sort((a, b) => {
             const codigoA = String(a.codigo || '');
             const codigoB = String(b.codigo || '');
@@ -163,14 +141,13 @@ document.addEventListener('DOMContentLoaded', function() {
               <p><strong>Pedido:</strong> ${data.pedido_id}</p>
               <p><strong>Data:</strong> ${data.data}</p>
               <p><strong>Hora:</strong> ${data.hora}</p>
-              ${data.status === 'Cancelado' ? `
-                <p><strong>Autorizado por:</strong> 
+              ${data.status === 'Cancelado' ? 
+                `<p><strong>Autorizado por:</strong> 
                   <span class="gerente-cancelamento">${data.gerente_cancelamento || 'N/A'}</span>
                 </p>
                 <p><strong>Motivo do Cancelamento:</strong> 
                   <span class="motivo-cancelamento">${data.motivo_cancelamento || 'N/A'}</span>
-                </p>
-              ` : ''}
+                </p>` : ''}
             </div>
             <ul class="lista-itens">
           `;
@@ -271,18 +248,25 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ------------------------------------------------------------
+  // VARIÁVEIS GLOBAIS PARA REPOSIÇÃO PENDENTE
+  // ------------------------------------------------------------
+  let pedidoIdReposicao = null;
+  let novoStatusReposicao = null;
+
+  // ------------------------------------------------------------
   // ALTERAR STATUS DO PEDIDO
   // ------------------------------------------------------------
-  // productionArea foi injetado no template (ex: "solado" ou "balancinho")
   const botoesAlterarStatus = document.querySelectorAll('.alterar-status');
+
+  // Função para atualizar o status (para status que não necessitam de modal)
   function atualizarStatusPedido(novoStatus, pedidoId, area) {
     if (!pedidoId) {
       alert("ID do pedido não encontrado.");
       return;
     }
-  
+
     const csrftoken = getCookie('csrftoken');
-  
+
     fetch('/atualizar-status-pedido/', {
       method: 'POST',
       headers: { 
@@ -302,8 +286,8 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(data => {
       alert(data.mensagem);
-  
-      // Atualiza a linha do pedido apenas na coluna correspondente à área
+
+      // Atualiza a linha do pedido na tabela
       const pedidoRow = document.querySelector(`.pedido-resumo[data-pedido-id="${pedidoId}"]`);
       if (pedidoRow) {
         if (area === 'solado') {
@@ -320,8 +304,8 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
       }
-  
-      // Se existir um modal aberto, atualiza também nele
+
+      // Se houver um modal aberto para status, atualize-o também
       const statusModal = document.getElementById('status-pedido-modal');
       if (statusModal) {
         statusModal.textContent = novoStatus;
@@ -333,24 +317,109 @@ document.addEventListener('DOMContentLoaded', function() {
       alert(err.erro || 'Erro ao atualizar o status do pedido.');
     });
   }
-  
-  
-  
-
 
   botoesAlterarStatus.forEach(button => {
     button.addEventListener('click', function() {
       const pedidoId = this.getAttribute('data-pedido-id');
       const novoStatus = this.getAttribute('data-novo-status');
-      // Obtém a área diretamente do botão
       const area = this.getAttribute('data-area');
-      if (confirm(`Deseja realmente marcar o pedido como '${novoStatus}'?`)) {
-        atualizarStatusPedido(novoStatus, pedidoId, area);
+      // Se for "Reposição Pendente", abre o modal para informar a descrição
+      if (novoStatus === "Reposição Pendente") {
+        pedidoIdReposicao = pedidoId;
+        novoStatusReposicao = novoStatus;
+        document.getElementById('modalReposicao').style.display = 'block';
+      } else {
+        if (confirm(`Deseja realmente marcar o pedido como '${novoStatus}'?`)) {
+          atualizarStatusPedido(novoStatus, pedidoId, area);
+        }
       }
     });
   });
 
+  // ------------------------------------------------------------
+  // MODAL PARA REPOSIÇÃO PENDENTE
+  // ------------------------------------------------------------
+  // Ao clicar em "Confirmar" no modal de reposição, envia o AJAX com a descrição
+  document.getElementById('confirmarReposicaoBtn').addEventListener('click', function() {
+    const descricao = document.getElementById('descricaoReposicao').value.trim();
+    if (!descricao) {
+      alert("Por favor, descreva o que está faltando.");
+      return;
+    }
+    atualizarStatusReposicao(pedidoIdReposicao, novoStatusReposicao, descricao);
 
+    // Fecha o modal e limpa o campo
+    document.getElementById('modalReposicao').style.display = 'none';
+    document.getElementById('descricaoReposicao').value = '';
+    pedidoIdReposicao = null;
+    novoStatusReposicao = null;
+  });
+
+  // Função para atualizar o status de "Reposição Pendente" enviando a descrição
+  function atualizarStatusReposicao(pedidoId, novoStatus, descricao) {
+    if (!pedidoId) {
+      alert("ID do pedido não encontrado.");
+      return;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    fetch('/atualizar-status-pedido/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken
+      },
+      body: JSON.stringify({
+        'pedido_id': pedidoId,
+        'novo_status': novoStatus,
+        'descricao_reposicao': descricao
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(data => { throw data; });
+      }
+      return response.json();
+    })
+    .then(data => {
+      alert(data.mensagem);
+
+      // Atualiza a linha do pedido na interface
+      const pedidoRow = document.querySelector(`.pedido-resumo[data-pedido-id="${pedidoId}"]`);
+      if (pedidoRow) {
+        if (productionArea === 'solado') {
+          const soladoCell = pedidoRow.querySelector("td.status-solado span");
+          if (soladoCell) {
+            soladoCell.textContent = novoStatus;
+            soladoCell.parentElement.style.color = obterCorPorStatus(novoStatus, 'solado');
+          }
+        } else if (productionArea === 'balancinho') {
+          const balancinhoCell = pedidoRow.querySelector("td.status-balancinho span");
+          if (balancinhoCell) {
+            balancinhoCell.textContent = novoStatus;
+            balancinhoCell.parentElement.style.color = obterCorPorStatus(novoStatus, 'balancinho');
+          }
+        }
+      }
+    })
+    .catch(err => {
+      console.error("Erro ao atualizar o status do pedido:", err);
+      alert(err.erro || 'Erro ao atualizar o status do pedido.');
+    });
+  }
+
+  // Fechamento do modal de Reposição ao clicar no "X" ou fora do modal
+  document.getElementById('closeReposicaoModal').addEventListener('click', function() {
+    document.getElementById('modalReposicao').style.display = 'none';
+    document.getElementById('descricaoReposicao').value = '';
+  });
+  window.addEventListener('click', function(event) {
+    if (event.target == document.getElementById('modalReposicao')) {
+      document.getElementById('modalReposicao').style.display = 'none';
+      document.getElementById('descricaoReposicao').value = '';
+    }
+  });
 
   // ------------------------------------------------------------
   // CANCELAMENTO COM SENHA DE GERENTE

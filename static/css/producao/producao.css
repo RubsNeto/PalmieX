@@ -1,5 +1,3 @@
-
-
 /* Estilos específicos para produção, mantendo as classes existentes */
 :root {
   --main-color: #017a39;
@@ -17,7 +15,7 @@
   --close-button-color: #aaa;
 }
 
-/* Animação de Fade-In sequencial */
+/* Animação de Fade-In sequencial para as linhas da tabela */
 .pedidos-table tbody tr {
   opacity: 0;
   transform: translateY(10px);
@@ -31,6 +29,7 @@
   }
 }
 
+/* Alinhamento dos itens */
 .item-nome {
   justify-content: space-between;
 }
@@ -54,7 +53,6 @@
 /* Buscador */
 .search-container {
   display: flex;
-  
   width: 365px;
   margin-bottom: 1em;
   border: 1px solid #ddd;
@@ -63,15 +61,15 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.separator{
+.separator {
   display: flex;
   flex-direction: row;
   gap: 1em;
 }
 
-.container-date{
+.container-date {
   display: flex;
-  max-width:170px;
+  max-width: 170px;
   margin-bottom: 1em;
   border: 1px solid #ddd;
   border-radius: 25px;
@@ -79,27 +77,27 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.search-input, .search-input-date {
+.search-input,
+.search-input-date {
   flex-grow: 1;
   padding: 0.5em 1em;
   border: none;
   outline: none;
   font-size: 1rem;
 }
-.search-input-date{
+
+.search-input-date {
   font-size: 12px;
   padding: 0.5em 0.5em;
 }
 
-.search-input::placeholder {
-  color: #999;
-}
-
+.search-input::placeholder,
 .search-input-date::placeholder {
   color: #999;
 }
 
-.search-button, .search-button-date {
+.search-button,
+.search-button-date {
   background-color: var(--button-bg-color);
   border: none;
   padding: 0 1em;
@@ -112,11 +110,12 @@
   transition: background-color 0.3s ease;
 }
 
-.search-button, .search-button-date:hover {
+.search-button:hover,
+.search-button-date:hover {
   background-color: var(--button-hover-bg-color);
 }
 
-/* Título */
+/* Título da página de pedidos */
 .container-pedidos h1 {
   font-size: 1.8rem;
   color: var(--dark-color);
@@ -150,7 +149,7 @@
   background-color: #f1f1f1;
 }
 
-/* Botões */
+/* Botões (detalhes, alterar status, imprimir, cancelar, etc.) */
 .botoes {
   gap: 1em;
 }
@@ -181,8 +180,9 @@
   transform: scale(1.1);
 }
 
+/* Cores específicas para os botões */
 .cancelar-pedido {
-  background-color: red;
+  background-color: #c82333;
 }
 
 .Editar-pedido {
@@ -194,17 +194,34 @@
 }
 
 .ver-detalhes {
-  background-color: #610061;
+  background-color: #00b5c6;
 }
 
 .ver-detalhes:hover {
-  background-color: rgb(77, 0, 77);
+  background-color: #0e98a4;
+}
+
+.alterar-status {
+  background-color: #f3a200;
+}
+
+.alterar-status:hover {
+  background-color: #b87c05;
+}
+
+.imprimir-pedido {
+  background-color: #862fab;
+}
+
+.imprimir-pedido:hover {
+  background-color: #5f2279;
 }
 
 .ver-detalhes img,
 .alterar-status img,
 .imprimir-pedido img,
-.pesquisar,.pesquisar-data,
+.pesquisar,
+.pesquisar-data,
 .edit,
 .cancelar {
   width: 20px;
@@ -269,118 +286,9 @@
   color: #ffffff;
 }
 
-/* Botão de visualizar detalhes */
-.ver-detalhes {
-  background-color: #00b5c6;
-  color: white;
-}
-
-.ver-detalhes:hover {
-  background-color: #0e98a4;
-}
-
-/* Botão de alterar status */
-.alterar-status {
-  background-color: #f3a200;
-  color: white;
-}
-
-.alterar-status:hover {
-  background-color: #b87c05;
-}
-
-/* Botão de imprimir pedido */
-.imprimir-pedido {
-  background-color: #862fab;
-  color: white;
-}
-
-.imprimir-pedido:hover {
-  background-color: #5f2279;
-}
-
-/* Botão de cancelamento */
-.cancelar-pedido {
-  background-color: #c82333;
-  color: white;
-}
-
-.cancelar-pedido:hover {
-  background-color: #a71d2a;
-}
-
-/* Botão de finalização */
-.fim {
-  background-color: #0a900a;
-  color: white;
-}
-
-.fim:hover {
-  background-color: #066d06;
-}
-
-/* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--modal-overlay-color);
-  backdrop-filter: blur(5px);
-}
-
-.modal-content {
-  background-color: var(--modal-bg-color);
-  margin: 5% auto;
-  padding: 20px;
-  border: 1px solid var(--modal-border-color);
-  border-radius: 12px;
-  width: 80%;
-  max-width: 800px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.close-button {
-  color: var(--close-button-color);
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.close-button:hover {
-  color: #000;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-  .modal-content {
-    width: 90%;
-  }
-
-  .ver-detalhes,
-  .alterar-status,
-  .imprimir-pedido {
-    width: 35px;
-    height: 35px;
-    font-size: 1rem;
-  }
-}
-
-/* CSS Moderno para o Modal de Detalhes */
-:root {
-  --modal-bg-color: #fff;
-  --modal-overlay-color: rgba(0, 0, 0, 0.5);
-  --modal-border-color: #ccc;
-  --button-bg-color: #017a39;
-  --button-hover-bg-color: #019657;
-  --close-button-color: #aaa;
-}
+/* =============================
+   Estilização dos Modais (Overlay e Conteúdo)
+   ============================= */
 
 /* Overlay do Modal */
 .modal {
@@ -393,9 +301,143 @@
   height: 100%;
   background-color: var(--modal-overlay-color);
   backdrop-filter: blur(5px);
+  overflow: auto;
 }
 
-/* Conteúdo do Modal */
+/* Conteúdo do Modal (usado tanto para detalhes quanto para cancelamento/reposição) */
+.modal-content,
+.modal-content-cancelar {
+  background-color: var(--modal-bg-color);
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid var(--modal-border-color);
+  border-radius: 8px;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  animation: modal-slide-down 0.4s ease;
+}
+
+@keyframes modal-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Botão de Fechar dos Modais */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--close-button-color);
+  transition: color 0.3s;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+/* =============================
+   Inputs e Textareas dos Modais (Cancelamento e Reposição)
+   ============================= */
+input.senha-gerente,
+textarea.motivo-cancelamento,
+#descricaoReposicao {
+  width: 94%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+input.senha-gerente:focus,
+textarea.motivo-cancelamento:focus,
+#descricaoReposicao:focus {
+  border-color: #007BFF;
+  outline: none;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+textarea.motivo-cancelamento,
+#descricaoReposicao {
+  resize: none;
+}
+
+/* Botões de Ação dos Modais */
+#confirmarCancelamentoBtn,
+#confirmarReposicaoBtn {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+#confirmarCancelamentoBtn:hover,
+#confirmarReposicaoBtn:hover {
+  background-color: #bb2d3b;
+}
+
+#senhaGerente {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-content:focus {
+  outline: none;
+}
+
+/* =============================
+   Container para o Grid de Tamanhos (Quadradinhos)
+   ============================= */
+.containerQuadradinhos {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.containerQuadradinhos button {
+  width: 40px;
+  height: 40px;
+  background-color: var(--secondary-color);
+  color: #002913;
+  border: 1px solid #017a39;
+  font-size: 1rem;
+  cursor: default;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.numero {
+  font-weight: bold;
+}
+
+.botao-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+}
+
+/* =============================
+   CSS Moderno para o Modal de Detalhes
+   ============================= */
 .modal-content {
   background-color: var(--modal-bg-color);
   margin: 5% auto;
@@ -408,21 +450,45 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Botão de Fechar */
-.close-button {
-  color: var(--close-button-color);
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.3s ease;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.close-button:hover {
-  color: #000;
+/* Responsividade dos Modais e Botões */
+@media (max-width: 768px) {
+  .modal-content,
+  .modal-content-cancelar {
+    width: 90%;
+  }
+
+  .ver-detalhes,
+  .alterar-status,
+  .imprimir-pedido {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+  
+  .itens-do-pedido-modal p {
+    font-size: 0.9rem;
+  }
+  
+  .alterar-status-modal {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
 }
 
-/* Detalhes do Pedido */
+/* =============================
+   Estilização dos Itens do Pedido no Modal
+   ============================= */
 .itens-do-pedido-modal {
   margin-top: 20px;
 }
@@ -439,7 +505,6 @@
   color: #333;
 }
 
-/* Tabela de Itens no Modal */
 .itens-do-pedido-modal table {
   width: 100%;
   border-collapse: collapse;
@@ -496,35 +561,9 @@
   transform: scale(1.05);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 768px) {
-  .modal-content {
-    width: 90%;
-  }
-
-  .itens-do-pedido-modal p {
-    font-size: 0.9rem;
-  }
-
-  .alterar-status-modal {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-}
-
-/* =========================
-   Estilização do cabeçalho do produto em duas linhas
-   ========================= */
+/* =============================
+   Estilização do Cabeçalho do Produto
+   ============================= */
 .produto-cabecalho {
   width: 100%;
   margin-bottom: 0.5rem;
@@ -532,24 +571,16 @@
 
 .produto-cabecalho .item-nome {
   display: flex;
-  gap: 0.5rem; /* Espaço entre as duas linhas */
+  gap: 0.5rem;
   width: 100%;
 }
-
 
 .produto-cabecalho .item-nome strong {
   color: var(--button-bg-color);
   margin-left: 20px;
 }
 
-/* ---------------------------
-   Ajuste dos <p> dentro de .cima e .baixo
-   ---------------------------
-   Aqui definimos que os elementos <p> em cada bloco (.cima e .baixo)
-   serão dispostos na mesma linha com espaço distribuído igualmente (space-between).
-   Essa regra não afeta os quadradinhos.
----------------------------- */
-/* O cabeçalho do produto deve ocupar 100% e alinhar os textos à esquerda */
+/* Ajuste dos <p> dentro de .cima e .baixo */
 .produto-cabecalho,
 .produto-cabecalho .item-nome {
   width: 100%;
@@ -557,14 +588,15 @@
   text-align: left;
 }
 
-/* Se desejar que as divs interna (.cima e .baixo) também fiquem com 100% */
 .produto-cabecalho .cima,
 .produto-cabecalho .baixo {
   width: 100%;
   box-sizing: border-box;
 }
 
-/* Faz com que a lista ocupe 100% da largura do container principal */
+/* =============================
+   Lista de Itens do Pedido
+   ============================= */
 .lista-itens {
   width: 100%;
   padding: 0;
@@ -575,13 +607,12 @@
   box-sizing: border-box;
 }
 
-/* Cada item (produto) ocupará toda a largura e terá os elementos alinhados à esquerda */
 .item-list {
   width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Alinha os itens à esquerda */
+  align-items: flex-start;
   padding: 1rem;
   background-color: #fff;
   border: 1px solid #e0e0e0;
@@ -593,7 +624,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Lista de tamanhos e quantidades para o produto */
 .lista-tamanhos {
   list-style: none;
   padding: 0;
@@ -615,7 +645,7 @@
   color: var(--button-bg-color);
 }
 
-/* Responsividade: ajustar exibição em telas menores */
+/* Responsividade para Itens do Pedido */
 @media (max-width: 600px) {
   .produto-cabecalho {
     flex-direction: column;
@@ -625,144 +655,4 @@
   .lista-tamanhos {
     flex-direction: column;
   }
-}
-
-/* Estilização geral do overlay do modal */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 9999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* Conteúdo interno do modal */
-.modal-content {
-  background-color: #fff;
-  margin: 5% auto;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 90%;
-  position: relative;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  animation: modal-slide-down 0.4s ease;
-}
-
-.modal-content-cancelar {
-  background-color: #fff;
-  margin: 5% auto;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 80%;
-  position: relative;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  animation: modal-slide-down 0.4s ease;
-}
-
-@keyframes modal-slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  color: #999;
-  transition: color 0.3s;
-}
-
-.close-button:hover {
-  color: #333;
-}
-
-#confirmarCancelamentoBtn {
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  transition: background-color 0.3s;
-}
-
-#confirmarCancelamentoBtn:hover {
-  background-color: #bb2d3b;
-}
-
-#senhaGerente {
-  width: 100%;
-  padding: 8px;
-  margin-top: 8px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.modal-content:focus {
-  outline: none;
-}
-
-.containerQuadradinhos {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 0.5rem;
-}
-
-.containerQuadradinhos button {
-  width: 40px;
-  height: 40px;
-  background-color: var(--secondary-color);
-  color: #002913;
-  border: 1px solid #017a39;
-  font-size: 1rem;
-  cursor: default;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.numero {
-  font-weight: bold;
-}
-
-.botao-container {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5em;
-}
-
-input.senha-gerente,
-textarea.motivo-cancelamento {
-  width: 94%;
-  padding: 10px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  color: #333;
-}
-
-input.senha-gerente:focus,
-textarea.motivo-cancelamento:focus {
-  border-color: #007BFF;
-  outline: none;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
-}
-
-textarea.motivo-cancelamento {
-  resize: none;
 }

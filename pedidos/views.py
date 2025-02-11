@@ -72,11 +72,9 @@ def buscar_produto_por_nome(request):
 @login_required
 def producao(request):
     search_query = request.GET.get('q', '').strip()
-    data_search = request.GET.get('data', '').strip()  # Novo parâmetro para data
+    data_search = request.GET.get('data', '').strip()  # Parâmetro para data
 
-    # Filtra os pedidos que NÃO estão finalizados COMPLETAMENTE.
-    # Ou seja, o pedido permanece em produção se:
-    #    -> pelo menos um dos status (balancinho ou solado) NÃO estiver em ['Pedido Finalizado', 'Cancelado']
+    # Filtra os pedidos que NÃO estão finalizados COMPLETAMENTE
     pedidos = Pedido.objects.prefetch_related('itens__produto').filter(
         ~(
             Q(status_balancinho__in=['Pedido Finalizado', 'Cancelado']) &
@@ -106,7 +104,37 @@ def producao(request):
         except ValueError:
             pass
 
-    pedidos = pedidos.order_by('status_balancinho', '-data')
+    # Obtém a área de produção do usuário
+    production_area = getattr(request.user, 'perfil', None)
+    if production_area:
+        production_area = request.user.perfil.production_area
+    else:
+        production_area = 'solado'
+
+    # Ordena a listagem de acordo com a área e com a ordem desejada:
+    # Ordem: Em Produção (1), Pendente (2), Pedido Pronto (3), Pedido Finalizado (4)
+    if production_area == "solado":
+        pedidos = pedidos.annotate(
+            order_status=Case(
+                When(status_solado="Em Produção", then=Value(1)),
+                When(status_solado="Pendente", then=Value(2)),
+                When(status_solado="Pedido Pronto", then=Value(3)),
+                When(status_solado="Pedido Finalizado", then=Value(4)),
+                default=Value(5),
+                output_field=IntegerField(),
+            )
+        ).order_by("order_status", "-data")
+    else:  # Visão do balancinho
+        pedidos = pedidos.annotate(
+            order_status=Case(
+                When(status_balancinho="Em Produção", then=Value(1)),
+                When(status_balancinho="Pendente", then=Value(2)),
+                When(status_balancinho="Pedido Pronto", then=Value(3)),
+                When(status_balancinho="Pedido Finalizado", then=Value(4)),
+                default=Value(5),
+                output_field=IntegerField(),
+            )
+        ).order_by("order_status", "-data")
 
     page = request.GET.get('page', 1)
     paginator = Paginator(pedidos, 10)
@@ -117,20 +145,12 @@ def producao(request):
     except EmptyPage:
         pedidos_paginados = paginator.page(paginator.num_pages)
 
-    # Obtém a área de produção do usuário
-    production_area = getattr(request.user, 'perfil', None)
-    if production_area:
-        production_area = request.user.perfil.production_area
-    else:
-        production_area = 'solado'
-
     return render(request, 'producao/producao.html', {
         'pedidos': pedidos_paginados,
         'search_query': search_query,
         'data_search': data_search,
         'production_area': production_area,
     })
-
 
 
 #------------------ Impressão -------------------
@@ -508,6 +528,7 @@ def editar_pedido(request, pedido_id):
     return render(request, 'pedidos/editar_pedido.html', context)
 
 
+
 @require_POST
 @login_required
 @permission_required(2)
@@ -536,8 +557,18 @@ def atualizar_status_pedido(request):
             pedido.status_balancinho = novo_status
         else:
             return JsonResponse({'erro': 'Área de produção desconhecida.'}, status=400)
-        
-        # Se o status for finalizado ou cancelado, registra a data de finalização
+
+        # Se for Reposição Pendente, captura a descrição enviada
+        if novo_status == "Reposição Pendente":
+            descricao = body.get('descricao_reposicao', '').strip()
+            # Aqui você pode decidir como armazenar ou processar a descrição.
+            # Exemplo: se quiser salvar no pedido, adicione um campo no model Pedido,
+            # como "descricao_reposicao = models.TextField(null=True, blank=True)"
+            # e então faça:
+            # pedido.descricao_reposicao = descricao
+            # Para este exemplo, apenas registramos no log:
+            logger.info(f"Pedido {pedido_id} em reposição pendente: {descricao}")
+
         if novo_status in ['Pedido Finalizado', 'Cancelado']:
             pedido.data_finalizado = timezone.now()
 
@@ -553,6 +584,7 @@ def atualizar_status_pedido(request):
         return JsonResponse({'erro': 'Pedido não encontrado.'}, status=404)
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
+
 
     
 #------------------------------- Finalizados --------------------------------  

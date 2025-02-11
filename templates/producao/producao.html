@@ -147,6 +147,19 @@
     {% endif %}
   </div>
 
+  <!-- Modal para Reposição Pendente -->
+<div class="modal" id="modalReposicao" style="display: none;">
+  <div class="modal-content">
+    <span class="close-button" id="closeReposicaoModal">&times;</span>
+    <h2>Reposição Pendente</h2>
+    <p>Descreva o que está faltando:</p>
+    <textarea id="descricaoReposicao" placeholder="Digite a descrição..." rows="3"></textarea>
+    <br>
+    <button type="button" id="confirmarReposicaoBtn">Confirmar</button>
+  </div>
+</div>
+
+
   <!-- Modal para exibir os detalhes do pedido -->
   <div id="detalhesModal" class="modal">
     <div class="modal-content-cancelar">
