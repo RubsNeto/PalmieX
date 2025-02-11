@@ -607,28 +607,45 @@ function adicionarEventosPedido(pedidoItem) {
     }
 }
 
-
-function coletarDadosPedidos() {
+function coletarDadosPedidos(tipoPedido = 'ambos') {
     const dados = {
         cliente: document.querySelector('.cliente')?.value.trim() || '',
         codigoVendedor: document.querySelector('.codVendedor')?.value.trim() || '',
         vendedor: document.querySelector('.vendedor')?.value.trim() || '',
         status_balancinho: document.querySelector('.status-balancinho')?.value || 'Pendente',
         status_solado: document.querySelector('.status-solado')?.value || 'Pendente',
-        itens: []
+        itens: [],
+        tipo_pedido: tipoPedido // Indica o tipo de pedido
     };
 
     const pedidoItens = document.querySelectorAll('.pedido-item');
     pedidoItens.forEach(pedido => {
-        const refBalancinho = pedido.querySelector('.refBalancinho')?.value.trim() || '';
-        const matBalancinho = pedido.querySelector('.matBalancinho')?.value.trim() || '';
-        const corBalancinho = pedido.querySelector('.cor')?.value.trim() || '';
-        const refPalmilha = pedido.querySelector('.refPalmilha')?.value.trim() || '';
-        const matPalmilha = pedido.querySelector('.matPalmilha')?.value.trim() || '';
-        const corPalmilhaPedido = pedido.querySelector('.corPalmilha')?.value.trim() || '';
-        const espessura = pedido.querySelector('.tamPalmilha')?.value.trim() || '';
-        const obs = pedido.querySelector('.obs')?.value.trim() || '';
+        // Coleta os valores dos campos para o balancinho e solado
+        let refBalancinho = pedido.querySelector('.refBalancinho')?.value.trim() || '';
+        let matBalancinho = pedido.querySelector('.matBalancinho')?.value.trim() || '';
+        let corBalancinho = pedido.querySelector('.cor')?.value.trim() || '';
 
+        let refPalmilha = pedido.querySelector('.refPalmilha')?.value.trim() || '';
+        let matPalmilha = pedido.querySelector('.matPalmilha')?.value.trim() || '';
+        let corPalmilha = pedido.querySelector('.corPalmilha')?.value.trim() || '';
+        
+        let espessura = pedido.querySelector('.tamPalmilha')?.value.trim() || '';
+        let obs = pedido.querySelector('.obs')?.value.trim() || '';
+
+        // Ajusta os campos conforme o tipo de pedido
+        if (tipoPedido === 'balancinho') {
+            // Pedido apenas para balancinho: limpa os dados do solado/palmilha
+            refPalmilha = '';
+            matPalmilha = '';
+            corPalmilha = '';
+        } else if (tipoPedido === 'solado') {
+            // Pedido apenas para solado: limpa os dados do balancinho
+            refBalancinho = '';
+            matBalancinho = '';
+            corBalancinho = '';
+        }
+
+        // Coleta os tamanhos e as quantidades dos botões
         const tamanhos = {};
         pedido.querySelectorAll('.botao-container').forEach(bc => {
             const btn = bc.querySelector('.botao');
@@ -648,7 +665,7 @@ function coletarDadosPedidos() {
             corBalancinho,
             refPalmilha,
             matPalmilha,
-            corPalmilha: corPalmilhaPedido,
+            corPalmilha,
             espessura,
             obs,
             tamanhos
@@ -656,6 +673,7 @@ function coletarDadosPedidos() {
     });
     return dados;
 }
+
 
 
 
@@ -812,6 +830,28 @@ document.addEventListener('DOMContentLoaded', () => {
         realizarPedidoUrgenteBtn.addEventListener('click', () => {
             const dados = coletarDadosPedidos();
             enviarPedido('/realizar-pedido-urgente/', dados);
+        });
+    }
+
+    // Botão "Realizar pedido Balancinho"
+    const realizarPedidoBalancinhoBtn = document.querySelector('.realizarPedidoBalancinho');
+    if (realizarPedidoBalancinhoBtn) {
+        realizarPedidoBalancinhoBtn.addEventListener('click', () => {
+            // Aqui o parâmetro 'balancinho' fará com que a função limpe os dados do solado
+            const dados = coletarDadosPedidos();
+            dados.status_solado = "Pedido Finalizado";
+            enviarPedido('/realizar-pedido/', dados);
+        });
+    }
+
+    // Botão "Realizar pedido Solado"
+    const realizarPedidoSoladoBtn = document.querySelector('.realizarPedidoSolado');
+    if (realizarPedidoSoladoBtn) {
+        realizarPedidoSoladoBtn.addEventListener('click', () => {
+            // Aqui o parâmetro 'solado' fará com que a função limpe os dados do balancinho
+            const dados = coletarDadosPedidos();
+            dados.status_balancinho = "Pedido Finalizado";
+            enviarPedido('/realizar-pedido/', dados);
         });
     }
 

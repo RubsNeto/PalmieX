@@ -74,14 +74,27 @@ def producao(request):
     search_query = request.GET.get('q', '').strip()
     data_search = request.GET.get('data', '').strip()  # Parâmetro para data
 
-    # Filtra os pedidos que NÃO estão finalizados COMPLETAMENTE
-    pedidos = Pedido.objects.prefetch_related('itens__produto').filter(
-        ~(
-            Q(status_balancinho__in=['Pedido Finalizado', 'Cancelado']) &
-            Q(status_solado__in=['Pedido Finalizado', 'Cancelado'])
-        )
-    )
+    # Obtém a área de produção do usuário
+    production_area = getattr(request.user, 'perfil', None)
+    if production_area:
+        production_area = request.user.perfil.production_area
+    else:
+        production_area = 'solado'
 
+    # Filtra os pedidos de acordo com a área:
+    if production_area == "solado":
+        # Mostra somente pedidos cujo status do solado não esteja finalizado ou cancelado
+        pedidos = Pedido.objects.prefetch_related('itens__produto').filter(
+            ~Q(status_solado__in=['Pedido Finalizado', 'Cancelado'])
+        )
+    elif production_area == "balancinho":
+        pedidos = Pedido.objects.prefetch_related('itens__produto').filter(
+            ~Q(status_balancinho__in=['Pedido Finalizado', 'Cancelado'])
+        )
+    else:
+        pedidos = Pedido.objects.prefetch_related('itens__produto').all()
+
+    # Filtros adicionais (por texto ou data)
     if search_query:
         pedidos = pedidos.filter(
             Q(cliente__icontains=search_query) |
@@ -104,15 +117,7 @@ def producao(request):
         except ValueError:
             pass
 
-    # Obtém a área de produção do usuário
-    production_area = getattr(request.user, 'perfil', None)
-    if production_area:
-        production_area = request.user.perfil.production_area
-    else:
-        production_area = 'solado'
-
-    # Ordena a listagem de acordo com a área e com a ordem desejada:
-    # Ordem: Em Produção (1), Pendente (2), Pedido Pronto (3), Pedido Finalizado (4)
+    # Ordena de acordo com a área do usuário
     if production_area == "solado":
         pedidos = pedidos.annotate(
             order_status=Case(
@@ -153,6 +158,8 @@ def producao(request):
     })
 
 
+
+
 #------------------ Impressão -------------------
 
 @login_required
@@ -182,6 +189,7 @@ def pedido_itens_api(request, pedido_id):
             "motivo_cancelamento": pedido.cancelado,
             "gerente_cancelamento": pedido.gerente_cancelamento.username if pedido.gerente_cancelamento else None,
             "pedido_id": pedido.id,
+            "descricao_reposicao": pedido.descricao_reposicao,
             "itens": []
         }
 
@@ -247,6 +255,7 @@ def buscar_produto(request):
 
 #-------------------- Função para criar pedido --------------------
 
+
 @require_POST
 @login_required
 def realizar_pedido(request):
@@ -257,22 +266,27 @@ def realizar_pedido(request):
         codigo_vendedor = body.get('codigoVendedor', '').strip()
         vendedor_nome = body.get('vendedor', '').strip()
 
-        # Agora recebemos os status individuais para cada setor.
-        # Se nenhum status for informado, define como "Pendente"
+        # Recebe os status enviados ou usa os padrões
         status_balancinho = body.get('status_balancinho', 'Pendente').strip()
         status_solado = body.get('status_solado', 'Pendente').strip()
+
+        # Verifica o tipo de pedido enviado
+        tipo_pedido = body.get('tipo_pedido', 'ambos').strip()
+        if tipo_pedido == 'balancinho':
+            # Pedido apenas para balancinho: o status do solado já é finalizado
+            status_solado = 'Pedido Finalizado'
+        elif tipo_pedido == 'solado':
+            # Pedido apenas para solado: o status do balancinho já é finalizado
+            status_balancinho = 'Pedido Finalizado'
 
         # Busca ou cria o vendedor e cria o pedido
         vendedor, _ = Vendedor.objects.get_or_create(
             codigo=codigo_vendedor,
             defaults={'nome': vendedor_nome}
         )
-        # Cria o pedido com os dois status
         pedido = Pedido.objects.create(
             cliente=cliente,
             vendedor=vendedor,
-            # Se você mantiver um campo "status" geral, poderá setá-lo também,
-            # mas aqui estamos usando os dois campos específicos:
             status_balancinho=status_balancinho,
             status_solado=status_solado
         )
@@ -289,7 +303,6 @@ def realizar_pedido(request):
             cor           = item.get('cor', '').strip()
             cor_palmilha  = item.get('corPalmilha', '').strip()
             obs           = item.get('obs', '').strip()
-            tamPalmilha   = item.get('tamPalmilha', '').strip()
             espessura     = item.get('espessura', '').strip()
 
             # Se não houver nenhuma referência, ignora o item
@@ -333,6 +346,7 @@ def realizar_pedido(request):
         return JsonResponse({'erro': 'JSON inválido.'}, status=400)
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
+
 
 
 
@@ -561,13 +575,9 @@ def atualizar_status_pedido(request):
         # Se for Reposição Pendente, captura a descrição enviada
         if novo_status == "Reposição Pendente":
             descricao = body.get('descricao_reposicao', '').strip()
-            # Aqui você pode decidir como armazenar ou processar a descrição.
-            # Exemplo: se quiser salvar no pedido, adicione um campo no model Pedido,
-            # como "descricao_reposicao = models.TextField(null=True, blank=True)"
-            # e então faça:
-            # pedido.descricao_reposicao = descricao
-            # Para este exemplo, apenas registramos no log:
-            logger.info(f"Pedido {pedido_id} em reposição pendente: {descricao}")
+            pedido.descricao_reposicao = descricao
+
+            print(f"Pedido {pedido_id} em reposição pendente: {descricao} total: {pedido.descricao_reposicao}")
 
         if novo_status in ['Pedido Finalizado', 'Cancelado']:
             pedido.data_finalizado = timezone.now()

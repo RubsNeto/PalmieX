@@ -7,7 +7,6 @@
 <!-- Exemplo de import de Google Fonts para uma tipografia moderna -->
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="{% static 'css/realiza_pedidos.css' %}">
 {% endblock extra_css %}
 
@@ -28,6 +27,10 @@
 
             <h5 class="total"><b>TOTAL:</b></h5>
             <h5 class="valorTotal"><b>0</b></h5>
+
+            <!-- Hidden inputs para status -->
+            <input type="hidden" class="status-balancinho" value="Pendente">
+            <input type="hidden" class="status-solado" value="Pendente">
         </div>
     </div>
 
@@ -35,19 +38,17 @@
     <div class="pedido-item">
         <div class="linha-pedido grid-3">
             <div>
-              <span class="campo">Referência Sintetico</span>
+              <span class="campo">Referência Sintético</span>
               <input type="text" class="refBalancinho" required list="listaRefBalancinho">
               <datalist id="listaRefBalancinho"></datalist>
-
             </div>
             <div>
-              <span class="campo">Sintetico</span>
+              <span class="campo">Sintético</span>
               <input type="text" class="matBalancinho" required list="listaBalancinho">
-                <datalist id="listaBalancinho"></datalist>
+              <datalist id="listaBalancinho"></datalist>
             </div>
-
             <div>
-              <span class="campo">Cor Sintetico</span>
+              <span class="campo">Cor Sintético</span>
               <input type="text" class="cor">
             </div>
           
@@ -67,33 +68,32 @@
               <input type="text" class="corPalmilha">
             </div>
 
-            <div class="">
+            <div>
               <span class="campo">Espessura Palmilha</span>
               <input type="text" class="tamPalmilha" required 
-                      placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
-                      title="Digite apenas números para o tamanho em milímetros">
+                     placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
+                     title="Digite apenas números para o tamanho em milímetros">
             </div>
             
-            
-              <div class="campo-tipo">
+            <div class="campo-tipo">
                 <span class="campo">Tipo de Serviço</span>
-                <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Ex. Costurado" default:"Costurado">
-              </div>
-              <div class="campo-tipo">
+                <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Ex. Costurado" value="Costurado">
+            </div>
+            <div class="campo-tipo">
                 <span class="campo">Marca</span>
                 <select class="marca">
                   <option value="fibra">Fibra</option>
                   <option value="seltex">Seltex</option>
                 </select>
-              </div>
             </div>
-            
-            <div class="campoObs">
-              <span class="campo">Obs:</span>
-              <textarea class="obs"></textarea>
-            </div>
-            
-            <div class="linha-pedido">
+        </div>
+        
+        <div class="campoObs">
+          <span class="campo">Obs:</span>
+          <textarea class="obs"></textarea>
+        </div>
+        
+        <div class="linha-pedido">
           <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
           <div class="maisEmenos">
             <button type="button" class="adicionarPedido">+</button>
@@ -106,10 +106,14 @@
     <!-- Novos Pedidos (adicionados via JavaScript) -->
     <div class="lista-pedidos"></div>
 
+    <!-- Botões de comando -->
     <div class="botoesComando">
-        <button type="button" class="clienteloja" id="realizarPedidoUrgente">Cliente em loja</button>
-        <button type="button" class="realizarPedido" id="realizarPedido">Realizar pedido</button>
-    </div>
+      <button type="button" class="clienteloja" id="realizarPedidoUrgente">Cliente em loja</button>
+      <button type="button" class="realizarPedido" id="realizarPedido">Realizar pedido</button>
+      <button type="button" class="realizarPedidoBalancinho" id="realizarPedidoBalancinho">Pedido Balancinho</button>
+      <button type="button" class="realizarPedidoSolado" id="realizarPedidoSolado">Pedido Solado</button>
+    </div>  
+  
 </div>
 
 <script src="{% static 'js/realiza_pedidos.js' %}"></script>

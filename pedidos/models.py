@@ -20,6 +20,7 @@ class Pedido(models.Model):
     cliente = models.CharField(max_length=255)
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
     data = models.DateTimeField(auto_now_add=True)  # Data do pedido
+    descricao_reposicao = models.TextField(null=True, blank=True)
 
     # Novo campo para data de finalização/cancelamento
     data_finalizado = models.DateTimeField(null=True, blank=True, verbose_name="Data de Finalização/Cancellation")
