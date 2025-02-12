@@ -107,13 +107,17 @@
     <div class="lista-pedidos"></div>
 
     <!-- Botões de comando -->
-    <div class="botoesComando">
-      <button type="button" class="clienteloja" id="realizarPedidoUrgente">Cliente em loja</button>
-      <button type="button" class="realizarPedido" id="realizarPedido">Realizar pedido</button>
-      <button type="button" class="realizarPedidoBalancinho" id="realizarPedidoBalancinho">Pedido Balancinho</button>
-      <button type="button" class="realizarPedidoSolado" id="realizarPedidoSolado">Pedido Solado</button>
-    </div>  
-  
+     <div class="managebuttons">
+      <div class="botoesComando">
+        <button type="button" class="realizarPedidoBalancinho" id="realizarPedidoBalancinho">Pedido Balancinho</button>
+        <button type="button" class="realizarPedidoSolado" id="realizarPedidoSolado">Pedido Solado</button>
+      </div>  
+
+      <div class="botoesInferior">
+        <button type="button" class="clienteloja" id="realizarPedidoUrgente">Cliente em loja</button>
+        <button type="button" class="realizarPedido" id="realizarPedido">Realizar pedido</button>
+      </div>
+    </div>
 </div>
 
 <script src="{% static 'js/realiza_pedidos.js' %}"></script>

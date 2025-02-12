@@ -81,7 +81,6 @@ select {
 .pedido-item {
   border-radius: 4px;
   margin-bottom: 1rem;
-  padding: 0.5rem;
 }
 
 .linha-pedido {
@@ -181,13 +180,34 @@ select {
   margin-top: 1rem;
 }
 
+.managebuttons{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.botoesInferior {
+  display: flex;
+  gap: 1rem;
+}
+
+.botoesInferior button {
+  cursor: pointer;
+  padding: 8px 16px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 4px;
+  color: #fff;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
 /* Botões de comando */
 .botoesComando {
   display: flex;
   gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 1rem;
 }
+
 
 .botoesComando button {
   cursor: pointer;
@@ -212,11 +232,17 @@ select {
   transform: scale(0.96);
 }
 
-.realizarPedido {
+.realizarPedidoSolado,
+.realizarPedidoBalancinho {
   background-color: #28a745;
 }
 
-.realizarPedido:hover {
+.realizarPedido{
+  background-color: #28a745;
+}
+.realizarPedido:hover,
+.realizarPedidoSolado:hover,
+.realizarPedidoBalancinho:hover{
   background-color: #218838;
 }
 
