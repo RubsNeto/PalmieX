@@ -31,12 +31,12 @@ select {
 .ordem {
   font-family: 'Poppins', sans-serif;
   color: var(--main-color);
-  width: 94%;
+  width: 98%;
   max-width: 1300px;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 6px;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 /* Título da ordem de serviço */
@@ -97,9 +97,18 @@ select {
   color: var(--main-color);
 }
 
-.numero{
-  text-align: center;
+.numero {
+  white-space: nowrap;    /* Impede a quebra de linha */
+  overflow: hidden;       /* Esconde o conteúdo que ultrapassa o espaço */
+  text-align: center;     /* Centraliza o conteúdo */
+  display: inline-block;
+  width: 100%;
+  /* Defina um tamanho de fonte padrão (este valor será o ponto de partida) */
+  font-size: 0.9rem;
+  transition: font-size 0.2s ease;
 }
+
+
 
 /* Inputs e textarea dentro da área de pedidos já herdam o estilo global */
 .linha-pedido input[type="text"],

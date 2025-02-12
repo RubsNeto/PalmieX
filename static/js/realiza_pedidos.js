@@ -138,6 +138,31 @@ function ativarReferenciaAutomatica() {
     });
 }
 
+/**
+ * Ajusta dinamicamente o tamanho da fonte do elemento
+ * para que seu conteúdo não ultrapasse a largura disponível.
+ *
+ * @param {HTMLElement} element - O elemento que contém o número (ex.: .numero)
+ * @param {string} defaultFontSize - Tamanho de fonte padrão (ex.: "1rem")
+ */
+    function adjustFontSize(element, defaultFontSize = "1rem") {
+        // Resetar o tamanho da fonte para o valor padrão
+        element.style.fontSize = defaultFontSize;
+        
+        // Obtém a largura disponível do elemento
+        const containerWidth = element.clientWidth;
+        // Pega o tamanho atual da fonte em pixels
+        let currentFontSize = parseInt(window.getComputedStyle(element).fontSize, 10);
+    
+        // Enquanto o conteúdo (scrollWidth) for maior que a largura do elemento
+        // e o tamanho da fonte for maior que um valor mínimo (por exemplo, 10px)
+        while (element.scrollWidth > containerWidth && currentFontSize > 10) {
+        currentFontSize--;
+        element.style.fontSize = currentFontSize + "px";
+        }
+    }
+  
+
 // **************************
 // 1. Função de autocomplete para REFERÊNCIA
 // **************************
@@ -454,7 +479,7 @@ function criarBotoesTodos(container) {
         }
     }
     // Define o tamanho padrão para os botões
-    redimensionarBotoes(container, '42.35px', '42.35px');
+    redimensionarBotoes(container, '45.35px', '42.35px');
     reorganizarTabindex();
 }
 
