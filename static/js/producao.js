@@ -65,13 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ------------------------------------------------------------
-  // DEFININDO productionArea (caso não seja injetada pelo template)
-  // ------------------------------------------------------------
-  if (typeof productionArea === 'undefined') {
-    var productionArea = 'balancinho'; // ou 'solado', conforme seu padrão
-  }
-
-  // ------------------------------------------------------------
   // EXIBIR DETALHES DO PEDIDO (MODAL)
   // ------------------------------------------------------------
   const buttonsDetalhes = document.querySelectorAll('.ver-detalhes');
@@ -141,7 +134,8 @@ document.addEventListener('DOMContentLoaded', function() {
               <p><strong>Pedido:</strong> ${data.pedido_id}</p>
               <p><strong>Data:</strong> ${data.data}</p>
               <p><strong>Hora:</strong> ${data.hora}</p>
-              ${data.status === 'Cancelado' ? 
+              <p><strong>statsssus:</strong> ${data.status_balancinho}</p>
+              ${data.status_balancinho === 'Cancelado' ? 
                 `<p><strong>Autorizado por:</strong> 
                   <span class="gerente-cancelamento">${data.gerente_cancelamento || 'N/A'}</span>
                 </p>
@@ -161,31 +155,70 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="produto-cabecalho">
                   <span class="item-nome">
                     <div>
-                      <p><strong>Ref. Balancinho:</strong> ${produto.ref_balancinho || ''}</p>
-                      <p><strong>Ref. Palmilha:</strong> ${produto.ref_palmilha || ''}</p>
+                      ${ (productionArea === 'balancinho' || productionArea === 'vendedor') 
+                          ? `<p><strong>Ref. Sintético:</strong> ${produto.ref_balancinho || ''}</p>`
+                          : ''
+                      }
+                      ${ (productionArea === 'solado' || productionArea === 'vendedor' ) 
+                          ? `<p><strong>Ref. Solado:</strong> ${produto.ref_palmilha}</p>`
+                          : ''
+                      }
                     </div>
                     <div>
-                      <p><strong>Sintetico:</strong> ${produto.nome || ''}</p>
-                      <p><strong>Palmilha:</strong> ${produto.mat_palmilha || ''}</p>
+                      ${ (productionArea === 'balancinho' || productionArea === 'vendedor') 
+                          ? `<p><strong>Sintético:</strong> ${produto.nome || ''}</p>` 
+                          : ''
+                      }
+                      ${ (productionArea === 'solado' || productionArea === 'vendedor' ) 
+                          ? `<p><strong>Solado:</strong> ${produto.mat_palmilha || ''}</p>` 
+                          : ''
+                      }
                     </div>
                     <div>
-                      <p><strong>Cor Balancinho:</strong> ${produto.cor || ''}</p>
-                      <p><strong>Cor Solado:</strong> ${produto.corPalmilha || ''}</p>
+                      ${ (productionArea === 'balancinho' || productionArea === 'vendedor') 
+                          ? `<p><strong>Cor Sintético:</strong> ${produto.cor || ''}</p>`
+                          : ''
+                      }
+                      ${ (productionArea === 'solado' || productionArea === 'vendedor') 
+                          ? `<p><strong>Cor Solado:</strong> ${produto.corPalmilha || ''}</p>`
+                          : ''
+                      }
                     </div>
-                    <div>
-                      <p><strong>Serviço:</strong> ${produto.tipo_servico || 'Nenhum'}</p>
-                      <p><strong>Marca:</strong> ${produto.marca || ''}</p>
-                    </div>
-                    <div>
-                      <p><strong>Espessura Palmilha:</strong> ${produto.espessura || '0'} mm</p>
-                    </div>
-                  </span>
-                  <span class="item-nome">
+                    
+                      ${
+                        (productionArea === 'balancinho' || productionArea === 'vendedor')
+                          ? `<div>
+                              <p><strong>Serviço:</strong> ${produto.tipo_servico || 'Nenhum'}</p>
+                            </div>`
+                          : ''
+                      }
+                    
+                    ${
+                      (productionArea === 'vendedor')
+                        ? `<div><p><strong>Marca:</strong> ${produto.marca || ''}</p></div>`
+                        : ''
+                    }
+
+                    ${
+                      (productionArea === 'balancinho')
+                        ? `<div><p><strong>Marca:</strong> ${produto.marca || ''}</p></div>`
+                        : ''
+                    }
+
+                    ${
+                      (productionArea === 'balancinho' || productionArea === 'vendedor')
+                      ? `<div><p><strong>Espessura Palmilha:</strong> ${produto.espessura || '0'} mm</p></div>`
+                      : ''
+                    }
+
+                  </span> 
+                  <div class="obs">
                     ${produto.obs ? `<p><strong>Obs:</strong> ${produto.obs}</p>` : ''}
-                  </span>
+                  </div>
                 </div>
                 <div class="container containerQuadradinhos">
-            `;
+              `;
+
             todosTamanhos.forEach(tamanho => {
               const matching = produto.tamanhos.find(t => t.tamanho == tamanho);
               const quantidade = matching ? matching.quantidade : '';

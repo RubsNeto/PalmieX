@@ -687,7 +687,7 @@ function coletarDadosPedidos(tipoPedido = 'ambos') {
         dados.itens.push({
             refBalancinho,
             matBalancinho,
-            corBalancinho,
+            cor: corBalancinho,
             refPalmilha,
             matPalmilha,
             corPalmilha,

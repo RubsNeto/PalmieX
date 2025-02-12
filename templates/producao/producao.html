@@ -187,7 +187,10 @@
 
   <!-- Injeção da variável productionArea para o JavaScript -->
   <script>
-    const productionArea = "{{ production_area }}";  // Valor: "solado" ou "balancinho"
+    let productionArea = "{{ production_area|default:'balancinho'|escapejs }}";
+    if (!productionArea) {
+      productionArea = 'solado';
+    }
   </script>
   {% endblock content %}
 

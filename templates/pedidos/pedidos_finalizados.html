@@ -135,6 +135,14 @@
     <button type="button" id="confirmarCancelamentoBtn">Confirmar Cancelamento</button>
   </div>
 </div>
+
+
+<script>
+  let productionArea = "{{ production_area|default:'balancinho'|escapejs }}";
+  if (!productionArea) {
+    productionArea = 'solado';
+  }
+</script>
 {% endblock content %}
 
 {% block extra_js %}

@@ -92,7 +92,10 @@ def producao(request):
             ~Q(status_balancinho__in=['Pedido Finalizado', 'Cancelado'])
         )
     else:
-        pedidos = Pedido.objects.prefetch_related('itens__produto').all()
+        pedidos = Pedido.objects.prefetch_related('itens__produto').filter(
+            ~Q(status_balancinho__in=['Pedido Finalizado', 'Cancelado']) and
+            ~Q(status_solado__in=['Pedido Finalizado', 'Cancelado'])
+        )
 
     # Filtros adicionais (por texto ou data)
     if search_query:
