@@ -148,20 +148,27 @@ select {
 }
 
 /* Container de quadradinhos (usado via JavaScript) */
-.container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  margin-bottom: 1em;
-}
-
+/* Container de quadradinhos usando CSS Grid */
 .containerQuadradinhos {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0px, 1fr));
   margin-top: 0.5rem;
 }
 
-.containerQuadradinhos button {
+/* Cada container de botão é quadrado */
+.botao-container {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilo para o botão dentro do container */
+.botao-container button {
+  width: 100%;
+  height: 100%;
   background-color: var(--secondary-color);
   color: #fff;
   border: none;
@@ -170,10 +177,11 @@ select {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.containerQuadradinhos button:hover {
+.botao-container button:hover {
   background-color: var(--main-color);
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
+
 
 /* Lista de pedidos adicionados */
 .lista-pedidos {

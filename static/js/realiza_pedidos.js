@@ -288,7 +288,7 @@ function reconstruirBotoes(pedidoItem) {
         criarInserirBotao(containerQuadradinhos, num, false);
     }
 
-    redimensionarBotoes(containerQuadradinhos, '40px', '40px');
+    redimensionarBotoes(containerQuadradinhos, '42.35px', '42.35px');
 
     reorganizarTabindex();
     atualizarTotalGlobal();
@@ -438,7 +438,7 @@ function criarBotoesAdulto(container) {
             criarInserirBotao(container, num, false);
         }
     }
-    redimensionarBotoes(container, '40px', '40px');
+    redimensionarBotoes(container, '42.35px', '42.35px');
     reorganizarTabindex();
 }
 
@@ -454,7 +454,7 @@ function criarBotoesTodos(container) {
         }
     }
     // Define o tamanho padrão para os botões
-    redimensionarBotoes(container, '40px', '40px');
+    redimensionarBotoes(container, '42.35px', '42.35px');
     reorganizarTabindex();
 }
 
