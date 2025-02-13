@@ -138,10 +138,7 @@
 
 
 <script>
-  let productionArea = "{{ production_area|default:'balancinho'|escapejs }}";
-  if (!productionArea) {
-    productionArea = 'solado';
-  }
+  let productionArea = "{{ production_area|escapejs }}"
 </script>
 {% endblock content %}
 

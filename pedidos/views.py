@@ -188,7 +188,7 @@ def pedido_itens_api(request, pedido_id):
             "vendedor_codigo": pedido.vendedor.codigo,
             "data": data_local.strftime("%d/%m/%Y"),
             "hora": data_local.strftime("%H:%M"),  
-            "status Balancinho": pedido.status_balancinho,
+            "status_balancinho": pedido.status_balancinho,
             "motivo_cancelamento": pedido.cancelado,
             "gerente_cancelamento": pedido.gerente_cancelamento.username if pedido.gerente_cancelamento else None,
             "pedido_id": pedido.id,
@@ -608,6 +608,13 @@ def pedidos_finalizados(request):
     search_query = request.GET.get('q', '').strip()
     data_search = request.GET.get('data', '').strip()  # Formato ISO: YYYY-MM-DD
 
+    # Obtém a área de produção do usuário
+    production_area = getattr(request.user, 'perfil', None)
+    if production_area:
+        production_area = request.user.perfil.production_area
+    else:
+        production_area = 'solado'  # Define um valor padrão caso o perfil não esteja definido
+
     # Filtra os pedidos em que ambos os status são "Pedido Finalizado" ou "Cancelado"
     pedidos = Pedido.objects.select_related('gerente_cancelamento').filter(
         Q(status_balancinho__in=['Pedido Finalizado', 'Cancelado']),
@@ -649,6 +656,7 @@ def pedidos_finalizados(request):
         'pedidos': pedidos_paginados,
         'search_query': search_query,
         'data_search': data_search,
+        'production_area': production_area,  # Adicionando a variável para o template
     })
 
 

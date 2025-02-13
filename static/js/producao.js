@@ -134,15 +134,21 @@ document.addEventListener('DOMContentLoaded', function() {
               <p><strong>Pedido:</strong> ${data.pedido_id}</p>
               <p><strong>Data:</strong> ${data.data}</p>
               <p><strong>Hora:</strong> ${data.hora}</p>
-              <p><strong>statsssus:</strong> ${data.status_balancinho}</p>
+              <p><strong>Status: <span id="pedido-status-modal" style="color: ${obterCorPorStatus(data.status_balancinho, 'balancinho')};">
+                ${data.status_balancinho}</strong>
+              </span></p>
+
               ${data.status_balancinho === 'Cancelado' ? 
                 `<p><strong>Autorizado por:</strong> 
                   <span class="gerente-cancelamento">${data.gerente_cancelamento || 'N/A'}</span>
-                </p>
-                <p><strong>Motivo do Cancelamento:</strong> 
+                </p>`:''}
+
+              </div>
+              
+              ${data.status_balancinho === 'Cancelado' ? 
+                `<p><strong>Motivo do Cancelamento:</strong> 
                   <span class="motivo-cancelamento">${data.motivo_cancelamento || 'N/A'}</span>
-                </p>` : ''}
-            </div>
+                </p>`:''}
             ${data.descricao_reposicao ? `<p><strong>Reposicao</strong> ${data.descricao_reposicao}</p>` : ''}
             <ul class="lista-itens">
           `;
