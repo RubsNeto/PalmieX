@@ -674,3 +674,40 @@ textarea.motivo-cancelamento,
     flex-direction: column;
   }
 }
+/* Reduzindo o tamanho do modal de cancelamento */
+.modal-cancelamento {
+  max-width: 40%; /* Reduz a largura (padrão era 80%) */
+  padding: 15px; /* Reduz o espaçamento interno */
+  font-size: 0.9rem; /* Tamanho da fonte menor */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Leve redução na sombra */
+}
+
+/* Reduzindo a altura do modal */
+.modal-cancelamento h2 {
+  font-size: 1.2rem; /* Reduz o tamanho do título */
+  margin-bottom: 10px;
+}
+
+.modal-cancelamento p {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.modal-cancelamento input.senha-gerente,
+.modal-cancelamento textarea.motivo-cancelamento {
+  width: 90%; /* Reduz a largura dos campos */
+  padding: 6px; /* Diminui o padding */
+  font-size: 0.9rem; /* Diminui o tamanho da fonte */
+}
+
+.modal-cancelamento button {
+  padding: 8px 16px; /* Reduz o tamanho do botão */
+  font-size: 0.9rem;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+  .modal-cancelamento {
+    max-width: 80%; /* Ajuste para telas menores */
+  }
+}
