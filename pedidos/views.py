@@ -124,22 +124,26 @@ def producao(request):
     if production_area == "solado":
         pedidos = pedidos.annotate(
             order_status=Case(
-                When(status_solado="Em Produção", then=Value(1)),
-                When(status_solado="Pendente", then=Value(2)),
-                When(status_solado="Pedido Pronto", then=Value(3)),
-                When(status_solado="Pedido Finalizado", then=Value(4)),
-                default=Value(5),
+                When(status_solado="Cliente em Espera", then=Value(1)),
+                When(status_solado="Em Produção", then=Value(2)),
+                When(status_solado="Pendente", then=Value(3)),
+                When(status_solado="Pedido Pronto", then=Value(4)),
+                When(status_solado="Pedido Finalizado", then=Value(5)),
+                When(status_solado="Reposição Pendente", then=Value(6)),
+                default=Value(7),
                 output_field=IntegerField(),
             )
         ).order_by("order_status", "-data")
     else:  # Visão do balancinho
         pedidos = pedidos.annotate(
             order_status=Case(
-                When(status_balancinho="Em Produção", then=Value(1)),
-                When(status_balancinho="Pendente", then=Value(2)),
-                When(status_balancinho="Pedido Pronto", then=Value(3)),
-                When(status_balancinho="Pedido Finalizado", then=Value(4)),
-                default=Value(5),
+                When(status_solado="Cliente em Espera", then=Value(1)),
+                When(status_solado="Em Produção", then=Value(2)),
+                When(status_solado="Pendente", then=Value(3)),
+                When(status_solado="Pedido Pronto", then=Value(4)),
+                When(status_solado="Pedido Finalizado", then=Value(5)),
+                When(status_solado="Reposição Pendente", then=Value(6)),
+                default=Value(7),
                 output_field=IntegerField(),
             )
         ).order_by("order_status", "-data")
@@ -169,10 +173,20 @@ def producao(request):
 def imprimir_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     tamanhos = range(15, 44)
+
+    # Obtém a área de produção do usuário logado
+    production_area = getattr(request.user, 'perfil', None)
+    if production_area:
+        production_area = request.user.perfil.production_area
+    else:
+        production_area = 'solado'  # Valor padrão se não estiver definido
+
     return render(request, 'pedidos/imprimir.html', {
         'pedido': pedido,
-        'tamanhos': tamanhos
+        'tamanhos': tamanhos,
+        'production_area': production_area  # Adiciona a área de produção no contexto do template
     })
+
     
 @require_GET
 def pedido_itens_api(request, pedido_id):
@@ -211,7 +225,7 @@ def pedido_itens_api(request, pedido_id):
                 "espessura": item.espessura,
                 "quantidade": item.quantidade,
                 "tipo_servico": item.tipo_servico,
-                "sintetico": item.tipo_servico,
+                "sintetico": item.mat_balancinho,
                 "marca": item.marca,
                 "cor": item.cor,
                 "corPalmilha": item.cor_palmilha,
@@ -651,6 +665,13 @@ def pedidos_finalizados(request):
         pedidos_paginados = paginator.page(1)
     except EmptyPage:
         pedidos_paginados = paginator.page(paginator.num_pages)
+        
+        
+    for pedido in pedidos_paginados:
+        if pedido.data_finalizado:
+            pedido.data_finalizado_formatado = pedido.data_finalizado.strftime("%H:%M %d/%m/%Y")
+        else:
+            pedido.data_finalizado_formatado = ""
 
     return render(request, 'pedidos/pedidos_finalizados.html', {
         'pedidos': pedidos_paginados,

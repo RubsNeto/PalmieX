@@ -262,7 +262,7 @@ function reorganizarTabindex() {
         const corPalmilha = pedido.querySelector('.corPalmilha');
         if (corPalmilha) corPalmilha.setAttribute('tabindex', proximoTabindex++);
 
-        const espessura = pedido.querySelector('.espessura');
+        const espessura = pedido.querySelector('.tamPalmilha');
         if (espessura) espessura.setAttribute('tabindex', proximoTabindex++);
         
         const selectTipoServico = pedido.querySelector('.selectTipoServico');
@@ -313,7 +313,7 @@ function reconstruirBotoes(pedidoItem) {
         criarInserirBotao(containerQuadradinhos, num, false);
     }
 
-    redimensionarBotoes(containerQuadradinhos, '42.35px', '42.35px');
+    redimensionarBotoes(containerQuadradinhos, '45.35px', '45.35px');
 
     reorganizarTabindex();
     atualizarTotalGlobal();
@@ -463,7 +463,7 @@ function criarBotoesAdulto(container) {
             criarInserirBotao(container, num, false);
         }
     }
-    redimensionarBotoes(container, '42.35px', '42.35px');
+    redimensionarBotoes(container, '45.35px', '45.35px');
     reorganizarTabindex();
 }
 
@@ -479,7 +479,7 @@ function criarBotoesTodos(container) {
         }
     }
     // Define o tamanho padrão para os botões
-    redimensionarBotoes(container, '45.35px', '42.35px');
+    redimensionarBotoes(container, '45.35px', '45.35px');
     reorganizarTabindex();
 }
 
@@ -510,26 +510,24 @@ function adicionarEventosPedido(pedidoItem) {
                 <br>
                 <br>
                 <div class="pedido-conteudo">
-                    <div class="linha-pedido grid-3">
+                     <div class="linha-pedido grid-3">
                         <div>
-                        <span class="campo">Referência Sintetico</span>
+                        <span class="campo">Referência Sintético</span>
                         <input type="text" class="refBalancinho" required list="listaRefBalancinho">
                         <datalist id="listaRefBalancinho"></datalist>
-
                         </div>
                         <div>
-                        <span class="campo">Sintetico</span>
+                        <span class="campo">Sintético</span>
                         <input type="text" class="matBalancinho" required list="listaBalancinho">
-                            <datalist id="listaBalancinho"></datalist>
+                        <datalist id="listaBalancinho"></datalist>
                         </div>
-
                         <div>
-                        <span class="campo">Cor Sintetico</span>
+                        <span class="campo">Cor Sintético</span>
                         <input type="text" class="cor">
                         </div>
                     
                         <div>
-                        <span class="campo">Referência Palmilha/Solado</span>
+                        <span class="campo">Referência Solado</span>
                         <input type="text" class="refPalmilha" required list="listaRefPalmilha">
                         <datalist id="listaRefPalmilha"></datalist>
                         </div>
@@ -544,17 +542,16 @@ function adicionarEventosPedido(pedidoItem) {
                         <input type="text" class="corPalmilha">
                         </div>
 
-                        <div class="">
+                        <div>
                         <span class="campo">Espessura Palmilha</span>
                         <input type="text" class="tamPalmilha" required 
                                 placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
                                 title="Digite apenas números para o tamanho em milímetros">
                         </div>
                         
-                        
                         <div class="campo-tipo">
                             <span class="campo">Tipo de Serviço</span>
-                            <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Ex. Costurado" default:"Costurado">
+                            <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Ex. Costurado" value="Costurado">
                         </div>
                         <div class="campo-tipo">
                             <span class="campo">Marca</span>
@@ -563,14 +560,14 @@ function adicionarEventosPedido(pedidoItem) {
                             <option value="seltex">Seltex</option>
                             </select>
                         </div>
-                        </div>
-                        
-                        <div class="campoObs">
-                        <span class="campo">Obs:</span>
-                        <textarea class="obs"></textarea>
-                        </div>
-                        
-                        <div class="linha-pedido">
+                    </div>
+                    
+                    <div class="campoObs">
+                    <span class="campo">Obs:</span>
+                    <textarea class="obs"></textarea>
+                    </div>
+                    
+                    <div class="linha-pedido">
                     <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
                     <div class="maisEmenos">
                         <button type="button" class="adicionarPedido">+</button>
@@ -854,6 +851,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (realizarPedidoUrgenteBtn) {
         realizarPedidoUrgenteBtn.addEventListener('click', () => {
             const dados = coletarDadosPedidos();
+            dados.status_solado = "Cliente em Espera";
+            dados.status_balancinho = "Cliente em Espera";
             enviarPedido('/realizar-pedido-urgente/', dados);
         });
     }

@@ -122,9 +122,9 @@ def download_excel_produto(request, produto_id):
     Gera um relatório em Excel para um produto específico:
       - Cria uma aba (sheet) para cada mês do ano atual com vendas.
       - Lista todos os PedidoItem referentes a esse produto no mês.
+      - Exibe os dois status do pedido (balancinho e solado).
       - Gera um gráfico de "vendas diárias" (quantidade vendida por dia).
       - Aplica estilos e layouts semelhantes aos relatórios de vendedores.
-      - Título centralizado, demais campos à esquerda, etc.
       - Se não houver vendas para o produto, mantém a sheet padrão com uma mensagem.
     """
 
@@ -251,7 +251,8 @@ def download_excel_produto(request, produto_id):
             qty = item.quantidade
             total_quantidades += qty
 
-            if pedido.status == 'Cancelado':
+            # Usar status_balancinho para análise de cancelamento
+            if pedido.status_balancinho == 'Cancelado':
                 cancelados += 1
             else:
                 dia = pedido.data.date()
@@ -294,7 +295,7 @@ def download_excel_produto(request, produto_id):
         cell_titulo.border = thin_border
         ws.row_dimensions[1].height = 25
 
-        # Um espaçamento antes das infos
+        # Espaçamento antes das informações
         ws.row_dimensions[4].height = 10
 
         # ------------------------------------------------
@@ -327,10 +328,9 @@ def download_excel_produto(request, produto_id):
         # Cabeçalho da Tabela de Itens
         # ------------------------------------------------
         headers = [
-            'Pedido ID', 'Data', 'Status', 'Cliente',
+            'Pedido ID', 'Data', 'Status Balancinho', 'Status Solado', 'Cliente',
             'Vendedor', 'Quantidade', 'Tamanho', 'Tipo Serviço',
-            'Cor', 'Mat Balancinho', 'Mat Palmilha',
-            'Tam. Palmilha', 'Observações'
+            'Cor', 'Mat Balancinho', 'Mat Palmilha', 'Tam. Palmilha', 'Observações'
         ]
         row_header = 21
         for col_index, header_text in enumerate(headers, start=1):
@@ -354,7 +354,8 @@ def download_excel_produto(request, produto_id):
             row_data = [
                 pedido.pk,
                 data_str,
-                pedido.status,
+                pedido.status_balancinho,
+                pedido.status_solado,
                 pedido.cliente,
                 pedido.vendedor.nome if pedido.vendedor else "",
                 item.quantidade,
@@ -363,7 +364,7 @@ def download_excel_produto(request, produto_id):
                 item.cor,
                 item.mat_balancinho,
                 item.mat_palmilha,
-                item.tamanho_palmilha,
+                None,  # 'Tam. Palmilha' removido do model
                 item.obs
             ]
             for col_index, valor in enumerate(row_data, start=1):
@@ -376,8 +377,8 @@ def download_excel_produto(request, produto_id):
                 if (linha_atual % 2) == 0:
                     cell.style = "ZebraPar"
 
-                # Destacar cancelados
-                if pedido.status == 'Cancelado':
+                # Destacar cancelados se algum dos status for 'Cancelado'
+                if pedido.status_balancinho == 'Cancelado' or pedido.status_solado == 'Cancelado':
                     cell.fill = cancelado_fill
 
             ws.row_dimensions[linha_atual].height = 20
@@ -453,8 +454,9 @@ def download_excel_produto(request, produto_id):
             chart.width = max_width * 0.1
             chart.height = 6
 
-            # Coloca o gráfico em A + (linha)
-            ws.add_chart(chart, f"A7")
+            ws.column_dimensions['A'].width = 15
+            # Coloca o gráfico em A7
+            ws.add_chart(chart, "A7")
 
     # ----------------------------------------------------
     # 3) Verifica se criamos pelo menos uma sheet de vendas

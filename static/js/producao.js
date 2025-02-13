@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </p>`:''}
 
               </div>
-              
+
               ${data.status_balancinho === 'Cancelado' ? 
                 `<p><strong>Motivo do Cancelamento:</strong> 
                   <span class="motivo-cancelamento">${data.motivo_cancelamento || 'N/A'}</span>
@@ -166,13 +166,13 @@ document.addEventListener('DOMContentLoaded', function() {
                           : ''
                       }
                       ${ (productionArea === 'solado' || productionArea === 'vendedor' ) 
-                          ? `<p><strong>Ref. Solado:</strong> ${produto.ref_palmilha}</p>`
+                          ? `<p><strong>Ref. Solado:</strong> ${produto.ref_palmilha || '' }</p>`
                           : ''
                       }
                     </div>
                     <div>
                       ${ (productionArea === 'balancinho' || productionArea === 'vendedor') 
-                          ? `<p><strong>Sintético:</strong> ${produto.nome || ''}</p>` 
+                          ? `<p><strong>Sintético:</strong> ${produto.sintetico || ''}</p>` /////////////////////////////////////////////////////
                           : ''
                       }
                       ${ (productionArea === 'solado' || productionArea === 'vendedor' ) 

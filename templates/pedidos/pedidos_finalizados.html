@@ -40,7 +40,6 @@
         <th>Cliente</th>
         <th>Código</th>
         <th>Data do Pedido</th>
-        <th>Hora do Pedido</th>
         <th>Data Finalizado</th>
         <th>Status</th>
         <th>Ação</th>
@@ -52,11 +51,10 @@
       <tr class="pedido-resumo" data-pedido-id="{{ pedido.id }}">
         <td class="cliente">{{ pedido.cliente }}</td>
         <td>{{ pedido.id }}</td>
-        <td>{{ pedido.data|date:"d/m/Y" }}</td>
-        <td>{{ pedido.data|date:"H:i" }}</td>
+        <td>{{ pedido.data|date:"H:i - d/m/Y" }}</td>
         <td>
           {% if pedido.data_finalizado %}
-            {{ pedido.data_finalizado|date:"d/m/Y H:i" }}
+            {{ pedido.data_finalizado|date:"H:i - d/m/Y " }}
           {% else %}
             -
           {% endif %}

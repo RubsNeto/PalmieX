@@ -3,30 +3,23 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from openpyxl.styles import (
-    Font, PatternFill, Alignment, Border, Side, GradientFill
+    Font, PatternFill, Alignment, Border, Side, GradientFill, NamedStyle
 )
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 from openpyxl.chart.label import DataLabelList
 from openpyxl.chart.axis import DateAxis
-from openpyxl.styles import NamedStyle
 import openpyxl
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponse
 from collections import defaultdict
 from .models import Vendedor
-from pedidos.models import PedidoItem
+from pedidos.models import Pedido, PedidoItem, Referencia
 from .forms import VendedorForm
 from django.contrib.auth.decorators import login_required
-from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
 from functools import wraps
-from django.http import JsonResponse, HttpResponseForbidden
-from django.http import HttpResponse
 import csv
 import datetime
 import calendar
-from pedidos.models import Pedido  # Ajuste conforme a localização do seu model
-from pedidos.models import Referencia
 
 def permission_required(min_level):
     def decorator(view_func):
@@ -40,7 +33,7 @@ def permission_required(min_level):
     return decorator
 
 # ---------------------------------------------------------------------
-# Restante das views (lista_vendedores, criar, editar, deletar) - igual
+# Outras views (lista_vendedores, criar, editar, deletar)
 # ---------------------------------------------------------------------
 
 @permission_required(1)
@@ -56,10 +49,8 @@ def lista_vendedores(request):
     try:
         vendedores = paginator.page(page)
     except PageNotAnInteger:
-        # Se 'page' não for inteiro, exibe a primeira página
         vendedores = paginator.page(1)
     except EmptyPage:
-        # Se 'page' estiver fora do intervalo, mostra a última página
         vendedores = paginator.page(paginator.num_pages)
 
     return render(request, 'vendedor/lista_vendedores.html', {
@@ -78,6 +69,7 @@ def criar_vendedor(request):
         form = VendedorForm()
     return render(request, 'vendedor/form_vendedor.html', {'form': form})
 
+
 @permission_required(4)
 def editar_vendedor(request, pk):
     vendedor = get_object_or_404(Vendedor, pk=pk)
@@ -89,6 +81,7 @@ def editar_vendedor(request, pk):
     else:
         form = VendedorForm(instance=vendedor)
     return render(request, 'vendedor/form_vendedor.html', {'form': form})
+
 
 @permission_required(4)
 def deletar_vendedor(request, pk):
@@ -108,6 +101,7 @@ def download_excel_report(request, vendedor_id):
     de vendas por dia. Nesta versão:
       - O campo que antes usava "mat_balancinho" é substituído por "Sintético" (nome do produto).
       - São incluídas as colunas para os itens faltantes.
+      - O campo 'status' foi substituído por 'status_balancinho'.
     """
     vendedor = get_object_or_404(Vendedor, pk=vendedor_id)
     ano_atual = datetime.datetime.now().year
@@ -182,17 +176,14 @@ def download_excel_report(request, vendedor_id):
         ws.row_dimensions[row_index].height = 25
 
     # Agrupa os pedidos por mês (usando o campo data)
-    from collections import defaultdict
     pedidos_por_mes = defaultdict(list)
     for p in pedidos_todos:
         pedidos_por_mes[p.data.month].append(p)
 
     # Importações para o gráfico
     from openpyxl.chart import BarChart, Reference
-    from openpyxl.chart.label import DataLabelList
-    from openpyxl.utils import get_column_letter
 
-    # Definindo os headers (20 colunas)
+    # Definindo os headers (19 colunas)
     headers = [
         'Pedido ID', 'Cliente', 'Data', 'Status',
         'Sintético', 'Ref. Balancinho', 'Cor Balancinho',
@@ -211,16 +202,16 @@ def download_excel_report(request, vendedor_id):
         pedidos_do_mes = pedidos_por_mes[mes]
 
         # Estatísticas do mês (desconsiderando pedidos cancelados para as vendas)
-        pedidos_analise = [pd for pd in pedidos_do_mes if pd.status != 'Cancelado']
+        pedidos_analise = [pd for pd in pedidos_do_mes if pd.status_balancinho != 'Cancelado']
         total_vendas = len(pedidos_analise)
-        cancelados = sum(1 for pd in pedidos_do_mes if pd.status == 'Cancelado')
+        cancelados = sum(1 for pd in pedidos_do_mes if pd.status_balancinho == 'Cancelado')
         vendas_por_dia = defaultdict(int)
         total_itens_mes = 0
         maior_venda = None
         maior_venda_itens = 0
 
         for pedido in pedidos_do_mes:
-            if pedido.status != 'Cancelado':
+            if pedido.status_balancinho != 'Cancelado':
                 dia = pedido.data.date()
                 soma_itens = sum(it.quantidade for it in pedido.itens.all())
                 vendas_por_dia[dia] += soma_itens
@@ -284,27 +275,33 @@ def download_excel_report(request, vendedor_id):
                 gerente = str(pedido.gerente_cancelamento) if pedido.gerente_cancelamento else '--'
                 cancelado_text = pedido.cancelado if pedido.cancelado else 'Sem Motivo'
 
-                # Construindo a linha com 20 colunas:
+                # Construindo a linha com 19 colunas conforme os headers:
+                # ['Pedido ID', 'Cliente', 'Data', 'Status',
+                #  'Sintético', 'Ref. Balancinho', 'Cor Balancinho',
+                #  'Quantidade', 'Tamanho', 'Tipo serviço', 
+                #  'Ref. Palmilha', 'Palmilha',  'Cor Solado',
+                #  'Marca', 'MM Palmilha', 'Espessura Solado',
+                #  'AutorizadoPor', 'Motivo Cancelamento', 'Obs']
                 row_data = [
                     pedido.pk,                   # Pedido ID
                     pedido.cliente,              # Cliente
                     data_str,                    # Data
-                    pedido.status,               # Status
+                    pedido.status_balancinho,    # Status (substituído)
                     item.produto.nome,           # Sintético (nome do produto)
+                    item.ref_balancinho,         # Ref. Balancinho
+                    item.cor,                    # Cor Balancinho
                     item.quantidade,             # Quantidade
                     item.tamanho,                # Tamanho
                     item.tipo_servico,           # Tipo serviço
-                    item.ref_balancinho,         # Ref. Balancinho
                     item.ref_palmilha,           # Ref. Palmilha
                     item.mat_palmilha,           # Palmilha
-                    item.cor,                    # Cor Balancinho
                     item.cor_palmilha,           # Cor Solado
                     item.marca,                  # Marca
-                    item.tam_palmilha,           # MM Palmilha
-                    gerente,                     # AutorizadoPor
-                    cancelado_text,               # Motivo Cancelamento
+                    None,                        # MM Palmilha (campo removido do models)
                     item.espessura,              # Espessura Solado
-                    item.obs                    # Obs
+                    gerente,                     # AutorizadoPor
+                    cancelado_text,              # Motivo Cancelamento
+                    item.obs                   # Obs
                 ]
                 for col_index, valor in enumerate(row_data, start=1):
                     cell = ws.cell(row=linha_atual, column=col_index)
@@ -316,7 +313,7 @@ def download_excel_report(request, vendedor_id):
                     cell.border = thin_border
                     if (linha_atual % 2) == 0:
                         cell.style = "ZebraPar"
-                    if pedido.status == 'Cancelado':
+                    if pedido.status_balancinho == 'Cancelado':
                         cell.fill = cancelado_fill
                 ws.row_dimensions[linha_atual].height = 20
                 linha_atual += 1

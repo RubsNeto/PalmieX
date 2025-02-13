@@ -173,6 +173,7 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+
 .ver-detalhes:hover,
 .alterar-status:hover,
 .imprimir-pedido:hover,
@@ -263,6 +264,13 @@
   justify-content: center;
   margin: 20px 0;
   gap: 5px;
+}
+
+.PedidoConcluido{
+  background-color: var(--button-hover-bg-color);
+}
+.PedidoConcluido:hover{
+  background-color: var(--hover-color);
 }
 
 .pagination a,
