@@ -261,7 +261,6 @@ def pedido_itens_api(request, pedido_id):
                 "cor": item.cor,
                 "corPalmilha": item.cor_palmilha,
                 "obs": item.obs,
-                "ref_balancinho": item.ref_balancinho,
                 "mat_balancinho": item.mat_balancinho,
                 "ref_palmilha": item.ref_palmilha,
                 "mat_palmilha": item.mat_palmilha,
@@ -342,7 +341,6 @@ def realizar_pedido(request):
         # Percorre os itens do pedido
         itens = body.get('itens', [])
         for item in itens:
-            refBalancinho = item.get('refBalancinho', '').strip()
             matBalancinho = item.get('matBalancinho', '').strip()
             refPalmilha   = item.get('refPalmilha', '').strip()
             matPalmilha   = item.get('matPalmilha', '').strip()
@@ -353,11 +351,8 @@ def realizar_pedido(request):
             obs           = item.get('obs', '').strip()
             espessura     = item.get('espessura', '').strip()
 
-            # Se não houver nenhuma referência, ignora o item
-            if not refBalancinho and not refPalmilha:
-                continue
 
-            referencia_principal = refBalancinho or refPalmilha
+            referencia_principal = refPalmilha
             nome_produto = matBalancinho or matPalmilha
 
             produto, _ = Produto.objects.get_or_create(
@@ -377,7 +372,6 @@ def realizar_pedido(request):
                     quantidade=qtd,
                     tamanho=tamanho,  # Tamanho do quadradinho
                     marca=marca,
-                    ref_balancinho=refBalancinho,
                     mat_balancinho=matBalancinho,
                     ref_palmilha=refPalmilha,
                     mat_palmilha=matPalmilha,
@@ -426,7 +420,6 @@ def realizar_pedido_urgente(request):
 
         itens = body.get('itens', [])
         for item in itens:
-            refBalancinho = item.get('refBalancinho', '').strip()
             matBalancinho = item.get('matBalancinho', '').strip()
             refPalmilha   = item.get('refPalmilha', '').strip()
             matPalmilha   = item.get('matPalmilha', '').strip()
@@ -437,10 +430,8 @@ def realizar_pedido_urgente(request):
             obs           = item.get('obs', '').strip()
             tamPalmilha   = item.get('tamPalmilha', '').strip()
 
-            if not refBalancinho and not refPalmilha:
-                continue
 
-            referencia_principal = refBalancinho or refPalmilha
+            referencia_principal = refPalmilha
             nome_produto = matBalancinho or matPalmilha
 
             produto, _ = Produto.objects.get_or_create(
@@ -459,7 +450,6 @@ def realizar_pedido_urgente(request):
                     quantidade=qtd,
                     tamanho=tamanho,
                     marca=marca,
-                    ref_balancinho=refBalancinho,
                     mat_balancinho=matBalancinho,
                     ref_palmilha=refPalmilha,
                     mat_palmilha=matPalmilha,

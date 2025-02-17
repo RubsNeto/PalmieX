@@ -38,11 +38,6 @@
     <div class="pedido-item">
         <div class="linha-pedido grid-3">
             <div>
-              <span class="campo">Referência Sintético</span>
-              <input type="text" class="refBalancinho" required list="listaRefBalancinho">
-              <datalist id="listaRefBalancinho"></datalist>
-            </div>
-            <div>
               <span class="campo">Sintético</span>
               <input type="text" class="matBalancinho" required list="listaBalancinho">
               <datalist id="listaBalancinho"></datalist>
@@ -51,7 +46,13 @@
               <span class="campo">Cor Sintético</span>
               <input type="text" class="cor">
             </div>
-          
+            
+            <div>
+              <span class="campo">Espessura Palmilha</span>
+              <input type="text" class="tamPalmilha" required 
+                     placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
+                     title="Digite apenas números para o tamanho em milímetros">
+            </div>
             <div>
               <span class="campo">Referência Solado</span>
               <input type="text" class="refPalmilha" required list="listaRefPalmilha">
@@ -68,12 +69,6 @@
               <input type="text" class="corPalmilha">
             </div>
 
-            <div>
-              <span class="campo">Espessura Palmilha</span>
-              <input type="text" class="tamPalmilha" required 
-                     placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
-                     title="Digite apenas números para o tamanho em milímetros">
-            </div>
             
             <div class="campo-tipo">
                 <span class="campo">Tipo de Serviço</span>
