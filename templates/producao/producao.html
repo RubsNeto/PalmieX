@@ -39,7 +39,7 @@
             <th>Hora</th>
             <!-- Colunas para os dois status -->
             {% if production_area == "balancinho" or production_area == "vendedor" %}
-                <th>Status Balancinho</th>
+                <th>Status Palmilha</th>
             {% endif %}
 
             {% if production_area == "solado" or production_area == "vendedor" %}
@@ -47,7 +47,7 @@
             {% endif %}
 
             
-            {% if user.permission_level > 1 %}
+            {% if user.permission_level == 2 or user.permission_level == 4%}
               <th>Controle</th>
               <th>Operação</th>
             {% else %}
@@ -77,7 +77,7 @@
 
               <td class="botoes">
                 <div class="coluna-esquerda">
-                  {% if user.permission_level == 1 %}
+                  {% if user.permission_level == 1 or user.permission_level == 3%}
                     <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
                       <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
                     </button>
@@ -89,7 +89,7 @@
                     </button>
                   {% endif %}
 
-                  {% if user.permission_level > 1 %}
+                  {% if user.permission_level == 2 or user.permission_level == 4%}
                     <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
                       <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
                     </button>
@@ -97,16 +97,19 @@
                     <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Em Produção" title="Produção">
                       <img class="producao" src="{% static 'img/producao.svg' %}" alt="Produção">
                     </button>
-                    <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Reposição Pendente" title="Reposição">
-                      <img class="rep" src="{% static 'img/empty.svg' %}" alt="Reposição">
-                    </button>
+
+                    {% if production_area == "solado" or production_area == "vendedor" %}
+                      <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Reposição Pendente" title="Reposição">
+                        <img class="rep" src="{% static 'img/empty.svg' %}" alt="Reposição">
+                      </button>
+                    {% endif %}
                     <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Pedido Pronto" title="Separado">
                       <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
                     </button>
                   {% endif %}
                 </div>
               </td>
-              {% if user.permission_level > 1 %}
+              {% if user.permission_level == 2 or user.permission_level == 4%}
               <td>
                 <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}"  data-area="{{ production_area }}" title="Cancelar">
                   <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">

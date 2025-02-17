@@ -149,7 +149,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 `<p><strong>Motivo do Cancelamento:</strong> 
                   <span class="motivo-cancelamento">${data.motivo_cancelamento || 'N/A'}</span>
                 </p>`:''}
-            ${data.descricao_reposicao ? `<p><strong>Reposicao</strong> ${data.descricao_reposicao}</p>` : ''}
+
+                ${ (productionArea === 'solado' || productionArea === 'vendedor') 
+                  ? `<p><strong>Reposicao:</strong> ${data.descricao_reposicao}</p>`
+                  : ''
+              }
             <ul class="lista-itens">
           `;
 
@@ -165,14 +169,13 @@ document.addEventListener('DOMContentLoaded', function() {
                           ? `<p><strong>Ref. Sintético:</strong> ${produto.ref_balancinho || ''}</p>`
                           : ''
                       }
-                      ${ (productionArea === 'solado' || productionArea === 'vendedor' ) 
-                          ? `<p><strong>Ref. Solado:</strong> ${produto.ref_palmilha || '' }</p>`
-                          : ''
-                      }
+                      
+                      <p><strong>Ref. Solado/Palmilha:</strong> ${produto.ref_palmilha || '' }</p>
+                          
                     </div>
                     <div>
                       ${ (productionArea === 'balancinho' || productionArea === 'vendedor') 
-                          ? `<p><strong>Sintético:</strong> ${produto.sintetico || ''}</p>` /////////////////////////////////////////////////////
+                          ? `<p><strong>Sintético:</strong> ${produto.sintetico || ''}</p>`
                           : ''
                       }
                       ${ (productionArea === 'solado' || productionArea === 'vendedor' ) 

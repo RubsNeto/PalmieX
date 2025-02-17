@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth.models import User
+from django.db.models.functions import Least
 from django.contrib.auth.hashers import check_password
 from autenticacao.models import Perfil 
 from functools import wraps
@@ -72,18 +73,17 @@ def buscar_produto_por_nome(request):
 @login_required
 def producao(request):
     search_query = request.GET.get('q', '').strip()
-    data_search = request.GET.get('data', '').strip()  # Parâmetro para data
+    data_search = request.GET.get('data', '').strip()
 
     # Obtém a área de produção do usuário
-    production_area = getattr(request.user, 'perfil', None)
-    if production_area:
+    perfil = getattr(request.user, 'perfil', None)
+    if perfil:
         production_area = request.user.perfil.production_area
     else:
-        production_area = 'solado'
+        production_area = 'solado'  # padrão
 
-    # Filtra os pedidos de acordo com a área:
+    # Filtra os pedidos conforme a área:
     if production_area == "solado":
-        # Mostra somente pedidos cujo status do solado não esteja finalizado ou cancelado
         pedidos = Pedido.objects.prefetch_related('itens__produto').filter(
             ~Q(status_solado__in=['Pedido Finalizado', 'Cancelado'])
         )
@@ -91,13 +91,16 @@ def producao(request):
         pedidos = Pedido.objects.prefetch_related('itens__produto').filter(
             ~Q(status_balancinho__in=['Pedido Finalizado', 'Cancelado'])
         )
-    else:
-        pedidos = Pedido.objects.prefetch_related('itens__produto').filter(
-            ~Q(status_balancinho__in=['Pedido Finalizado', 'Cancelado']) and
-            ~Q(status_solado__in=['Pedido Finalizado', 'Cancelado'])
+    elif production_area == "vendedor":
+        pedidos = Pedido.objects.prefetch_related('itens__produto').exclude(
+            Q(status_solado__in=['Pedido Finalizado', 'Cancelado']) &
+            Q(status_balancinho__in=['Pedido Finalizado', 'Cancelado'])
         )
 
-    # Filtros adicionais (por texto ou data)
+    else:
+        pedidos = Pedido.objects.prefetch_related('itens__produto').all()
+
+    # Filtros adicionais (por texto e data)
     if search_query:
         pedidos = pedidos.filter(
             Q(cliente__icontains=search_query) |
@@ -120,7 +123,7 @@ def producao(request):
         except ValueError:
             pass
 
-    # Ordena de acordo com a área do usuário
+    # Ordenação conforme a área de produção:
     if production_area == "solado":
         pedidos = pedidos.annotate(
             order_status=Case(
@@ -134,20 +137,50 @@ def producao(request):
                 output_field=IntegerField(),
             )
         ).order_by("order_status", "-data")
-    else:  # Visão do balancinho
+
+    elif production_area == "balancinho":
         pedidos = pedidos.annotate(
             order_status=Case(
-                When(status_solado="Cliente em Espera", then=Value(1)),
-                When(status_solado="Em Produção", then=Value(2)),
-                When(status_solado="Pendente", then=Value(3)),
-                When(status_solado="Pedido Pronto", then=Value(4)),
-                When(status_solado="Pedido Finalizado", then=Value(5)),
-                When(status_solado="Reposição Pendente", then=Value(6)),
+                When(status_balancinho="Cliente em Espera", then=Value(1)),
+                When(status_balancinho="Em Produção", then=Value(2)),
+                When(status_balancinho="Pendente", then=Value(3)),
+                When(status_balancinho="Pedido Pronto", then=Value(4)),
+                When(status_balancinho="Pedido Finalizado", then=Value(5)),
+                When(status_balancinho="Reposição Pendente", then=Value(6)),
                 default=Value(7),
                 output_field=IntegerField(),
             )
         ).order_by("order_status", "-data")
 
+    elif production_area == "vendedor":
+        # Para o vendedor, usamos duas anotações e depois a função Least
+        pedidos = pedidos.annotate(
+            solado_order=Case(
+                When(status_solado="Pedido Pronto", then=Value(1)),
+                When(status_solado="Em Produção", then=Value(2)),
+                When(status_solado="Reposição Pendente", then=Value(3)),
+                When(status_solado="Pendente", then=Value(4)),
+                When(status_solado="Cliente em Espera", then=Value(5)),
+                When(status_solado="Pedido Finalizado", then=Value(6)),
+                default=Value(7),
+                output_field=IntegerField(),
+            ),
+            balancinho_order=Case(
+                When(status_balancinho="Pedido Pronto", then=Value(1)),
+                When(status_balancinho="Em Produção", then=Value(2)),
+                When(status_balancinho="Pendente", then=Value(3)),
+                When(status_balancinho="Pedido Finalizado", then=Value(4)),
+                When(status_balancinho="Reposição Pendente", then=Value(5)),
+                default=Value(6),
+                output_field=IntegerField(),
+            )
+        ).annotate(
+            order_status=Least('solado_order', 'balancinho_order')
+        ).order_by("order_status", "-data")
+    else:
+        pedidos = pedidos.order_by("-data")
+
+    # Paginação
     page = request.GET.get('page', 1)
     paginator = Paginator(pedidos, 10)
     try:
@@ -163,8 +196,6 @@ def producao(request):
         'data_search': data_search,
         'production_area': production_area,
     })
-
-
 
 
 #------------------ Impressão -------------------
