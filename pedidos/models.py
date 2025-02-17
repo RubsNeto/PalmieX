@@ -85,9 +85,10 @@ class PedidoItem(models.Model):
     # Campo para Marca, com choices
     MARCA_CHOICES = [
         ('Fibra', 'Fibra'),
-        ('Seltex', 'Seltex')
+        ('Seltex', 'Seltex'),
+        ('Induma','Induma')
     ]
-    marca = models.CharField(max_length=50, choices=MARCA_CHOICES, default='Fibra')
+    marca = models.CharField(max_length=50, choices=MARCA_CHOICES, default='')
 
     obs = models.TextField(max_length=90, null=True, blank=True)
 

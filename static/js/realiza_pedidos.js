@@ -506,77 +506,76 @@ function adicionarEventosPedido(pedidoItem) {
             novoPedido.classList.add('pedido-item');
 
             novoPedido.innerHTML = `
-                <hr>
-                <br>
-                <br>
-                <div class="pedido-conteudo">
-                     <div class="linha-pedido grid-3">
-                        <div>
-                        <span class="campo">Referência Sintético</span>
-                        <input type="text" class="refBalancinho" required list="listaRefBalancinho">
-                        <datalist id="listaRefBalancinho"></datalist>
-                        </div>
-                        <div>
-                        <span class="campo">Sintético</span>
-                        <input type="text" class="matBalancinho" required list="listaBalancinho">
-                        <datalist id="listaBalancinho"></datalist>
-                        </div>
-                        <div>
-                        <span class="campo">Cor Sintético</span>
-                        <input type="text" class="cor">
-                        </div>
-                    
-                        <div>
-                        <span class="campo">Referência Solado</span>
-                        <input type="text" class="refPalmilha" required list="listaRefPalmilha">
-                        <datalist id="listaRefPalmilha"></datalist>
-                        </div>
-                        <div>
-                        <span class="campo">Material Solado</span>
-                        <input type="text" class="matPalmilha" required list="listaPalmilha">
-                        <datalist id="listaPalmilha"></datalist>
-                        </div>
+            <hr>
+            <br>
+            <br>
+            <div class="pedido-conteudo">
+                <div class="linha-pedido grid-3">
+                    <div>
+                    <span class="campo">Referência Sintético</span>
+                    <input type="text" class="refBalancinho" required list="listaRefBalancinho">
+                    <datalist id="listaRefBalancinho"></datalist>
+                    </div>
+                    <div>
+                    <span class="campo">Sintético</span>
+                    <input type="text" class="matBalancinho" required list="listaBalancinho">
+                    <datalist id="listaBalancinho"></datalist>
+                    </div>
+                    <div>
+                    <span class="campo">Cor Sintético</span>
+                    <input type="text" class="cor">
+                    </div>
+                
+                    <div>
+                    <span class="campo">Referência Solado</span>
+                    <input type="text" class="refPalmilha" required list="listaRefPalmilha">
+                    <datalist id="listaRefPalmilha"></datalist>
+                    </div>
+                    <div>
+                    <span class="campo">Material Solado</span>
+                    <input type="text" class="matPalmilha" required list="listaPalmilha">
+                    <datalist id="listaPalmilha"></datalist>
+                    </div>
 
-                        <div class="divCor">
-                        <span class="campo">Cor Solado</span>
-                        <input type="text" class="corPalmilha">
-                        </div>
+                    <div class="divCor">
+                    <span class="campo">Cor Solado</span>
+                    <input type="text" class="corPalmilha">
+                    </div>
 
-                        <div>
-                        <span class="campo">Espessura Palmilha</span>
-                        <input type="text" class="tamPalmilha" required 
-                                placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
-                                title="Digite apenas números para o tamanho em milímetros">
-                        </div>
-                        
-                        <div class="campo-tipo">
-                            <span class="campo">Tipo de Serviço</span>
-                            <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Ex. Costurado" value="Costurado">
-                        </div>
-                        <div class="campo-tipo">
-                            <span class="campo">Marca</span>
-                            <select class="marca">
-                            <option value="fibra">Fibra</option>
-                            <option value="seltex">Seltex</option>
-                            </select>
-                        </div>
+                    <div>
+                    <span class="campo">Espessura Palmilha</span>
+                    <input type="text" class="tamPalmilha" required 
+                            placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
+                            title="Digite apenas números para o tamanho em milímetros">
                     </div>
                     
-                    <div class="campoObs">
-                    <span class="campo">Obs:</span>
-                    <textarea class="obs"></textarea>
+                    <div class="campo-tipo">
+                        <span class="campo">Tipo de Serviço</span>
+                        <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Ex. Costurado" value="Costurado">
                     </div>
-                    
-                    <div class="linha-pedido">
-                    <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
-                    <div class="maisEmenos">
-                        <button type="button" class="adicionarPedido">+</button>
-                        <button type="button" class="removerPedido">-</button>
+                    <div class="campo-tipo">
+                        <span class="campo">Marca</span>
+                        <select class="marca" name="marca">
+                        <option value="Fibra">Fibra</option>
+                        <option value="Seltex">Seltex</option>
+                        </select>
                     </div>
-                    </div>
-                    <div class="container containerQuadradinhos"></div>
                 </div>
-            `;
+                
+                <div class="campoObs">
+                <span class="campo">Obs:</span>
+                <textarea class="obs"></textarea>
+                </div>
+                
+                <div class="linha-pedido">
+                <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
+                <div class="maisEmenos">
+                    <button type="button" class="adicionarPedido">+</button>
+                    <button type="button" class="removerPedido">-</button>
+                </div>
+                </div>
+                <div class="container containerQuadradinhos"></div>
+            </div>`;
 
 
             lista.appendChild(novoPedido);
@@ -629,6 +628,7 @@ function adicionarEventosPedido(pedidoItem) {
     }
 }
 
+
 function coletarDadosPedidos(tipoPedido = 'ambos') {
     const dados = {
         cliente: document.querySelector('.cliente')?.value.trim() || '',
@@ -642,7 +642,7 @@ function coletarDadosPedidos(tipoPedido = 'ambos') {
 
     const pedidoItens = document.querySelectorAll('.pedido-item');
     pedidoItens.forEach(pedido => {
-        // Coleta os valores dos campos para o balancinho e solado
+        // Coleta os valores dos campos para o Balancinho e Solado
         let refBalancinho = pedido.querySelector('.refBalancinho')?.value.trim() || '';
         let matBalancinho = pedido.querySelector('.matBalancinho')?.value.trim() || '';
         let corBalancinho = pedido.querySelector('.cor')?.value.trim() || '';
@@ -653,6 +653,11 @@ function coletarDadosPedidos(tipoPedido = 'ambos') {
         
         let espessura = pedido.querySelector('.tamPalmilha')?.value.trim() || '';
         let obs = pedido.querySelector('.obs')?.value.trim() || '';
+
+        // **Adiciona a coleta da marca**
+        let marca = pedido.querySelector('.marca')?.value.trim() || '';
+            console.log('Marca coletada:', marca);
+
 
         // Ajusta os campos conforme o tipo de pedido
         if (tipoPedido === 'balancinho') {
@@ -681,6 +686,7 @@ function coletarDadosPedidos(tipoPedido = 'ambos') {
             }
         });
 
+        // Inclui a propriedade "marca" no item
         dados.itens.push({
             refBalancinho,
             matBalancinho,
@@ -690,11 +696,13 @@ function coletarDadosPedidos(tipoPedido = 'ambos') {
             corPalmilha,
             espessura,
             obs,
+            marca, // Novo campo
             tamanhos
         });
     });
     return dados;
 }
+
 
 
 
