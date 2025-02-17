@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   <span class="motivo-cancelamento">${data.motivo_cancelamento || 'N/A'}</span>
                 </p>`:''}
 
-                ${ (productionArea === 'solado' || productionArea === 'vendedor') 
+                ${ (productionArea === 'solado' || productionArea === 'vendedor') && data.descricao_reposicao  
                   ? `<p><strong>Reposicao:</strong> ${data.descricao_reposicao}</p>`
                   : ''
               }
