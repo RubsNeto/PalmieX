@@ -1,0 +1,205 @@
+/* Melhorias no CSS para lista de vendedores, mantendo as classes existentes */
+
+:root {
+    --main-color: #017a39;
+    --hover-color: #019657;
+    --danger-color: #d9534f;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --info-color: #17a2b8;
+  }
+  
+  /* Animação de Fade-In sequencial para cada linha da tabela de vendedores */
+.vendedores-table tbody tr {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInRow 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeInRow {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animação para o título e os botões de comando */
+h2, .vendedores-table, .botoesComando {
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: fadeIn 0.6s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+  
+  /* Título */
+  h2 {
+    font-size: 1.8rem;
+    color: var(--dark-color);
+    margin-bottom: 1rem;
+  }
+  
+  /* Tabela de Vendedores */
+  .vendedores-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--light-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .vendedores-table thead {
+    background: linear-gradient(150deg, #017A39, #01A44D);
+    color: white;
+  }
+  
+  .vendedores-table th, .vendedores-table td {
+    padding: 1rem;
+    text-align: left;
+    font-size: 1rem;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .vendedores-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .vendedores-table tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Ações */
+  .acoes {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .acoes .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: var(--main-color);
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .acoes .btn:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.1);
+  }
+  
+  .acoes .btn img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+  }
+  
+  /* Botões Específicos */
+  .acoes .btn-secondary {
+    background-color: var(--info-color);
+  }
+  
+  .acoes .btn-secondary:hover {
+    background-color: #23272b;
+  }
+  
+  .acoes .btn-danger {
+    background-color: var(--danger-color);
+  }
+  
+  .acoes .btn-danger:hover {
+    background-color: #c82333;
+  }
+  
+  /* Botão Adicionar Vendedor */
+  .botoesComando {
+    text-align: right;
+    margin-top: 1.5rem;
+  }
+  
+  .botoesComando .adicionarVendedor {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--main-color);
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .botoesComando .adicionarVendedor:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.05);
+  }
+  
+  .botoesComando .adicionarVendedor::before {
+    content: "+ ";
+    font-size: 1.2rem;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;  /* Alinha o bloco de paginação no centro */
+    margin: 20px 0;           /* Espaçamento vertical */
+    gap: 5px;                 /* Espaço entre os botões */
+  }
+  
+  .pagination a, 
+  .pagination strong {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #f4f4f4;
+    color: #333;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .pagination a:hover {
+    background-color: #ddd;
+  }
+  
+  /* Página atual (usando <strong> no template) */
+  .pagination strong {
+    background-color: #4CAF50; /* destaque */
+    color: #fff;
+  }
+  
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .acoes .btn {
+      width: 35px;
+      height: 35px;
+      font-size: 1rem;
+    }
+  
+    .botoesComando {
+      text-align: center;
+    }
+  }
+
+  
+  

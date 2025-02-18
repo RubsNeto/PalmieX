@@ -9,7 +9,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth.models import User
 from django.db.models.functions import Least
 from django.contrib.auth.hashers import check_password
-from autenticacao.models import Perfil 
+from autenticacao.models import Perfil
 from functools import wraps
 import datetime
 from .models import Vendedor, Produto, Pedido, PedidoItem, Referencia
@@ -45,7 +45,7 @@ def autocomplete_produto(request):
         produtos = Produto.objects.filter(nome__icontains=q)[:20]
         # Monta lista de nomes para retornar
         results = [p.nome for p in produtos]
-    
+
     return JsonResponse(results, safe=False)
 
 
@@ -58,12 +58,12 @@ def buscar_produto_por_nome(request):
     nome = request.GET.get('nome', '').strip()
     if not nome:
         return JsonResponse({'erro': 'Nome não informado.'}, status=400)
-    
+
     # Procura produto com nome exato (ignorando maiúsc/minúsc, via iexact)
     produto = Produto.objects.filter(nome__iexact=nome).first()
     if not produto:
         return JsonResponse({'erro': 'Produto não encontrado.'}, status=404)
-    
+
     return JsonResponse({
         'codigo': produto.codigo,
         'nome': produto.nome,
@@ -218,7 +218,7 @@ def imprimir_pedido(request, pedido_id):
         'production_area': production_area  # Adiciona a área de produção no contexto do template
     })
 
-    
+
 @require_GET
 def pedido_itens_api(request, pedido_id):
     try:
@@ -232,7 +232,7 @@ def pedido_itens_api(request, pedido_id):
             "vendedor_nome": pedido.vendedor.nome,
             "vendedor_codigo": pedido.vendedor.codigo,
             "data": data_local.strftime("%d/%m/%Y"),
-            "hora": data_local.strftime("%H:%M"),  
+            "hora": data_local.strftime("%H:%M"),
             "status_balancinho": pedido.status_balancinho,
             "motivo_cancelamento": pedido.cancelado,
             "gerente_cancelamento": pedido.gerente_cancelamento.username if pedido.gerente_cancelamento else None,
@@ -265,9 +265,9 @@ def pedido_itens_api(request, pedido_id):
                 "ref_palmilha": item.ref_palmilha,
                 "mat_palmilha": item.mat_palmilha,
             })
-        
+
         return JsonResponse(data)
-    
+
     except Exception as e:
         logger.exception(f"Erro ao recuperar itens do pedido {pedido_id}: {str(e)}")
         return JsonResponse({'erro': f'Erro ao recuperar itens do pedido: {str(e)}'}, status=500)
@@ -289,7 +289,7 @@ def buscar_produto(request):
     codigo = request.GET.get('codigo', '')
     if not codigo:
         return JsonResponse({'erro': 'Código não informado.'}, status=400)
-    
+
     # Busque o produto com base em "codigo".
     produto_obj = Produto.objects.filter(codigo=codigo).first()
     if not produto_obj:
@@ -345,7 +345,7 @@ def realizar_pedido(request):
             refPalmilha   = item.get('refPalmilha', '').strip()
             matPalmilha   = item.get('matPalmilha', '').strip()
             marca         = item.get('marca', '').strip()
-            tipoServico   = item.get('tipoServico', 'Costurado').strip()
+            tipoServico   = item.get('tipoServico', '').strip()
             cor           = item.get('cor', '').strip()
             cor_palmilha  = item.get('corPalmilha', '').strip()
             obs           = item.get('obs', '').strip()
@@ -468,7 +468,7 @@ def realizar_pedido_urgente(request):
 
 
 
-@csrf_exempt  
+@csrf_exempt
 @require_POST
 @login_required
 def cancelar_pedido(request, pedido_id):
@@ -476,11 +476,11 @@ def cancelar_pedido(request, pedido_id):
         body = json.loads(request.body or '{}')
         senha_digitada = body.get('senhaNivel3', '').strip()
         motivo_cancelamento = body.get('motivoCancelamento', '').strip()
-        
+
         # Validações...
         if not senha_digitada or not motivo_cancelamento:
             return JsonResponse({'erro': 'Senha e motivo do cancelamento são obrigatórios.'}, status=400)
-        
+
         pedido = get_object_or_404(Pedido, id=pedido_id)
 
         # Buscar usuários autorizados (nível 3 ou 4)
@@ -504,15 +504,15 @@ def cancelar_pedido(request, pedido_id):
         pedido.gerente_cancelamento = gerente_autorizador
         pedido.data_finalizado = timezone.now()  # Registra a data/hora atual
         pedido.save()
-        
+
         return JsonResponse({
             'mensagem': f'Pedido {pedido_id} cancelado com sucesso.',
             'gerente': gerente_autorizador.get_full_name()
         })
-        
+
     except Exception as e:
         return JsonResponse({'erro': f'Erro ao cancelar pedido: {str(e)}'}, status=500)
-   
+
 
 @login_required
 def editar_pedido(request, pedido_id):
@@ -634,8 +634,8 @@ def atualizar_status_pedido(request):
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
 
 
-    
-#------------------------------- Finalizados --------------------------------  
+
+#------------------------------- Finalizados --------------------------------
 
 
 @login_required
@@ -686,8 +686,8 @@ def pedidos_finalizados(request):
         pedidos_paginados = paginator.page(1)
     except EmptyPage:
         pedidos_paginados = paginator.page(paginator.num_pages)
-        
-        
+
+
     for pedido in pedidos_paginados:
         if pedido.data_finalizado:
             pedido.data_finalizado_formatado = pedido.data_finalizado.strftime("%H:%M %d/%m/%Y")

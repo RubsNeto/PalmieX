@@ -24,17 +24,8 @@
     <div class="produto-cabecalho">
       <span class="item-nome">
         <div>
-          {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <p><strong>Ref. Sintético:</strong> {{ grupo.list.0.ref_balancinho|default:"" }}</p>
-          {% endif %}
           {% if production_area == "solado" or production_area == "vendedor" %}
             <p><strong>Ref. Solado:</strong> {{ grupo.list.0.ref_palmilha|default:"" }}</p>
-          {% endif %}
-        </div>
-
-        <div>
-          {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <p><strong>Sintético:</strong> {{ grupo.list.0.mat_balancinho|default:"" }}</p>
           {% endif %}
           {% if production_area == "solado" or production_area == "vendedor" %}
             <p><strong>Solado:</strong> {{ grupo.list.0.mat_palmilha|default:"" }}</p>
@@ -43,10 +34,16 @@
 
         <div>
           {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <p><strong>Cor Sintético:</strong> {{ grupo.list.0.cor|default:"" }}</p>
+            <p><strong>Sintético:</strong> {{ grupo.list.0.mat_balancinho|default:"" }}</p>
           {% endif %}
           {% if production_area == "solado" or production_area == "vendedor" %}
             <p><strong>Cor Solado:</strong> {{ grupo.list.0.cor_palmilha|default:"" }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          {% if production_area == "balancinho" or production_area == "vendedor" %}
+            <p><strong>Cor Sintético:</strong> {{ grupo.list.0.cor|default:"" }}</p>
           {% endif %}
         </div>
 

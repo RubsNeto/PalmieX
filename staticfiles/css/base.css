@@ -1,0 +1,123 @@
+/* CSS para Menu Lateral Base */
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+  }
+  
+  :root {
+    --main-bg-color: #017A39;
+    --secondary-bg-color: #01A44D;
+    --hover-color: #019657;
+    --text-color: #fff;
+    --logo-size: 90px;
+  }
+  
+  /* Configurações básicas */
+  html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f6f6f6;
+  }
+  
+  .container {
+    display: flex;
+  }
+  
+  /* Menu fixo à esquerda */
+  .menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, var(--main-bg-color), var(--secondary-bg-color));
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  /* Conteúdo do menu */
+  .menu-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Seções do menu */
+  .titulo {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--hover-color);
+    padding-bottom: 5px;
+  }
+  
+  /* Links do menu */
+  .sub_menu a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 1rem;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    display: block;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sub_menu a:hover {
+    background-color: var(--hover-color);
+  }
+
+
+/* Logo fixa na parte inferior e centralizada */
+.logo {
+  width: var(--logo-size);
+  height: auto;
+  position: fixed;
+  bottom: 20px;
+  left: 5.7%;
+  transform: translateX(-50%);
+  box-sizing: content-box;
+}
+
+  
+  /* Conteúdo principal */
+  .test {
+    flex: 1;
+    margin-left: 168px;
+    padding: 20px;
+
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .menu {
+      width: 200px;
+    }
+  
+    .test {
+      margin-left: 200px;
+      padding: 20px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .menu {
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
+  
+    .test {
+      margin-left: 0;
+      padding: 20px;
+    }
+  
+    .logo {
+      width: 80px;
+    }
+  }
+  

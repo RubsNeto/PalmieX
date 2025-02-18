@@ -1,0 +1,341 @@
+:root {
+  --main-color: #017a39;
+  --secondary-color: #01a44d;
+  --danger-color: #dc3545;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --hover-color: #019657;
+}
+
+/* Estilos globais de foco para inputs, selects e textareas */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.15);
+}
+
+/* Estilos básicos para inputs, textareas e selects para padronizar aparência */
+input[type="text"],
+textarea,
+select {
+  padding: 6px 8px;
+  border: 1px solid var(--main-color);
+  border-radius: 4px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: #fff;
+}
+
+/* Container principal */
+.ordem {
+  font-family: 'Poppins', sans-serif;
+  color: var(--main-color);
+  width: 98%;
+  max-width: 1300px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+/* Título da ordem de serviço */
+.OrdemServico {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--main-color);
+}
+
+
+/* Informações do Cliente */
+.ficha {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+}
+
+.linha1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.linha1 input[type="text"] {
+  min-width: 120px;
+}
+
+/* Estilização dos totais */
+.total {
+  margin-left: auto;
+  color: #000;
+  font-size: 30px;
+}
+.valorTotal {
+  font-size: 30px;
+  color: #28a745;
+}
+
+/* Área de Pedidos */
+.pedido-item {
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.linha-pedido {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  align-items: center;
+}
+
+.campo {
+  font-weight: 500;
+  min-width: 100px;
+  color: var(--main-color);
+}
+
+.numero {
+  white-space: nowrap;    /* Impede a quebra de linha */
+  overflow: hidden;       /* Esconde o conteúdo que ultrapassa o espaço */
+  text-align: center;     /* Centraliza o conteúdo */
+  display: inline-block;
+  width: 100%;
+  /* Defina um tamanho de fonte padrão (este valor será o ponto de partida) */
+  font-size: 0.9rem;
+  transition: font-size 0.2s ease;
+}
+
+
+
+/* Inputs e textarea dentro da área de pedidos já herdam o estilo global */
+.linha-pedido input[type="text"],
+.linha-pedido textarea {
+  flex: 1;
+}
+
+/* Textarea para observações */
+.obs {
+  resize: vertical;
+  min-height: 36px;
+  max-height: 95px;
+  margin-bottom: 1em;
+}
+
+/* Seção de pares e botões de adicionar/remover */
+.pares {
+  font-weight: 500;
+  color: #444;
+}
+
+.maisEmenos {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.maisEmenos button {
+  cursor: pointer;
+  padding: 12px 15px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 4px;
+  background-color: #28a745;
+  color: #fff;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.maisEmenos button:hover {
+  background-color: #218838;
+}
+
+.maisEmenos button:active {
+  transform: scale(0.95);
+}
+
+/* Container de quadradinhos (usado via JavaScript) */
+/* Container de quadradinhos usando CSS Grid */
+.containerQuadradinhos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0px, 1fr));
+  margin-top: 0.5rem;
+}
+
+/* Cada container de botão é quadrado */
+.botao-container {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilo para o botão dentro do container */
+.botao-container button {
+  width: 100%;
+  height: 100%;
+  background-color: var(--secondary-color);
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.botao-container button:hover {
+  background-color: var(--main-color);
+  transform: scale(1.05);
+}
+
+
+/* Lista de pedidos adicionados */
+.lista-pedidos {
+  margin-top: 1rem;
+}
+
+.managebuttons{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.botoesInferior {
+  display: flex;
+  gap: 1rem;
+}
+
+.botoesInferior button {
+  cursor: pointer;
+  font-weight: bold !important;
+  padding: 2px 16px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  color: #fff;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+/* Botões de comando */
+.botoesComando {
+  padding: 8px 10px;
+  display: flex;
+  gap: 1rem;
+}
+
+
+.botoesComando button {
+  cursor: pointer;
+  padding: 8px 16px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 4px;
+  color: #fff;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.clienteloja {
+  background-color: #28a745;
+}
+
+.clienteloja:hover {
+  background-color: #218838;
+}
+
+.clienteloja:active {
+  transform: scale(0.96);
+}
+
+.realizarPedidoSolado,
+.realizarPedidoBalancinho {
+  background-color: #28a745;
+}
+
+.realizarPedido{
+  background-color: #28a745;
+}
+.realizarPedido:hover,
+.realizarPedidoSolado:hover,
+.realizarPedidoBalancinho:hover{
+  background-color: #218838;
+}
+
+.realizarPedido:active {
+  transform: scale(0.96);
+}
+
+/* Grid para disposição em 3 colunas */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.grid-3 div {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Campo de observações expandido */
+.campoObs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Container para o select (por exemplo, na marca) */
+.divCor {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+
+.tamanhos-container {
+  display: flex;
+  flex-direction: row !important;
+  gap: 1rem;             /* Espaçamento entre os campos */
+  align-items: baseline;    /* Alinha verticalmente os itens */
+  flex-wrap: wrap;        /* Caso o espaço seja insuficiente, os itens quebram para a próxima linha */
+}
+
+.campo-tamanho {
+  flex: 1;                /* Cada campo ocupará igualmente o espaço disponível */
+  min-width: 150px;       /* Define uma largura mínima para evitar que fiquem muito estreitos */
+  box-sizing: border-box;
+}
+
+.campo-tamanho .campo {
+  display: block;         /* Garante que o label ocupe toda a largura do contêiner */
+}
+
+
+
+.tipo-servico-container {
+  display: flex;
+  flex-direction: row !important;
+  gap: 1rem;            /* Espaçamento entre os campos */
+  align-items: center;   /* Alinha verticalmente os itens */
+  flex-wrap: wrap;       /* Caso o espaço seja insuficiente, os itens quebram para a próxima linha */
+}
+
+.campo-tipo {
+  flex: 1;              /* Cada campo ocupará igualmente o espaço disponível */
+  min-width: 150px;     /* Largura mínima para evitar que fiquem muito estreitos */
+  box-sizing: border-box;
+}
+
+.campo-tipo .campo {
+  display: block;       /* Garante que o label ocupe toda a largura do contêiner */
+
+}
+
+.item-nome{
+  display: flex;
+  flex-direction: column;
+}
