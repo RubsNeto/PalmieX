@@ -345,7 +345,7 @@ def realizar_pedido(request):
             refPalmilha   = item.get('refPalmilha', '').strip()
             matPalmilha   = item.get('matPalmilha', '').strip()
             marca         = item.get('marca', '').strip()
-            tipoServico   = item.get('tipoServico', 'Costurado').strip()
+            tipoServico   = item.get('tipoServico', '').strip()
             cor           = item.get('cor', '').strip()
             cor_palmilha  = item.get('corPalmilha', '').strip()
             obs           = item.get('obs', '').strip()
