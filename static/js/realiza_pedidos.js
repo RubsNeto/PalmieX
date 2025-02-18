@@ -78,11 +78,6 @@ function handleBalancinhoChange(event) {
             // Localiza o .pedido-item mais próximo
             const pedidoItem = event.target.closest('.pedido-item');
             if (!pedidoItem) return;
-
-            const refBal = pedidoItem.querySelector('.refBalancinho');
-            if (refBal) {
-                refBal.value = data.codigo;  // Preenche a referência
-            }
         })
         .catch(err => {
             console.error('Erro ao buscar código do produto:', err);
@@ -209,9 +204,6 @@ function configureReferenceAutocomplete(input, datalistId, materialClass) {
 }
 
 function ativarAutocompleteEmTodasAsReferencias() {
-    document.querySelectorAll('.refBalancinho').forEach(input => {
-        configureReferenceAutocomplete(input, 'listaRefBalancinho', '.matBalancinho');
-    });
 
     document.querySelectorAll('.refPalmilha').forEach(input => {
         configureReferenceAutocomplete(input, 'listaRefPalmilha', '.matPalmilha');
@@ -241,8 +233,6 @@ function reorganizarTabindex() {
     const pedidos = document.querySelectorAll('.pedido-item');
     pedidos.forEach(pedido => {
         // Referência e Material
-        const refBalancinho = pedido.querySelector('.refBalancinho');
-        if (refBalancinho) refBalancinho.setAttribute('tabindex', proximoTabindex++);
 
         const matBalancinho = pedido.querySelector('.matBalancinho');
         if (matBalancinho) matBalancinho.setAttribute('tabindex', proximoTabindex++);
@@ -512,11 +502,6 @@ function adicionarEventosPedido(pedidoItem) {
             <div class="pedido-conteudo">
                 <div class="linha-pedido grid-3">
                     <div>
-                    <span class="campo">Referência Sintético</span>
-                    <input type="text" class="refBalancinho" required list="listaRefBalancinho">
-                    <datalist id="listaRefBalancinho"></datalist>
-                    </div>
-                    <div>
                     <span class="campo">Sintético</span>
                     <input type="text" class="matBalancinho" required list="listaBalancinho">
                     <datalist id="listaBalancinho"></datalist>
@@ -590,23 +575,6 @@ function adicionarEventosPedido(pedidoItem) {
         });
     }
 
-    const referenciaInput = pedidoItem.querySelector('.refBalancinho');
-    const materialInput = pedidoItem.querySelector('.matBalancinho');
-    if (referenciaInput && materialInput) {
-        referenciaInput.addEventListener('input', function() {
-            const referencia = this.value;
-            fetch(`/buscar-produto/?codigo=${encodeURIComponent(referencia)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.nome) {
-                        materialInput.value = data.nome;
-                    }
-                })
-                .catch(err => {
-                    console.error("Erro ao buscar material:", err);
-                });
-        });
-    }
 
     //Preenche automatico o material da palmilha
     const PalmilhareferenciaInput = pedidoItem.querySelector('.refPalmilha');
@@ -643,7 +611,6 @@ function coletarDadosPedidos(tipoPedido = 'ambos') {
     const pedidoItens = document.querySelectorAll('.pedido-item');
     pedidoItens.forEach(pedido => {
         // Coleta os valores dos campos para o Balancinho e Solado
-        let refBalancinho = pedido.querySelector('.refBalancinho')?.value.trim() || '';
         let matBalancinho = pedido.querySelector('.matBalancinho')?.value.trim() || '';
         let corBalancinho = pedido.querySelector('.cor')?.value.trim() || '';
 
@@ -667,7 +634,6 @@ function coletarDadosPedidos(tipoPedido = 'ambos') {
             corPalmilha = '';
         } else if (tipoPedido === 'solado') {
             // Pedido apenas para solado: limpa os dados do balancinho
-            refBalancinho = '';
             matBalancinho = '';
             corBalancinho = '';
         }
@@ -688,7 +654,6 @@ function coletarDadosPedidos(tipoPedido = 'ambos') {
 
         // Inclui a propriedade "marca" no item
         dados.itens.push({
-            refBalancinho,
             matBalancinho,
             cor: corBalancinho,
             refPalmilha,
@@ -755,19 +720,10 @@ function enviarPedido(url, dados) {
     // Validação de referências e materiais
     for (let i = 0; i < dados.itens.length; i++) {
         const item = dados.itens[i];
-        const refBalancinho = (item.refBalancinho || '').trim();
         const matBalancinho = (item.matBalancinho || '').trim();
         const refPalmilha   = (item.refPalmilha   || '').trim();
         const matPalmilha   = (item.matPalmilha   || '').trim();
-        
-        if (!refBalancinho && !refPalmilha) {
-            alert('Preencha pelo menos uma referência: Balancinho ou Palmilha.');
-            return;
-        }
-        if (refBalancinho && !matBalancinho) {
-            alert('Preencha o material para o Balancinho.');
-            return;
-        }
+    
         if (refPalmilha && !matPalmilha) {
             alert('Preencha o material para a Palmilha.');
             return;

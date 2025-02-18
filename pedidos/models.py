@@ -68,7 +68,6 @@ class PedidoItem(models.Model):
     tamanho = models.IntegerField(null=True, blank=True)  # Pode ser utilizado para o grid de tamanhos
 
     # Campos referentes ao Balancinho
-    ref_balancinho = models.CharField(max_length=50, null=True, blank=True)
     mat_balancinho = models.CharField(max_length=50, null=True, blank=True)
 
     # Campos referentes à Palmilha/Solado

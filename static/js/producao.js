@@ -112,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 cor: item.cor,
                 corPalmilha: item.corPalmilha,
                 obs: item.obs,
-                ref_balancinho: item.ref_balancinho,
                 espessura: item.espessura,
                 ref_palmilha: item.ref_palmilha,
                 mat_palmilha: item.mat_palmilha,
@@ -165,13 +164,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="produto-cabecalho">
                   <span class="item-nome">
                     <div>
-                      ${ (productionArea === 'balancinho' || productionArea === 'vendedor') 
-                          ? `<p><strong>Ref. Sintético:</strong> ${produto.ref_balancinho || ''}</p>`
-                          : ''
-                      }
                       
                       <p><strong>Ref. Solado/Palmilha:</strong> ${produto.ref_palmilha || '' }</p>
-                          
+                      ${
+                        (productionArea === 'balancinho' || productionArea === 'vendedor')
+                        ? `<div><p><strong>Espessura Palmilha:</strong> ${produto.espessura || '0'} mm</p></div>`
+                        : ''
+                      }
                     </div>
                     <div>
                       ${ (productionArea === 'balancinho' || productionArea === 'vendedor') 
@@ -194,6 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       }
                     </div>
                     
+                    <div>
                       ${
                         (productionArea === 'balancinho' || productionArea === 'vendedor')
                           ? `<div>
@@ -207,18 +207,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         ? `<div><p><strong>Marca:</strong> ${produto.marca || ''}</p></div>`
                         : ''
                     }
-
-                    ${
-                      (productionArea === 'balancinho')
-                        ? `<div><p><strong>Marca:</strong> ${produto.marca || ''}</p></div>`
-                        : ''
-                    }
-
-                    ${
-                      (productionArea === 'balancinho' || productionArea === 'vendedor')
-                      ? `<div><p><strong>Espessura Palmilha:</strong> ${produto.espessura || '0'} mm</p></div>`
-                      : ''
-                    }
+                    </div>
+                    
 
                   </span> 
                   <div class="obs">
