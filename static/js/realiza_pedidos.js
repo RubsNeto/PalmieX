@@ -254,7 +254,11 @@ function reorganizarTabindex() {
 
         const corPalmilha = pedido.querySelector('.corPalmilha');
         if (corPalmilha) corPalmilha.setAttribute('tabindex', proximoTabindex++);
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> dca682b6c54dd723c7a91e8a597d57912d692d99
         const selectTipoServico = pedido.querySelector('.selectTipoServico');
         if (selectTipoServico) selectTipoServico.setAttribute('tabindex', proximoTabindex++);
 
@@ -496,6 +500,7 @@ function adicionarEventosPedido(pedidoItem) {
             novoPedido.classList.add('pedido-item');
 
             novoPedido.innerHTML = `
+<<<<<<< HEAD
             <hr>
             <br>
             <br>
@@ -557,8 +562,74 @@ function adicionarEventosPedido(pedidoItem) {
                 <div class="maisEmenos">
                     <button type="button" class="adicionarPedido">+</button>
                     <button type="button" class="removerPedido">-</button>
+=======
+                <hr>
+                <br>
+                <br>
+                <div class="pedido-conteudo">
+                    <div class="linha-pedido grid-3">
+                <div>
+                <span class="campo">Sintético</span>
+                <input type="text" class="matBalancinho" required list="listaBalancinho">
+                <datalist id="listaBalancinho"></datalist>
                 </div>
+                <div>
+                <span class="campo">Cor Sintético</span>
+                <input type="text" class="cor">
                 </div>
+                
+                <div>
+                <span class="campo">Espessura Palmilha</span>
+                <input type="text" class="tamPalmilha" required 
+                        placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
+                        title="Digite apenas números para o tamanho em milímetros">
+                </div>
+                <div>
+                <span class="campo">Referência Solado</span>
+                <input type="text" class="refPalmilha" required list="listaRefPalmilha">
+                <datalist id="listaRefPalmilha"></datalist>
+                </div>
+                <div>
+                <span class="campo">Material Solado</span>
+                <input type="text" class="matPalmilha" required list="listaPalmilha">
+                <datalist id="listaPalmilha"></datalist>
+                </div>
+
+                <div class="divCor">
+                <span class="campo">Cor Solado</span>
+                <input type="text" class="corPalmilha">
+                </div>
+
+                
+                <div class="campo-tipo">
+                    <span class="campo">Tipo de Serviço</span>
+                    <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Ex. Costurado">
+>>>>>>> dca682b6c54dd723c7a91e8a597d57912d692d99
+                </div>
+                <div class="campo-tipo">
+                <span class="campo">Marca</span>
+                <select class="marca" name="marca">
+                    <option value="Fibra">Fibra</option>
+                    <option value="Seltex">Seltex</option>
+                    <option value="Induma">Induma</option>
+                </select>
+                </div>
+                
+                
+            </div>
+            
+            <div class="campoObs">
+            <span class="campo">Obs:</span>
+            <textarea class="obs"></textarea>
+            </div>
+            
+            <div class="linha-pedido">
+            <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
+            <div class="maisEmenos">
+                <button type="button" class="adicionarPedido">+</button>
+                <button type="button" class="removerPedido">-</button>
+            </div>
+            </div>
                 <div class="container containerQuadradinhos"></div>
             </div>`;
 

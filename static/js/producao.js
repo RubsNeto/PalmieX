@@ -208,8 +208,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         : ''
                     }
                     </div>
-                    
-
                   </span> 
                   <div class="obs">
                     ${produto.obs ? `<p><strong>Obs:</strong> ${produto.obs}</p>` : ''}
