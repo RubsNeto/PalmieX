@@ -288,7 +288,6 @@ def download_excel_report(request, vendedor_id):
                     data_str,                    # Data
                     pedido.status_balancinho,    # Status (substituído)
                     item.produto.nome,           # Sintético (nome do produto)
-                    item.ref_balancinho,         # Ref. Balancinho
                     item.cor,                    # Cor Balancinho
                     item.quantidade,             # Quantidade
                     item.tamanho,                # Tamanho
