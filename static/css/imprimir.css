@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: var(--font-family);
+    font-family: 'Courier New', Courier, monospace;
 }
 /* Estilo para o container pr/* CSS Completo e Moderno para o HTML principal "Ordem de Serviço" */
 
@@ -376,7 +376,7 @@ h5.pares {
 }
 
 /* Estilo dos botões */
-.botao , .adicionarPedido, .removerPedido, .adicionarInfantil{
+.adicionarPedido, .removerPedido, .adicionarInfantil{
     width: 49px;
     height: 49px;
     background-color: #4CAF50;
@@ -386,9 +386,7 @@ h5.pares {
     font-size: 18px;
 }
 
-.botao{
-    border: 1px solid #0a7b17;
-}
+
 
 .adicionarPedido:hover{
     background-color: #2c9e30;
@@ -426,10 +424,6 @@ h5.pares {
     font-weight: bold;
 }
 
-/* Estilo para quando o mouse passa por cima do botão */
-.botao:hover {
-    background-color: #45a049;
-}
 
 .botoesComando {
     position: fixed;              /* Mantém os botões fixos ao rolar */
@@ -495,9 +489,6 @@ h5.pares {
   
   .botao {
     width: 40px;
-    height: 40px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
     font-size: 0.9em;
     cursor: default;
   }

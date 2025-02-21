@@ -1,6 +1,9 @@
 {% load static %}
 
 {% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@900&family=Jersey+10&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/imprimir.css' %}">
 {% endblock extra_css %}
 
@@ -75,7 +78,7 @@
     <div class="container containerQuadradinhos">
       {% for tamanho in tamanhos %}
         <div class="botao-container">
-          <button class="botao">{{ tamanho }}</button>
+          <h1 class="botao">{{ tamanho }}</h1>
           <div class="numero" contenteditable="false">
             {% for item in grupo.list %}
               {% if item.tamanho == tamanho %}
