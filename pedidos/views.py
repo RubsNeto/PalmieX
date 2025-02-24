@@ -9,6 +9,10 @@ from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth.models import User
 from django.db.models.functions import Least
 from django.contrib.auth.hashers import check_password
+import tempfile
+import os
+from django.http import HttpResponse
+from django.utils.timezone import localtime
 from autenticacao.models import Perfil 
 from functools import wraps
 import datetime
@@ -33,6 +37,80 @@ def permission_required(min_level):
 
 def realiza_pedidos(request):
     return render(request, 'realiza_pedidos.html', {})
+
+
+
+@login_required
+def listar_impressoras(request):
+    try:
+        import win32print
+        printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL | win32print.PRINTER_ENUM_CONNECTIONS)
+        available_printers = [printer[2] for printer in printers]
+    except ImportError:
+        available_printers = []
+    return JsonResponse({'printers': available_printers})
+
+
+@login_required
+def imprimir_pedido_direto(request, pedido_id):
+    # Exemplo: se você quer que o usuário selecione a impressora,
+    # receba via parâmetro GET ?printer=...
+    printer = request.GET.get('printer', '').strip()
+
+    if not printer:
+        # Se não for informado, você pode ter um padrão
+        # ou retornar erro:
+        return HttpResponse("Nenhuma impressora foi selecionada.", status=400)
+
+    # Busca o pedido
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    # Monta o texto
+    conteudo_txt = f"""
+CLIENTE: {pedido.cliente}
+VENDEDOR: {pedido.vendedor.nome}
+CÓDIGO: {pedido.id}
+DATA: {localtime(pedido.data).strftime('%H:%M - %d/%m/%Y')}
+TOTAL GERAL: {sum(item.quantidade for item in pedido.itens.all())}
+
+--------------------------------------
+PRODUTOS:
+--------------------------------------
+"""
+
+    for item in pedido.itens.all():
+        conteudo_txt += f"""
+REFERÊNCIA: {item.ref_palmilha or ""}
+SOLADO: {item.mat_palmilha or ""}
+SINTÉTICO: {item.mat_balancinho or ""}
+SERVIÇO: {item.tipo_servico or "NENHUM"}
+MARCA: {item.marca or ""}
+COR SINTÉTICO: {item.cor or ""}
+COR SOLADO: {item.cor_palmilha or ""}
+ESPESSURA: {item.espessura or "0"} MM
+QUANTIDADE: {item.quantidade}
+
+--------------------------------------
+"""
+
+    # Cria um arquivo temporário
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".txt", mode="w", encoding="utf-8") as temp_file:
+        temp_file.write(conteudo_txt)
+        temp_file_path = temp_file.name
+
+    try:
+        # Envia para a impressora no Windows
+        os.system(f'COPY "{temp_file_path}" "{printer}"')
+        message = "Impressão enviada com sucesso!"
+    except Exception as e:
+        message = f"Erro ao imprimir: {str(e)}"
+    finally:
+        # Exclui o arquivo temporário
+        os.remove(temp_file_path)
+
+    # Retorna apenas uma resposta de sucesso ou erro (não exibe o TXT)
+    return HttpResponse(message)
+
 
 def autocomplete_produto(request):
     """

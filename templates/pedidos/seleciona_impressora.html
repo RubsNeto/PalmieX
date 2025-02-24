@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Selecione a Impressora</title>
+</head>
+<body>
+    <h1>Selecione a Impressora para Imprimir o Pedido</h1>
+    <form action="{% url 'pedidos:imprimir_pedido_direto' pedido_id %}" method="get" target="_blank">
+        <label for="printer">Impressora:</label>
+        <select id="printer" name="printer" required>
+            {% for printer in available_printers %}
+                <option value="{{ printer }}">{{ printer }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Imprimir Pedido (Texto)</button>
+    </form>
+</body>
+</html>
