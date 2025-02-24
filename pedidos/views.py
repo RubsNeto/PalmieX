@@ -38,17 +38,63 @@ def permission_required(min_level):
 def realiza_pedidos(request):
     return render(request, 'realiza_pedidos.html', {})
 
+def imprimir_pedido_txt(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    
+    conteudo_txt = f"""
+CLIENTE: {pedido.cliente}
+VENDEDOR: {pedido.vendedor.nome}
+CÓDIGO: {pedido.id}
+DATA: {localtime(pedido.data).strftime('%H:%M - %d/%m/%Y')}
+TOTAL GERAL: {sum(item.quantidade for item in pedido.itens.all())}
 
+--------------------------------------
+PRODUTOS:
+--------------------------------------
+"""
+    for item in pedido.itens.all():
+        conteudo_txt += f"""
+REFERÊNCIA: {item.ref_palmilha or ""}
+SOLADO: {item.mat_palmilha or ""}
+SINTÉTICO: {item.mat_balancinho or ""}
+SERVIÇO: {item.tipo_servico or "NENHUM"}
+MARCA: {item.marca or ""}
+COR SINTÉTICO: {item.cor or ""}
+COR SOLADO: {item.cor_palmilha or ""}
+ESPESSURA: {item.espessura or "0"} MM
+QUANTIDADE: {item.quantidade}
 
-@login_required
-def listar_impressoras(request):
-    try:
-        import win32print
-        printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL | win32print.PRINTER_ENUM_CONNECTIONS)
-        available_printers = [printer[2] for printer in printers]
-    except ImportError:
-        available_printers = []
-    return JsonResponse({'printers': available_printers})
+--------------------------------------
+"""
+    # Cria uma página HTML que envolve o conteúdo em um <pre>
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <title>Impressão do Pedido {pedido.id}</title>
+        <style>
+            body {{
+                font-family: "Courier New", monospace;
+                font-size: 10pt;
+                margin: 1cm;
+            }}
+            pre {{
+                white-space: pre-wrap;
+            }}
+        </style>
+        <script>
+            window.onload = function() {{
+                window.print();
+            }};
+        </script>
+    </head>
+    <body>
+        <pre>{conteudo_txt}</pre>
+    </body>
+    </html>
+    """
+    return HttpResponse(html_content)
 
 
 @login_required

@@ -114,11 +114,9 @@
                 <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}"  data-area="{{ production_area }}" title="Cancelar">
                   <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
                 </button>
-
-                <!-- Botão de impressão (dentro da linha do pedido) -->
-              <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
-                <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
-              </button>
+                <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}"  data-area="{{ production_area }}" title="Imprimir">
+                  <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
+                </button>
                 <button type="button" class="alterar-status PedidoConcluido" data-pedido-id="{{ pedido.id }}"  data-area="{{ production_area }}" data-novo-status="Pedido Finalizado" title="Concluído">
                   <img class="concluido" src="{% static 'img/concluido.svg' %}" alt="Concluído">
                 </button>
@@ -126,18 +124,8 @@
               {% endif %}
             </tr>
           {% endfor %}
-
-          <!-- Modal para seleção da impressora -->
-          <div id="modalImpressora" class="modal" style="display: none;">
-            <div class="modal-content">
-              <span class="close-button" id="closeImpressoraModal">&times;</span>
-              <h2>Selecione a Impressora</h2>
-              <select id="printerSelect"></select>
-              <button type="button" id="confirmarImpressaoBtn">Confirmar Impressão</button>
-            </div>
-          </div>
         </tbody>
-      </table>  
+      </table>
 
       <!-- Paginação -->
       <div class="pagination">
@@ -211,9 +199,5 @@
   {% endblock content %}
 
   {% block extra_js %}
-  <script>
-    // Variável global com a URL resolvida
-    var listarImpressorasUrl = "{% url 'pedidos:listar_impressoras' %}";
-  </script>
     <script src="{% static 'js/producao.js' %}"></script>
   {% endblock extra_js %}

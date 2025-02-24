@@ -24,6 +24,7 @@ urlpatterns = [
     path('autocomplete-referencia/', views.autocomplete_referencia, name='autocomplete_referencia'),
     path('buscar-material-por-referencia/', views.buscar_material_por_referencia, name='buscar_material_por_referencia'),
     path("imprimir_direto/<int:pedido_id>/", views.imprimir_pedido_direto, name="imprimir_pedido_direto"),
-    path('listar-impressoras/', views.listar_impressoras, name='listar_impressoras'),
+    path('imprimir_txt/<int:pedido_id>/', views.imprimir_pedido_txt, name='imprimir_pedido_txt'),
+
 ]
 
