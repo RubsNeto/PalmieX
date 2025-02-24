@@ -1,31 +1,34 @@
 {% load static %}
 
 {% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DOTO:wght@900&family=JERSEY+10&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/imprimir.css' %}">
 {% endblock extra_css %}
 
 {% block content %}
 <div class="pedido-imprimir">
-  <h1>Cliente: {{ pedido.cliente }}</h1>
+  <h1>CLIENTE : {{ pedido.cliente }}</h1>
   <div class="detalhes-pedido">
-    <p><strong>Vendedor:</strong> {{ pedido.vendedor.nome }}</p>
-    <p><strong>Código:</strong> {{ pedido.id }}</p>
-    <p><strong>Data:</strong> {{ pedido.data|date:"H:i - d/m/Y" }}</p>
-    <p><strong>Loja:</strong> {{ pedido.vendedor.loja }}</p>
-    <p><strong>Total Geral:</strong> <span id="total-geral">0</span></p>
+    <p><strong>VENDEDOR :</strong> {{ pedido.vendedor.nome }}</p>
+    <p><strong>CODIGO :</strong> {{ pedido.id }}</p>
+    <p><strong>DATA :</strong> {{ pedido.data|date:"H:I - D/M/Y" }}</p>
+    <p><strong>LOJA :</strong> {{ pedido.vendedor.loja }}</p>
+    <p><strong>TOTAL GERAL :</strong> <span id="total-geral">0</span></p>
   </div>
 
   <hr>
-
-  {# Agrupa os itens por produto; se preferir, adapte conforme a sua lógica de agrupamento #}
+  
+  {# AGRUPA OS ITENS POR PRODUTO; SE PREFERIR, ADAPTE CONFORME A SUA LÓGICA DE AGRUPAMENTO #}
   {% regroup pedido.itens.all by produto as itens_por_produto %}
-{% for grupo in itens_por_produto %}
+  {% for grupo in itens_por_produto %}
   <div class="pedido-item">
     <div class="produto-cabecalho">
       <span class="item-nome">
         <div>
           {% if production_area == "solado" or production_area == "vendedor" %}
-            <p><strong>Ref. Solado:</strong> {{ grupo.list.0.ref_palmilha|default:"" }}</p>
+          <p><strong>SOLADO:</strong> {{ grupo.list.0.mat_palmilha|default:"" }}</p>
           {% endif %}
           {% if production_area == "solado" or production_area == "vendedor" %}
             <p><strong>Solado:</strong> {{ grupo.list.0.mat_palmilha|default:"" }}</p>
@@ -40,10 +43,12 @@
             <p><strong>Cor Solado:</strong> {{ grupo.list.0.cor_palmilha|default:"" }}</p>
           {% endif %}
         </div>
-
+        
         <div>
           {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <p><strong>Cor Sintético:</strong> {{ grupo.list.0.cor|default:"" }}</p>
+            <div>
+              <p><strong>SERVICO:</strong> {{ grupo.list.0.tipo_servico|default:"NENHUM" }}</p>
+            </div>
           {% endif %}
         </div>
 
@@ -51,28 +56,34 @@
           <div>
             <p><strong>Serviço:</strong> {{ grupo.list.0.tipo_servico|default:"Nenhum" }}</p>
           </div>
+        <div>
+        {% if production_area == "balancinho" or production_area == "vendedor" %}
+          <p><strong>COR SINTETICO:</strong> {{ grupo.list.0.cor|default:"" }}</p>
         {% endif %}
 
         {% if production_area == "solado" or production_area == "vendedor" %}
-          <div><p><strong>Marca:</strong> {{ grupo.list.0.marca|default:"" }}</p></div>
+          <p><strong>COR SOLADO:</strong> {{ grupo.list.0.cor_palmilha|default:"" }}</p>
         {% endif %}
 
         {% if production_area == "balancinho" or production_area == "vendedor" %}
-          <div><p><strong>Espessura Palmilha:</strong> {{ grupo.list.0.espessura|default:"0" }} mm</p></div>
+          <div><p><strong>ESPESSURA:</strong> {{ grupo.list.0.espessura|default:"0" }} MM</p></div>
         {% endif %}
-      </span>
+        </div>
+        <div>
+        </div>
+        </span>
       <span class="item-nome">
         {% if grupo.list.0.obs %}
-          <p><strong>Obs:</strong> {{ grupo.list.0.obs }}</p>
+          <p><strong>OBS:</strong> {{ grupo.list.0.obs }}</p>
         {% endif %}
       </span>
     </div>
 
-    <!-- Grid de tamanhos e quantidades -->
+    <!-- GRID DE TAMANHOS E QUANTIDADES -->
     <div class="container containerQuadradinhos">
       {% for tamanho in tamanhos %}
         <div class="botao-container">
-          <button class="botao">{{ tamanho }}</button>
+          <h1 class="botao">{{ tamanho }}</h1>
           <div class="numero" contenteditable="false">
             {% for item in grupo.list %}
               {% if item.tamanho == tamanho %}
@@ -90,6 +101,8 @@
 </div>
 
 <script>
+
+  
   document.addEventListener("DOMContentLoaded", function() {
     let globalTotal = 0;
     document.querySelectorAll(".pedido-item").forEach(function(item) {
@@ -104,7 +117,7 @@
       totalElem.className = "material-total";
       totalElem.style.marginTop = "0.5em";
       totalElem.style.fontWeight = "bold";
-      totalElem.textContent = "Total deste material: " + materialTotal;
+      totalElem.textContent = "TOTAL DESTE MATERIAL : " + materialTotal;
       item.appendChild(totalElem);
     });
     document.getElementById("total-geral").textContent = globalTotal;

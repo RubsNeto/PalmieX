@@ -42,6 +42,118 @@ document.addEventListener('DOMContentLoaded', function() {
       return '#333';
     }
   }
+//############### impressão #####################33
+  const printButtons = document.querySelectorAll(".imprimir-pedido");
+  const modalImpressora = document.getElementById("modalImpressora");
+  const closeImpressoraBtn = document.getElementById("closeImpressoraModal");
+  const confirmImpressaoBtn = document.getElementById("confirmarImpressaoBtn");
+  const printerSelect = document.getElementById("printerSelect");
+  let currentPedidoId = null;
+
+  // Ao clicar no botão de impressão, abre o modal e busca as impressoras disponíveis
+  printButtons.forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      currentPedidoId = btn.getAttribute("data-pedido-id");
+      modalImpressora.style.display = "block";
+      // Busca via AJAX a lista de impressoras disponíveis, incluindo credenciais
+      fetch(listarImpressorasUrl, {
+        credentials: 'same-origin',
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+          }
+          return response.text();
+        })
+        .then(text => {
+          try {
+            const data = JSON.parse(text);
+            printerSelect.innerHTML = "";
+            if (data.printers && data.printers.length > 0) {
+              data.printers.forEach(printer => {
+                const option = document.createElement("option");
+                option.value = printer;
+                option.textContent = printer;
+                printerSelect.appendChild(option);
+              });
+            } else {
+              const option = document.createElement("option");
+              option.value = "";
+              option.textContent = "Nenhuma impressora encontrada";
+              printerSelect.appendChild(option);
+            }
+          } catch (e) {
+            console.error("Erro ao parse JSON:", e, text);
+            alert("Erro ao buscar impressoras: " + e.message);
+          }
+        })
+        .catch(error => {
+          alert("Erro ao buscar impressoras: " + error);
+        });
+      
+      
+    });
+  });
+
+  // Fecha o modal ao clicar no botão de fechar
+  closeImpressoraBtn.addEventListener("click", function() {
+    modalImpressora.style.display = "none";
+  });
+
+  // Ao confirmar, envia a requisição para a impressão
+  confirmImpressaoBtn.addEventListener("click", function() {
+    const selectedPrinter = printerSelect.value;
+    if (currentPedidoId && selectedPrinter) {
+      fetch(`/pedidos/imprimir_direto/${currentPedidoId}/?printer=${encodeURIComponent(selectedPrinter)}`, { credentials: 'same-origin' })
+        .then(response => response.text())
+        .then(data => {
+          alert(data);
+          modalImpressora.style.display = "none";
+        })
+        .catch(error => {
+          alert("Erro ao imprimir: " + error);
+          modalImpressora.style.display = "none";
+        });
+    } else {
+      alert("Selecione uma impressora.");
+    }
+  });
+
+  // Fecha o modal se clicar fora do conteúdo (opcional)
+  window.addEventListener("click", function(event) {
+    if (event.target === modalImpressora) {
+      modalImpressora.style.display = "none";
+    }
+  });
+  
+  // Ao confirmar, envia a requisição para a impressão
+  confirmImpressaoBtn.addEventListener("click", function() {
+    const selectedPrinter = printerSelect.value;
+    if (currentPedidoId && selectedPrinter) {
+      fetch(`/pedidos/imprimir_direto/${currentPedidoId}/?printer=${encodeURIComponent(selectedPrinter)}`)
+        .then(response => response.text())
+        .then(data => {
+          alert(data);
+          modalImpressora.style.display = "none";
+        })
+        .catch(error => {
+          alert("Erro ao imprimir: " + error);
+          modalImpressora.style.display = "none";
+        });
+    } else {
+      alert("Selecione uma impressora.");
+    }
+  });
+  
+  // Fecha o modal se clicar fora do conteúdo (opcional)
+  window.addEventListener("click", function(event) {
+    if (event.target === modalImpressora) {
+      modalImpressora.style.display = "none";
+    }
+  });
 
   // Atualiza as cores dos status já presentes no DOM
   function atualizarCoresStatus() {

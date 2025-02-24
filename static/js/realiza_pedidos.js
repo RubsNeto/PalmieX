@@ -757,7 +757,6 @@ function enviarPedido(url, dados) {
     });   
 }
 
-
 /**
  * Ao carregar a página
  */
@@ -846,6 +845,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    reorganizarTabindex();
+    reorganizarTabindex(); 
     atualizarTotalGlobal();
 });
