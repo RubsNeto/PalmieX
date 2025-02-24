@@ -101,7 +101,7 @@ function handlePalmilhaChange(event) {
 
             const refPalm = pedidoItem.querySelector('.refPalmilha');
             if (refPalm) {
-                refPalm.value = data.codigo;
+                refPalm.value = data.codigo; 
             }
         })
         .catch(err => {
@@ -143,12 +143,12 @@ function ativarReferenciaAutomatica() {
     function adjustFontSize(element, defaultFontSize = "1rem") {
         // Resetar o tamanho da fonte para o valor padrão
         element.style.fontSize = defaultFontSize;
-
+        
         // Obtém a largura disponível do elemento
         const containerWidth = element.clientWidth;
         // Pega o tamanho atual da fonte em pixels
         let currentFontSize = parseInt(window.getComputedStyle(element).fontSize, 10);
-
+    
         // Enquanto o conteúdo (scrollWidth) for maior que a largura do elemento
         // e o tamanho da fonte for maior que um valor mínimo (por exemplo, 10px)
         while (element.scrollWidth > containerWidth && currentFontSize > 10) {
@@ -156,7 +156,7 @@ function ativarReferenciaAutomatica() {
         element.style.fontSize = currentFontSize + "px";
         }
     }
-
+  
 
 // **************************
 // 1. Função de autocomplete para REFERÊNCIA
@@ -254,17 +254,13 @@ function reorganizarTabindex() {
 
         const corPalmilha = pedido.querySelector('.corPalmilha');
         if (corPalmilha) corPalmilha.setAttribute('tabindex', proximoTabindex++);
-<<<<<<< HEAD
-
-=======
         
->>>>>>> dca682b6c54dd723c7a91e8a597d57912d692d99
         const selectTipoServico = pedido.querySelector('.selectTipoServico');
         if (selectTipoServico) selectTipoServico.setAttribute('tabindex', proximoTabindex++);
-
+        
         const marca = pedido.querySelector('.marca');
         if (marca) marca.setAttribute('tabindex', proximoTabindex++);
-
+        
 
         const obs = pedido.querySelector('.obs');
         if (obs) obs.setAttribute('tabindex', proximoTabindex++);
@@ -296,7 +292,7 @@ function reorganizarTabindex() {
 function reconstruirBotoes(pedidoItem) {
     const containerQuadradinhos = pedidoItem.querySelector('.containerQuadradinhos');
     if (!containerQuadradinhos) return;
-
+    
     // Limpa tudo
     containerQuadradinhos.innerHTML = '';
 
@@ -317,7 +313,7 @@ function reconstruirBotoes(pedidoItem) {
  * Atualiza o total de pares de UM pedido
  */
 function atualizarParesPedido(pedidoItem) {
-    const numeros = pedidoItem.querySelectorAll('.numero');
+    const numeros = pedidoItem.querySelectorAll('.numero'); 
     let soma = 0;
     numeros.forEach(num => {
         const valor = parseInt(num.textContent.trim(), 10) || 0;
@@ -500,69 +496,6 @@ function adicionarEventosPedido(pedidoItem) {
             novoPedido.classList.add('pedido-item');
 
             novoPedido.innerHTML = `
-<<<<<<< HEAD
-            <hr>
-            <br>
-            <br>
-            <div class="pedido-conteudo">
-                <div class="linha-pedido grid-3">
-                    <div>
-                    <span class="campo">Sintético</span>
-                    <input type="text" class="matBalancinho" required list="listaBalancinho">
-                    <datalist id="listaBalancinho"></datalist>
-                    </div>
-                    <div>
-                    <span class="campo">Cor Sintético</span>
-                    <input type="text" class="cor">
-                    </div>
-
-                    <div>
-                    <span class="campo">Referência Solado</span>
-                    <input type="text" class="refPalmilha" required list="listaRefPalmilha">
-                    <datalist id="listaRefPalmilha"></datalist>
-                    </div>
-                    <div>
-                    <span class="campo">Material Solado</span>
-                    <input type="text" class="matPalmilha" required list="listaPalmilha">
-                    <datalist id="listaPalmilha"></datalist>
-                    </div>
-
-                    <div class="divCor">
-                    <span class="campo">Cor Solado</span>
-                    <input type="text" class="corPalmilha">
-                    </div>
-
-                    <div>
-                    <span class="campo">Espessura Palmilha</span>
-                    <input type="text" class="tamPalmilha" required
-                            placeholder="mm" inputmode="numeric" pattern="[0-9]*"
-                            title="Digite apenas números para o tamanho em milímetros">
-                    </div>
-
-                    <div class="campo-tipo">
-                        <span class="campo">Tipo de Serviço</span>
-                        <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Ex. Costurado" value="Costurado">
-                    </div>
-                    <div class="campo-tipo">
-                        <span class="campo">Marca</span>
-                        <select class="marca" name="marca">
-                        <option value="Fibra">Fibra</option>
-                        <option value="Seltex">Seltex</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="campoObs">
-                <span class="campo">Obs:</span>
-                <textarea class="obs"></textarea>
-                </div>
-
-                <div class="linha-pedido">
-                <h5 class="pares">Pares: <b class="paresValor">0</b></h5>
-                <div class="maisEmenos">
-                    <button type="button" class="adicionarPedido">+</button>
-                    <button type="button" class="removerPedido">-</button>
-=======
                 <hr>
                 <br>
                 <br>
@@ -604,7 +537,6 @@ function adicionarEventosPedido(pedidoItem) {
                 <div class="campo-tipo">
                     <span class="campo">Tipo de Serviço</span>
                     <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Ex. Costurado">
->>>>>>> dca682b6c54dd723c7a91e8a597d57912d692d99
                 </div>
                 <div class="campo-tipo">
                 <span class="campo">Marca</span>
@@ -688,7 +620,7 @@ function coletarDadosPedidos(tipoPedido = 'ambos') {
         let refPalmilha = pedido.querySelector('.refPalmilha')?.value.trim() || '';
         let matPalmilha = pedido.querySelector('.matPalmilha')?.value.trim() || '';
         let corPalmilha = pedido.querySelector('.corPalmilha')?.value.trim() || '';
-
+        
         let espessura = pedido.querySelector('.tamPalmilha')?.value.trim() || '';
         let obs = pedido.querySelector('.obs')?.value.trim() || '';
 
@@ -763,7 +695,7 @@ function getCookie(name) {
  */
 function enviarPedido(url, dados) {
     const csrftoken = getCookie('csrftoken');
-
+    
     // Validações básicas
     if (!dados.cliente.trim()) {
         alert('Por favor, preencha o campo "Cliente".');
@@ -777,7 +709,7 @@ function enviarPedido(url, dados) {
         alert('Por favor, adicione pelo menos um item ao pedido.');
         return;
     }
-
+    
     // Validação de cada item: verifica se há quantidade informada
     for (let i = 0; i < dados.itens.length; i++) {
         const item = dados.itens[i];
@@ -787,25 +719,25 @@ function enviarPedido(url, dados) {
             return;
         }
     }
-
+    
     // Validação de referências e materiais
     for (let i = 0; i < dados.itens.length; i++) {
         const item = dados.itens[i];
         const matBalancinho = (item.matBalancinho || '').trim();
         const refPalmilha   = (item.refPalmilha   || '').trim();
         const matPalmilha   = (item.matPalmilha   || '').trim();
-
+    
         if (refPalmilha && !matPalmilha) {
             alert('Preencha o material para a Palmilha.');
             return;
         }
     }
-
+    
     fetch(url, {
         method: 'POST',
-        headers: {
+        headers: { 
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
+            'X-CSRFToken': csrftoken    
         },
         body: JSON.stringify(dados)
     })
@@ -822,7 +754,7 @@ function enviarPedido(url, dados) {
     .catch(err => {
         console.error(err);
         alert(err.erro || 'Ocorreu um erro ao realizar o pedido.');
-    });
+    });   
 }
 
 
@@ -833,7 +765,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const ordem = document.querySelector('.ordem');
     ordem.style.animationDelay = '0.1s'; // Adiciona um pequeno atraso na animação
-
+  
     const buttons = document.querySelectorAll('.botoesComando button');
     buttons.forEach((button, index) => {
       button.style.animationDelay = `${0.5 + index * 0.1}s`; // Delay progressivo nos botões

@@ -39,13 +39,13 @@ def permission_required(min_level):
 @permission_required(1)
 def lista_vendedores(request):
     vendedores_list = Vendedor.objects.all().order_by('codigo')
-    
+
     # Recupera o número da página atual (caso não exista, assume 1)
     page = request.GET.get('page', 1)
-    
+
     # Define quantos itens por página (por exemplo, 10)
     paginator = Paginator(vendedores_list, 10)
-    
+
     try:
         vendedores = paginator.page(page)
     except PageNotAnInteger:
@@ -187,7 +187,7 @@ def download_excel_report(request, vendedor_id):
     headers = [
         'Pedido ID', 'Cliente', 'Data', 'Status',
         'Sintético', 'Ref. Balancinho', 'Cor Balancinho',
-        'Quantidade', 'Tamanho', 'Tipo serviço', 
+        'Quantidade', 'Tamanho', 'Tipo serviço',
         'Ref. Palmilha', 'Palmilha',  'Cor Solado',
         'Marca', 'MM Palmilha', 'Espessura Solado',
         'AutorizadoPor', 'Motivo Cancelamento', 'Obs'
@@ -278,7 +278,7 @@ def download_excel_report(request, vendedor_id):
                 # Construindo a linha com 19 colunas conforme os headers:
                 # ['Pedido ID', 'Cliente', 'Data', 'Status',
                 #  'Sintético', 'Ref. Balancinho', 'Cor Balancinho',
-                #  'Quantidade', 'Tamanho', 'Tipo serviço', 
+                #  'Quantidade', 'Tamanho', 'Tipo serviço',
                 #  'Ref. Palmilha', 'Palmilha',  'Cor Solado',
                 #  'Marca', 'MM Palmilha', 'Espessura Solado',
                 #  'AutorizadoPor', 'Motivo Cancelamento', 'Obs']
@@ -288,7 +288,6 @@ def download_excel_report(request, vendedor_id):
                     data_str,                    # Data
                     pedido.status_balancinho,    # Status (substituído)
                     item.produto.nome,           # Sintético (nome do produto)
-                    item.ref_balancinho,         # Ref. Balancinho
                     item.cor,                    # Cor Balancinho
                     item.quantidade,             # Quantidade
                     item.tamanho,                # Tamanho
