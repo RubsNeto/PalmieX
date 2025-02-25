@@ -14,9 +14,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-&jb@@!1-($a0+kr*85u84+c#_mr+(uhj=cwac6lgybswb(hn%v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*']
+
 
 # palmiex/settings.py
 # palmiex/settings.py
@@ -58,7 +59,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # Diretório global de templates. Ajuste o caminho se necessário.
-        # Por exemplo, se você tiver "palmiex/templates", 
+        # Por exemplo, se você tiver "palmiex/templates",
         # certifique-se que o diretório existe.
         'DIRS': [BASE_DIR / 'templates'],
         # Se não quiser que o Django procure templates dentro dos apps,

@@ -14,7 +14,7 @@
 <div class="ordem">
     <!-- Seção de Informações do Cliente -->
     <div class="ficha">
-        <h4 class="OrdemServico">Ordem de serviço</h4>    
+        <h4 class="OrdemServico">Ordem de serviço</h4>
         <div class="linha1">
             <span>Cliente:</span>
             <input type="text" class="cliente">
@@ -47,15 +47,15 @@
               <span class="campo">Cor Sintético</span>
               <input type="text" class="cor">
             </div>
-            
+
             <div>
               <span class="campo">Espessura Palmilha</span>
-              <input type="text" class="tamPalmilha" required 
-                     placeholder="mm" inputmode="numeric" pattern="[0-9]*" 
+              <input type="text" class="tamPalmilha" required
+                     placeholder="mm" inputmode="numeric" pattern="[0-9]*"
                      title="Digite apenas números para o tamanho em milímetros">
             </div>
             <div>
-              <span class="campo">Referência Solado</span>
+              <span class="campo">Referência Solado/Palmilha</span>
               <input type="text" class="refPalmilha" required list="listaRefPalmilha">
               <datalist id="listaRefPalmilha"></datalist>
             </div>
@@ -70,7 +70,7 @@
               <input type="text" class="corPalmilha">
             </div>
 
-            
+
             <div class="campo-tipo">
                 <span class="campo">Tipo de Serviço</span>
                 <input type="text" name="tipoServico" class="selectTipoServico" placeholder="Ex. Costurado">
@@ -83,17 +83,17 @@
                 <option value="Induma">Induma</option>
               </select>
             </div>
-              
-            
+
+
         </div>
-        
+
         <div class="campoObs">
           <span class="campo">Obs:</span>
           <textarea class="obs"></textarea>
         </div>
-        
+
         <div class="linha-pedido">
-          <h5 class="pares">Pares: <b class="paresValor">0</b></h5> 
+          <h5 class="pares">Pares: <b class="paresValor">0</b></h5>
           <div class="maisEmenos">
             <button type="button" class="adicionarPedido">+</button>
             <button type="button" class="removerPedido">-</button>
@@ -101,7 +101,7 @@
         </div>
         <div class="container containerQuadradinhos"></div>
     </div>
-      
+
     <!-- Novos Pedidos (adicionados via JavaScript) -->
     <div class="lista-pedidos"></div>
 
@@ -111,7 +111,7 @@
         <button type="button" class="realizarPedidoBalancinho" id="realizarPedidoBalancinho">Pedido Palmilha</button>
         <button type="button" class="realizarPedidoSolado" id="realizarPedidoSolado">Pedido Solado</button>
         <button type="button" class="clienteloja" id="realizarPedidoUrgente">Cliente em loja</button>
-      </div>  
+      </div>
 
       <div class="botoesInferior">
         <button type="button" class="realizarPedido" id="realizarPedido">Realizar pedido</button>
