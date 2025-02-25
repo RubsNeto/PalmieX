@@ -22,7 +22,7 @@
 }
 
 p{
-  font-size:2.5em;
+  font-size:1.5em;
 }
 
 /* Estilo para a seção de detalhes do pedido */
@@ -30,6 +30,7 @@ p{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-top: 1.5em;
   margin-bottom: 1.5em;
 }
 
@@ -119,7 +120,7 @@ p{
 
 /* Estilo genérico para spans */
 span {
-  font-size: 2.0em;
+  font-size: 1em;
 }
 
 /* Estilos aplicados apenas na impressão */
