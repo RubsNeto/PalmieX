@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'Unifont';
-  src: url('/static/fonts/Unifont.ttf') format('truetype');
+  font-family: 'DOTMATRI';
+  src: url('/static/fonts/DOTMATRI.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -12,6 +12,8 @@
   box-sizing: border-box;
   font-family: 'DOTMATRI';
 }
+
+
 
 /* Define a página para impressão */
 @page {
@@ -76,7 +78,6 @@ p{
 .pedido-imprimir {
   width: 100%;
   box-sizing: border-box;
-  padding: 1em;
 }
 
 /* Container genérico */
@@ -92,7 +93,7 @@ p{
 .containerQuadradinhos {
   display: flex;
   flex-wrap: nowrap;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   gap: 0.5em; /* Espaço entre os grupos */
 }
 
@@ -122,23 +123,11 @@ span {
   font-size: 1em;
 }
 
-button {
-  all: unset; /* Remove todos os estilos padrão do botão */
-  display: inline-block; /* Mantém a funcionalidade inline */
-  cursor: pointer; /* Mantém o cursor de clique */
-}
-
-
 /* Estilos aplicados apenas na impressão */
 @media print {
   @page {
     size: A4 landscape;
     margin: 1cm;
   }
-  button {
-  all: unset; /* Remove todos os estilos padrão do botão */
-  display: inline-block; /* Mantém a funcionalidade inline */
-  cursor: pointer; /* Mantém o cursor de clique */
-}
-
+  
 }
