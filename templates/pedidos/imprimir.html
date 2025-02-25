@@ -26,18 +26,23 @@
   <div class="pedido-item">
     <div class="produto-cabecalho">
       <span class="item-nome">
-        <div>
-          {% if production_area == "solado" or production_area == "vendedor" %}
-          <p><strong>REFERENCIA:</strong> {{ grupo.list.0.ref_palmilha|default:"" }}</p>
-          {% endif %}
-          
-          {% if production_area == "balancinho" or production_area == "vendedor" %}
-          <p><strong>SINTETICO:</strong> {{ grupo.list.0.mat_balancinho|default:"" }}</p>
-          {% endif %}
-          
-          {% if production_area == "solado" or production_area == "vendedor" %}
-          <p><strong>SOLADO:</strong> {{ grupo.list.0.mat_palmilha|default:"" }}</p>
-          {% endif %}
+        <div class= "primeiro">
+        {% if production_area == "balancinho" or production_area == "vendedor" %}
+        <p><strong>SINTETICO:</strong> {{ grupo.list.0.mat_balancinho|default:"" }}</p>
+        {% endif %}
+      </div>
+      <div>
+        {% if production_area == "solado" or production_area == "vendedor" %}
+        <p><strong>REFERENCIA:</strong> {{ grupo.list.0.ref_palmilha|default:"" }}</p>
+        {% endif %}
+        
+        
+        {% if production_area == "solado" or production_area == "vendedor" %}
+        <p><strong>SOLADO:</strong> {{ grupo.list.0.mat_palmilha|default:"" }}</p>
+        {% endif %}
+        {% if production_area == "balancinho" or production_area == "vendedor" %}
+          <div><p><strong>ESPESSURA:</strong> {{ grupo.list.0.espessura|default:"0" }} MM</p></div>
+        {% endif %}
         </div>
         
         <div>
@@ -59,9 +64,6 @@
           <p><strong>COR SOLADO:</strong> {{ grupo.list.0.cor_palmilha|default:"" }}</p>
         {% endif %}
 
-        {% if production_area == "balancinho" or production_area == "vendedor" %}
-          <div><p><strong>ESPESSURA:</strong> {{ grupo.list.0.espessura|default:"0" }} MM</p></div>
-        {% endif %}
         </div>
         <div>
         </div>

@@ -1,10 +1,13 @@
 @font-face {
   font-family: 'DOTMATRI';
-  src: url('/static/fonts/DOTMATRI.ttf') format('truetype');
+  src: url('/static/fonts/DOTMATRI.TTF') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
+.primeiro{
+  width: 100%;
+}
 /* Reset de margin, padding e definição de fonte */
 * {
   margin: 0;
