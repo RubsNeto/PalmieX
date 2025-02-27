@@ -236,19 +236,7 @@
     }
   }
 
-  @media print {
-    /* Define página A4 em paisagem com margens de 1cm */
-    @page {
-      size: A4 landscape;
-      margin: 1cm;
-    }
-  
-    /* Reduzir a escala do conteúdo para 80% */
-    body {
-      /* Para navegadores que suportam a propriedade zoom */
-      zoom: 0.8;
-    }
-  }
+
   
   
 .ordem {
@@ -506,4 +494,10 @@ h5.pares {
     font-size: 0.9em;
     margin-top: 0.3em;
   }
-  
+  @media print {
+    @page {
+      size: A4 Portrait;
+      margin: 1cm;
+    }
+    
+  }
