@@ -20,14 +20,8 @@
   font-family: 'DOTMATRI';
 }
 
-/* Define a página para impressão */
-@page {
-  size: A4 Portrait;
-  margin: 1cm;
-}
-
 p{
-  font-size:1em;
+  font-size:1.5em;
 }
 
 /* Estilo para a seção de detalhes do pedido */
@@ -57,7 +51,7 @@ p{
 
 .item-nome p {
   margin: 0;
-  font-size: 1rem;
+  font-size: 2rem;
   color: #333;
 }
 
@@ -128,10 +122,3 @@ span {
   font-size: 1em;
 }
 
-/* Estilos aplicados apenas na impressão */
-@media print {
-  @page {
-    size: A4 Portrait;
-    margin: 1cm;
-  }
-}
