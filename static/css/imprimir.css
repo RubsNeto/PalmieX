@@ -22,7 +22,7 @@
 
 /* Define a página para impressão */
 @page {
-  size: A4 landscape;
+  size: A4 Portrait;
   margin: 1cm;
 }
 
