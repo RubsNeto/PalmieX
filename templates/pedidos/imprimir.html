@@ -13,7 +13,7 @@
   <div class="detalhes-pedido">
     <p><strong>VENDEDOR :</strong> {{ pedido.vendedor.nome }}</p>
     <p><strong>CODIGO :</strong> {{ pedido.id }}</p>
-    <p><strong>DATA :</strong> {{ pedido.data|date:"H:I - d/m/Y" }}</p>
+    <p><strong>DATA :</strong> {{ pedido.data|date:"H:i - d/m/Y" }}</p>
     <p><strong>LOJA :</strong> {{ pedido.vendedor.loja }}</p>
     <p><strong>TOTAL GERAL :</strong> <span id="total-geral">0</span></p>
   </div>
