@@ -21,7 +21,7 @@
 }
 
 p{
-  font-size:1.5em;
+  font-size:1em;
 }
 
 /* Estilo para a seção de detalhes do pedido */
@@ -51,7 +51,7 @@ p{
 
 .item-nome p {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1rem;
   color: #333;
 }
 
@@ -83,54 +83,40 @@ p{
 .container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
+  font-size: 1em;
   margin-bottom: 1em;
 }
 
 /* Container específico para os quadradinhos de tamanhos e quantidades
    Configurado para dispor todos os itens em uma única linha */
-/* Ajusta os quadradinhos para preencher toda a largura */
-/* Ajusta os quadradinhos para preencher toda a largura */
 .containerQuadradinhos {
   display: flex;
-  flex-wrap: nowrap; /* Garante que todos os elementos fiquem na mesma linha */
-  justify-content: left; /* Centraliza os elementos */
-  align-items: flex-start; /* Alinha os itens ao topo */
-  width: 100%;
+  flex-wrap: nowrap;
+  margin-top: 1rem;
 }
 
-/* Cada quadrado deve ter largura uniforme */
+/* Cada grupo: botão em cima e número embaixo */
 .botao-container {
+  text-align: center;
   display: flex;
-  flex-direction: column; /* Mantém o botão acima e o número abaixo */
-  align-items: left;
-  justify-content: left;
-  text-align: left;
-  width: 50px; /* Ajuste conforme necessário */
-}
-
-/* Ajusta o tamanho dos botões para ficarem alinhados */
-.botao {
-  width: 50px; /* Garante que todos tenham a mesma largura */
-  height: 50px;
-  font-size: 1.5em; /* Ajusta o tamanho da fonte */
-  display: flex;
+  flex-direction: column; /* Empilha o botão acima e o número abaixo */
   align-items: center;
-  justify-content: center;
-  text-align: center;
 }
 
-/* Ajusta o tamanho dos números e os mantém centralizados */
+/* Estilo para o botão (tamanho) */
+.botao {
+  width: 35px;
+  font-size: 1em;
+  cursor: default;
+}
+
+
+/* Estilo para o número */
 .numero {
-  font-size: 1.5em; /* Aumenta a fonte dos números */
-  font-weight: bold;
-  display: block;
-  width: 100%;
-  text-align: center;
-  margin-top: 0.3em; /* Espaçamento entre botão e número */
+  font-size: 1.0em;
+  margin-top: 0.3em;
 }
-
-
 
 /* Estilo genérico para spans */
 span {
