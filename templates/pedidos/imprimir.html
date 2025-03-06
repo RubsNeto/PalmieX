@@ -45,7 +45,7 @@
         </div>
         <div>
           {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <p><strong>SERVIÇO:</strong> {{ item.tipo_servico|default:"NENHUM" }}</p>
+            <p><strong>SERVICO:</strong> {{ item.tipo_servico|default:"NENHUM" }}</p>
           {% endif %}
           {% if production_area == "solado" or production_area == "vendedor" %}
             <div>
