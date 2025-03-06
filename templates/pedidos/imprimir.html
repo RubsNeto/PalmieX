@@ -12,7 +12,7 @@
   <h1>CLIENTE: {{ pedido.cliente }}</h1>
   <div class="detalhes-pedido">
     <p><strong>VENDEDOR:</strong> {{ pedido.vendedor.nome }}</p>
-    <p><strong>CÓDIGO:</strong> {{ pedido.id }}</p>
+    <p><strong>CODIGO:</strong> {{ pedido.id }}</p>
     <p><strong>DATA:</strong> {{ pedido.data|date:"H:i - d/m/Y" }}</p>
     <p><strong>LOJA:</strong> {{ pedido.vendedor.loja }}</p>
     <p><strong>TOTAL GERAL:</strong> <span id="total-geral">0</span></p>
@@ -27,12 +27,12 @@
       <span class="item-nome">
         <div class="primeiro">
           {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <p><strong>SINTÉTICO:</strong> {{ item.mat_balancinho|default:"" }}</p>
+            <p><strong>SINTETICO:</strong> {{ item.mat_balancinho|default:"" }}</p>
           {% endif %}
         </div>
         <div>
           {% if production_area == "solado" or production_area == "vendedor" %}
-            <p><strong>REFERÊNCIA:</strong> {{ item.ref_palmilha|default:"" }}</p>
+            <p><strong>REFERENCIA:</strong> {{ item.ref_palmilha|default:"" }}</p>
           {% endif %}
           {% if production_area == "solado" or production_area == "vendedor" %}
             <p><strong>SOLADO:</strong> {{ item.mat_palmilha|default:"" }}</p>
@@ -55,7 +55,7 @@
         </div>
         <div>
           {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <p><strong>COR SINTÉTICO:</strong> {{ item.cor|default:"" }}</p>
+            <p><strong>COR SINTETICO:</strong> {{ item.cor|default:"" }}</p>
           {% endif %}
           {% if production_area == "solado" or production_area == "vendedor" %}
             <p><strong>COR SOLADO:</strong> {{ item.cor_palmilha|default:"" }}</p>
