@@ -42,7 +42,7 @@
               <p><strong>ESPESSURA:</strong> {{ item.espessura|default:"0" }} MM</p>
             </div>
           {% endif %}
-          {% if production_area == "balancinho" or production_area == "vendedor" %}
+          {% if production_area == "balancinho"%}
             <div>
               <p><strong>MARCA:</strong> {{ item.marca|default:"" }}</p>
             </div>
@@ -51,6 +51,12 @@
         <div>
           {% if production_area == "balancinho" or production_area == "vendedor" %}
             <p><strong>SERVICO:</strong> {{ item.tipo_servico|default:"NENHUM" }}</p>
+          {% endif %}
+
+          {% if production_area == "vendedor" %}
+            <div>
+              <p><strong>MARCA:</strong> {{ item.marca|default:"" }}</p>
+            </div>
           {% endif %}
         </div>
         <div>
