@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
           const produtosAgrupados = {};
           data.itens.forEach(item => {
-            const chave = `${item.codigo}-${item.nome}`;
+            const chave = `${item.codigo}-${item.nome}-${item.cor}`;
             if (!produtosAgrupados[chave]) {
               produtosAgrupados[chave] = {
                 codigo: item.codigo,
