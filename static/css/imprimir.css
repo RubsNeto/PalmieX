@@ -31,6 +31,7 @@ p{
   justify-content: space-between;
   margin-top: 1.5em;
   margin-bottom: 1.5em;
+  font-size: 1.5em;
 }
 
 /* Estilos para os blocos de informação (item-nome) */
@@ -51,7 +52,7 @@ p{
 
 .item-nome p {
   margin: 0;
-  font-size: 1rem;
+  font-size: 2rem;
   color: #333;
 }
 
