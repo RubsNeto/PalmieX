@@ -29,8 +29,8 @@ p{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
   font-size: 1.5em;
 }
 
@@ -71,7 +71,7 @@ p{
 .pedido-item {
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 /* Container principal */
