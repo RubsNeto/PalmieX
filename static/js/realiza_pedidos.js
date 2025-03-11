@@ -752,7 +752,7 @@ function enviarPedido(url, dados) {
     })
     .then(data => {
         alert('Pedido realizado com sucesso!');
-        window.location.href = '/producao/';
+        //window.location.href = '/producao/';
     })
     .catch(err => {
         console.error(err);
