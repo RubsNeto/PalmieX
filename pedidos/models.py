@@ -92,7 +92,7 @@ class PedidoItem(models.Model):
     obs = models.TextField(max_length=90, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.quantidade}x (Bal: {self.ref_balancinho}, Palm: {self.ref_palmilha})"
+        return f"{self.quantidade}x Palm: {self.ref_palmilha})"
 
 
 class Referencia(models.Model):
