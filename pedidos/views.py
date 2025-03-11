@@ -323,20 +323,51 @@ def producao(request):
 @login_required
 def imprimir_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
-    tamanhos = range(15, 44)
-
-    # Obtém a área de produção do usuário logado
+    tamanhos = list(range(15, 44))
+    
     production_area = getattr(request.user, 'perfil', None)
     if production_area:
         production_area = request.user.perfil.production_area
     else:
-        production_area = 'solado'  # Valor padrão se não estiver definido
+        production_area = 'solado'
 
-    return render(request, 'pedidos/imprimir.html', {
+    # Agrupa os itens com as mesmas informações, exceto tamanho e quantidade
+    grouped_items = {}
+    for item in pedido.itens.all():
+        chave = (
+            item.mat_balancinho,
+            item.ref_palmilha,
+            item.mat_palmilha,
+            item.tipo_servico,
+            item.marca,
+            item.cor,
+            item.cor_palmilha,
+            item.obs,
+            item.espessura,
+        )
+        if chave not in grouped_items:
+            grouped_items[chave] = {
+                'item': item,
+                'tamanhos': {}
+            }
+        if item.tamanho in grouped_items[chave]['tamanhos']:
+            grouped_items[chave]['tamanhos'][item.tamanho] += item.quantidade
+        else:
+            grouped_items[chave]['tamanhos'][item.tamanho] = item.quantidade
+
+    # Converte o dicionário de tamanhos para uma lista de tuplas (tamanho, quantidade)
+    for grupo in grouped_items.values():
+        grupo['tamanhos_lista'] = [(t, grupo['tamanhos'].get(t, '')) for t in tamanhos]
+
+    context = {
         'pedido': pedido,
-        'tamanhos': tamanhos,
-        'production_area': production_area  # Adiciona a área de produção no contexto do template
-    })
+        'grouped_items': grouped_items,
+        'tamanhos': tamanhos,  # se precisar em outro local do template
+        'production_area': production_area,
+    }
+    return render(request, 'pedidos/imprimir.html', context)
+
+
 
 
 @require_GET

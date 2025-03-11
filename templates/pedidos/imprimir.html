@@ -20,76 +20,70 @@
 
   <hr>
 
-  {# Itera sobre cada item individualmente para evitar mesclagem #}
-  {% for item in pedido.itens.all %}
-  <div class="pedido-item">
-    <div class="produto-cabecalho">
-      <span class="item-nome">
-        <div class="primeiro">
-          {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <p><strong>SINTETICO:</strong> {{ item.mat_balancinho|default:"" }}</p>
-          {% endif %}
-        </div>
-        <div>
-          {% if production_area == "solado" or production_area == "vendedor" %}
-            <p><strong>REFERENCIA:</strong> {{ item.ref_palmilha|default:"" }}</p>
-          {% endif %}
-          {% if production_area == "solado" or production_area == "vendedor" %}
-            <p><strong>SOLADO:</strong> {{ item.mat_palmilha|default:"" }}</p>
-          {% endif %}
-          {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <div>
-              <p><strong>ESPESSURA:</strong> {{ item.espessura|default:"0" }} MM</p>
-            </div>
-          {% endif %}
-          {% if production_area == "balancinho"%}
-            <div>
-              <p><strong>MARCA:</strong> {{ item.marca|default:"" }}</p>
-            </div>
-          {% endif %}
-        </div>
-        <div>
-          {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <p><strong>SERVICO:</strong> {{ item.tipo_servico|default:"NENHUM" }}</p>
-          {% endif %}
-
-          {% if production_area == "vendedor" %}
-            <div>
-              <p><strong>MARCA:</strong> {{ item.marca|default:"" }}</p>
-            </div>
-          {% endif %}
-        </div>
-        <div>
-          {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <p><strong>COR SINTETICO:</strong> {{ item.cor|default:"" }}</p>
-          {% endif %}
-          {% if production_area == "solado" or production_area == "vendedor" %}
-            <p><strong>COR SOLADO:</strong> {{ item.cor_palmilha|default:"" }}</p>
-          {% endif %}
-        </div>
-        <div>
-          {% if item.obs %}
-            <p><strong>OBS:</strong> {{ item.obs }}</p>
-          {% endif %}
-        </div>
-      </span>
-    </div>
-
-    <!-- GRID DE TAMANHOS E QUANTIDADES -->
-    <div class="container containerQuadradinhos">
-      {% for tamanho in tamanhos %}
-        <div class="botao-container">
-          <h1 class="botao">{{ tamanho }}</h1>
-          <div class="numero" contenteditable="false">
-            {% if item.tamanho == tamanho %}
-              {{ item.quantidade }}
+  {% for grupo in grouped_items.values %}
+    <div class="pedido-item">
+      <div class="produto-cabecalho">
+        <span class="item-nome">
+          <div class="primeiro">
+            {% if production_area == "balancinho" or production_area == "vendedor" %}
+              <p><strong>SINTETICO:</strong> {{ grupo.item.mat_balancinho|default:"" }}</p>
             {% endif %}
           </div>
-        </div>
-      {% endfor %}
+          <div>
+            {% if production_area == "solado" or production_area == "vendedor" %}
+              <p><strong>REFERENCIA:</strong> {{ grupo.item.ref_palmilha|default:"" }}</p>
+            {% endif %}
+            {% if production_area == "solado" or production_area == "vendedor" %}
+              <p><strong>SOLADO:</strong> {{ grupo.item.mat_palmilha|default:"" }}</p>
+            {% endif %}
+            {% if production_area == "balancinho" or production_area == "vendedor" %}
+              <div>
+                <p><strong>ESPESSURA:</strong> {{ grupo.item.espessura|default:"0" }} MM</p>
+              </div>
+            {% endif %}
+            {% if production_area == "balancinho" %}
+              <div>
+                <p><strong>MARCA:</strong> {{ grupo.item.marca|default:"" }}</p>
+              </div>
+            {% endif %}
+          </div>
+          <div>
+            {% if production_area == "balancinho" or production_area == "vendedor" %}
+              <p><strong>SERVICO:</strong> {{ grupo.item.tipo_servico|default:"NENHUM" }}</p>
+            {% endif %}
+            {% if production_area == "vendedor" %}
+              <div>
+                <p><strong>MARCA:</strong> {{ grupo.item.marca|default:"" }}</p>
+              </div>
+            {% endif %}
+          </div>
+          <div>
+            {% if production_area == "balancinho" or production_area == "vendedor" %}
+              <p><strong>COR SINTETICO:</strong> {{ grupo.item.cor|default:"" }}</p>
+            {% endif %}
+            {% if production_area == "solado" or production_area == "vendedor" %}
+              <p><strong>COR SOLADO:</strong> {{ grupo.item.cor_palmilha|default:"" }}</p>
+            {% endif %}
+          </div>
+          <div>
+            {% if grupo.item.obs %}
+              <p><strong>OBS:</strong> {{ grupo.item.obs }}</p>
+            {% endif %}
+          </div>
+        </span>
+      </div>
+
+      <!-- GRID DE TAMANHOS E QUANTIDADES -->
+      <div class="container containerQuadradinhos">
+        {% for tamanho, quantidade in grupo.tamanhos_lista %}
+          <div class="botao-container">
+            <h1 class="botao">{{ tamanho }}</h1>
+            <div class="numero" contenteditable="false">{{ quantidade }}</div>
+          </div>
+        {% endfor %}
+      </div>
     </div>
-  </div>
-  <hr>
+    <hr>
   {% endfor %}
 </div>
 
@@ -103,7 +97,6 @@ document.addEventListener("DOMContentLoaded", function() {
         materialTotal += qty;
       });
       globalTotal += materialTotal;
-
       let totalElem = document.createElement("div");
       totalElem.className = "material-total";
       totalElem.style.marginTop = "0.5em";
@@ -115,4 +108,5 @@ document.addEventListener("DOMContentLoaded", function() {
     window.print();
 });
 </script>
+
 {% endblock content %}
