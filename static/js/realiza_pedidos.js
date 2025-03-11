@@ -620,6 +620,8 @@ function coletarDadosPedidos(tipoPedido = 'ambos') {
         let refPalmilha = pedido.querySelector('.refPalmilha')?.value.trim() || '';
         let matPalmilha = pedido.querySelector('.matPalmilha')?.value.trim() || '';
         let corPalmilha = pedido.querySelector('.corPalmilha')?.value.trim() || '';
+        let tipoServico = pedido.querySelector('.selectTipoServico')?.value.trim() || '';
+
         
         let espessura = pedido.querySelector('.tamPalmilha')?.value.trim() || '';
         let obs = pedido.querySelector('.obs')?.value.trim() || '';
@@ -658,6 +660,7 @@ function coletarDadosPedidos(tipoPedido = 'ambos') {
         // Inclui a propriedade "marca" no item
         dados.itens.push({
             matBalancinho,
+            tipoServico,
             cor: corBalancinho,
             refPalmilha,
             matPalmilha,
