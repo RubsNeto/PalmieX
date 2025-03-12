@@ -143,16 +143,12 @@
       });
       globalTotal += materialTotal;
 
-      // Aqui você pode definir a lógica para mostrar ou não o total dentro do container
-      // Exemplo: se materialTotal for maior que 0, exibe o total
       {% if not tem_tamanhos_15_21 %}
-        if(materialTotal > 0) {
           let placeholder = item.querySelector("#material-total-placeholder");
           let totalValueElem = item.querySelector("#material-total-value");
           if(placeholder && totalValueElem) {
             totalValueElem.textContent = materialTotal;
             placeholder.style.display = "block";
-          }
         }
       {% endif %}
     });
