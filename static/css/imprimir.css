@@ -23,6 +23,9 @@
 p{
   font-size:1em;
 }
+h1{
+  font-size: 1.5em;
+}
 
 /* Estilo para a seção de detalhes do pedido */
 .detalhes-pedido {
@@ -31,7 +34,7 @@ p{
   justify-content: space-between;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
-  font-size: 1.5em;
+  font-size: 1.4em;
 }
 
 /* Estilos para os blocos de informação (item-nome) */
@@ -52,7 +55,7 @@ p{
 
 .item-nome p {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.4rem;
   color: #333;
 }
 
@@ -115,7 +118,7 @@ p{
 
 /* Estilo para o número */
 .numero {
-  font-size: 1.0em;
+  font-size: 1.4em;
   margin-top: 0.3em;
 }
 
