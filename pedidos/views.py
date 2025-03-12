@@ -331,29 +331,59 @@ def imprimir_pedido(request, pedido_id):
     else:
         production_area = 'solado'
 
-    # Agrupa os itens com as mesmas informações, exceto tamanho e quantidade
-    grouped_items = {}
-    for item in pedido.itens.all():
-        chave = (
-            item.mat_balancinho,
-            item.ref_palmilha,
-            item.mat_palmilha,
-            item.tipo_servico,
-            item.marca,
-            item.cor,
-            item.cor_palmilha,
-            item.obs,
-            item.espessura,
-        )
-        if chave not in grouped_items:
-            grouped_items[chave] = {
-                'item': item,
-                'tamanhos': {}
-            }
-        if item.tamanho in grouped_items[chave]['tamanhos']:
-            grouped_items[chave]['tamanhos'][item.tamanho] += item.quantidade
-        else:
-            grouped_items[chave]['tamanhos'][item.tamanho] = item.quantidade
+    if production_area == "solado":
+        grouped_items = {}
+        last_key = None  # Guarda o último conjunto de informações preenchidas
+        for item in pedido.itens.all():
+            # Obtém os valores, tratando None como string vazia
+            ref = (item.ref_palmilha or "").strip()
+            solado_val = (item.mat_palmilha or "").strip()
+            cor_solado = (item.cor_palmilha or "").strip()
+            
+            # Se todos estiverem vazios, utiliza o último grupo informado (se existir)
+            if not (ref or solado_val or cor_solado):
+                if last_key is None:
+                    chave = ("", "", "")
+                else:
+                    chave = last_key
+            else:
+                chave = (ref, solado_val, cor_solado)
+                last_key = chave
+
+            if chave not in grouped_items:
+                grouped_items[chave] = {
+                    'item': item,
+                    'tamanhos': {}
+                }
+            if item.tamanho in grouped_items[chave]['tamanhos']:
+                grouped_items[chave]['tamanhos'][item.tamanho] += item.quantidade
+            else:
+                grouped_items[chave]['tamanhos'][item.tamanho] = item.quantidade
+
+    else:
+        # Para as outras áreas (balancinho ou vendedor), mantemos o agrupamento completo
+        grouped_items = {}
+        for item in pedido.itens.all():
+            chave = (
+                item.mat_balancinho,
+                item.ref_palmilha,
+                item.mat_palmilha,
+                item.tipo_servico,
+                item.marca,
+                item.cor,
+                item.cor_palmilha,
+                item.obs,
+                item.espessura,
+            )
+            if chave not in grouped_items:
+                grouped_items[chave] = {
+                    'item': item,
+                    'tamanhos': {}
+                }
+            if item.tamanho in grouped_items[chave]['tamanhos']:
+                grouped_items[chave]['tamanhos'][item.tamanho] += item.quantidade
+            else:
+                grouped_items[chave]['tamanhos'][item.tamanho] = item.quantidade
 
     # Converte o dicionário de tamanhos para uma lista de tuplas (tamanho, quantidade)
     for grupo in grouped_items.values():
