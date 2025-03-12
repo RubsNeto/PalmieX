@@ -114,21 +114,26 @@
       </div>
 
       <!-- GRID DE TAMANHOS E QUANTIDADES -->
+
       <div class="container containerQuadradinhos">
-        {% for tamanho, quantidade in grupo.tamanhos_lista %}
-          <div class="botao-container">
-            <h1 class="botao">{{ tamanho }}</h1>
-            <div class="numero" contenteditable="false">{{ quantidade }}</div>
-          </div>
-        {% endfor %}
-      </div>
+  <div id="material-total-placeholder" style="display: none; font-size:1.4em; margin-top:0.5em; font-weight: bold; margin-right:1em">
+    SUBTOTAL: <span id="material-total-value"></span>
+  </div>
+  {% for tamanho, quantidade in grupo.tamanhos_lista %}
+    <div class="botao-container">
+      <h1 class="botao">{{ tamanho }}</h1>
+      <div class="numero" contenteditable="false">{{ quantidade }}</div>
+    </div>
+  {% endfor %}
+</div>
+
     </div>
     <hr>
   {% endfor %}
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function() {
     let globalTotal = 0;
     document.querySelectorAll(".pedido-item").forEach(function(item) {
       let materialTotal = 0;
@@ -137,16 +142,25 @@ document.addEventListener("DOMContentLoaded", function() {
         materialTotal += qty;
       });
       globalTotal += materialTotal;
-      let totalElem = document.createElement("div");
-      totalElem.className = "material-total";
-      totalElem.style.marginTop = "0.5em";
-      totalElem.style.fontWeight = "bold";
-      totalElem.textContent = "TOTAL DESTE MATERIAL: " + materialTotal;
-      item.appendChild(totalElem);
+
+      // Aqui você pode definir a lógica para mostrar ou não o total dentro do container
+      // Exemplo: se materialTotal for maior que 0, exibe o total
+      {% if not tem_tamanhos_15_21 %}
+        if(materialTotal > 0) {
+          let placeholder = item.querySelector("#material-total-placeholder");
+          let totalValueElem = item.querySelector("#material-total-value");
+          if(placeholder && totalValueElem) {
+            totalValueElem.textContent = materialTotal;
+            placeholder.style.display = "block";
+          }
+        }
+      {% endif %}
     });
     document.getElementById("total-geral").textContent = globalTotal;
     window.print();
 });
+
 </script>
+  
 
 {% endblock content %}

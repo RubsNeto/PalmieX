@@ -323,24 +323,23 @@ def producao(request):
 @login_required
 def imprimir_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
-    tamanhos = list(range(15, 44))
+    tamanhos_padrao = list(range(15, 44))
     
-    production_area = getattr(request.user, 'perfil', None)
-    if production_area:
+    # Definindo a área de produção do usuário
+    production_area_obj = getattr(request.user, 'perfil', None)
+    if production_area_obj:
         production_area = request.user.perfil.production_area
     else:
         production_area = 'solado'
-
+    
+    # A partir daqui, production_area já está definida
     if production_area == "solado":
         grouped_items = {}
-        last_key = None  # Guarda o último conjunto de informações preenchidas
+        last_key = None
         for item in pedido.itens.all():
-            # Obtém os valores, tratando None como string vazia
             ref = (item.ref_palmilha or "").strip()
             solado_val = (item.mat_palmilha or "").strip()
             cor_solado = (item.cor_palmilha or "").strip()
-            
-            # Se todos estiverem vazios, utiliza o último grupo informado (se existir)
             if not (ref or solado_val or cor_solado):
                 if last_key is None:
                     chave = ("", "", "")
@@ -349,19 +348,12 @@ def imprimir_pedido(request, pedido_id):
             else:
                 chave = (ref, solado_val, cor_solado)
                 last_key = chave
-
             if chave not in grouped_items:
-                grouped_items[chave] = {
-                    'item': item,
-                    'tamanhos': {}
-                }
-            if item.tamanho in grouped_items[chave]['tamanhos']:
-                grouped_items[chave]['tamanhos'][item.tamanho] += item.quantidade
-            else:
-                grouped_items[chave]['tamanhos'][item.tamanho] = item.quantidade
-
+                grouped_items[chave] = {'item': item, 'tamanhos': {}}
+            grouped_items[chave]['tamanhos'][item.tamanho] = (
+                grouped_items[chave]['tamanhos'].get(item.tamanho, 0) + item.quantidade
+            )
     else:
-        # Para as outras áreas (balancinho ou vendedor), mantemos o agrupamento completo
         grouped_items = {}
         for item in pedido.itens.all():
             chave = (
@@ -376,28 +368,38 @@ def imprimir_pedido(request, pedido_id):
                 item.espessura,
             )
             if chave not in grouped_items:
-                grouped_items[chave] = {
-                    'item': item,
-                    'tamanhos': {}
-                }
-            if item.tamanho in grouped_items[chave]['tamanhos']:
-                grouped_items[chave]['tamanhos'][item.tamanho] += item.quantidade
-            else:
-                grouped_items[chave]['tamanhos'][item.tamanho] = item.quantidade
+                grouped_items[chave] = {'item': item, 'tamanhos': {}}
+            grouped_items[chave]['tamanhos'][item.tamanho] = (
+                grouped_items[chave]['tamanhos'].get(item.tamanho, 0) + item.quantidade
+            )
+    
+    # Verifica se existe algum pedido com tamanhos de 15 a 21
+    tem_tamanhos_15_21 = False
+    for grupo in grouped_items.values():
+        for tamanho in range(15, 22):
+            quantidade = grupo['tamanhos'].get(tamanho, 0)
+            if quantidade and int(quantidade) > 0:
+                tem_tamanhos_15_21 = True
+                break
+        if tem_tamanhos_15_21:
+            break
 
-    # Converte o dicionário de tamanhos para uma lista de tuplas (tamanho, quantidade)
+    if not tem_tamanhos_15_21:
+        tamanhos = list(range(22, 44))
+    else:
+        tamanhos = list(range(15, 44))
+    
     for grupo in grouped_items.values():
         grupo['tamanhos_lista'] = [(t, grupo['tamanhos'].get(t, '')) for t in tamanhos]
 
     context = {
         'pedido': pedido,
         'grouped_items': grouped_items,
-        'tamanhos': tamanhos,  # se precisar em outro local do template
+        'tamanhos': tamanhos,
         'production_area': production_area,
+        'tem_tamanhos_15_21': tem_tamanhos_15_21,
     }
     return render(request, 'pedidos/imprimir.html', context)
-
-
 
 
 @require_GET
