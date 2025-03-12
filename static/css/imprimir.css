@@ -5,6 +5,10 @@
   font-style: normal;
 }
 
+.pedido-imprimir {
+  text-transform: uppercase;
+}
+
 .primeiro {
   width: 100%;
   display: block;
@@ -37,19 +41,25 @@ h1{
   font-size: 1.4em;
 }
 
-/* Estilos para os blocos de informação (item-nome) */
 .item-nome {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1rem;
-  width: 100%;
+  gap: 1rem; /* Espaço horizontal/vertical entre blocos */
+}
+
+/* Cada info-bloco mostra "LABEL: VALOR" lado a lado */
+.info-bloco {
+  width: calc(25% - 1rem); /* 4 colunas por linha */
   box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem; /* Espaço entre <strong> e valor */
+  font-size: 1.4em; /* Ajuste conforme necessário */
 }
 
 .item-nome > div {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.5rem;
 }
 

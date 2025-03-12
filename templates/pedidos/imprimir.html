@@ -9,12 +9,22 @@
 
 {% block content %}
 <div class="pedido-imprimir">
-  <h1>CLIENTE: {{ pedido.cliente }}</h1>
+  {% if pedido.cliente %}
+    <h1>CLIENTE: {{ pedido.cliente }}</h1>
+  {% endif %}
   <div class="detalhes-pedido">
-    <p><strong>VENDEDOR:</strong> {{ pedido.vendedor.nome }}</p>
-    <p><strong>CODIGO:</strong> {{ pedido.id }}</p>
-    <p><strong>DATA:</strong> {{ pedido.data|date:"H:i - d/m/Y" }}</p>
-    <p><strong>LOJA:</strong> {{ pedido.vendedor.loja }}</p>
+    {% if pedido.vendedor.nome %}
+      <p><strong>VENDEDOR:</strong> {{ pedido.vendedor.nome }}</p>
+    {% endif %}
+    {% if pedido.id %}
+      <p><strong>CODIGO:</strong> {{ pedido.id }}</p>
+    {% endif %}
+    {% if pedido.data %}
+      <p><strong>DATA:</strong> {{ pedido.data|date:"H:i - d/m/Y" }}</p>
+    {% endif %}
+    {% if pedido.vendedor.loja %}
+      <p><strong>LOJA:</strong> {{ pedido.vendedor.loja }}</p>
+    {% endif %}
     <p><strong>TOTAL GERAL:</strong> <span id="total-geral">0</span></p>
   </div>
 
@@ -22,53 +32,85 @@
 
   {% for grupo in grouped_items.values %}
     <div class="pedido-item">
-      <div class="produto-cabecalho">
-        <span class="item-nome">
-          <div class="primeiro">
-            {% if production_area == "balancinho" or production_area == "vendedor" %}
-              <p><strong>SINTETICO:</strong> {{ grupo.item.mat_balancinho|default:"" }}</p>
-            {% endif %}
-          </div>
-          <div>
-              <p><strong>REFERENCIA:</strong> {{ grupo.item.ref_palmilha|default:"" }}</p>
-            {% if production_area == "solado" or production_area == "vendedor" %}
-              <p><strong>SOLADO:</strong> {{ grupo.item.mat_palmilha|default:"" }}</p>
-            {% endif %}
-            {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <div>
-              <p><strong>ESPESSURA:</strong> {{ grupo.item.espessura|default:"0" }} MM</p>
+      <!-- CONTAINER PRINCIPAL PARA OS CAMPOS (SINTETICO, REFERENCIA, ETC.) -->
+      <div class="item-nome">
+
+        {# SINTÉTICO #}
+        {% if grupo.item.mat_balancinho %}
+          {% if production_area == "balancinho" or production_area == "vendedor" %}
+            <div class="info-bloco">
+              <strong>SINTETICO:</strong> {{ grupo.item.mat_balancinho }}
             </div>
-            {% endif %}
+          {% endif %}
+        {% endif %}
+
+        {# REFERÊNCIA #}
+        {% if grupo.item.ref_palmilha %}
+          <div class="info-bloco">
+            <strong>REFERENCIA:</strong> {{ grupo.item.ref_palmilha }}
           </div>
-          <div>
-            {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <p><strong>SERVICO:</strong> {{ grupo.item.tipo_servico|default:"NENHUM" }}</p>
-            {% endif %}
-            {% if production_area == "balancinho" %}
-              <div>
-                <p><strong>MARCA:</strong> {{ grupo.item.marca|default:"" }}</p>
-              </div>
-            {% endif %}
-            {% if production_area == "vendedor" %}
-              <div>
-                <p><strong>MARCA:</strong> {{ grupo.item.marca|default:"" }}</p>
-              </div>
-            {% endif %}
+        {% endif %}
+
+        {# SOLADO #}
+        {% if grupo.item.mat_palmilha %}
+          {% if production_area == "solado" or production_area == "vendedor" %}
+            <div class="info-bloco">
+              <strong>SOLADO:</strong> {{ grupo.item.mat_palmilha }}
+            </div>
+          {% endif %}
+        {% endif %}
+
+        {# ESPESSURA #}
+        {% if grupo.item.espessura %}
+          {% if production_area == "balancinho" or production_area == "vendedor" %}
+            <div class="info-bloco">
+              <strong>ESPESSURA:</strong> {{ grupo.item.espessura }} MM
+            </div>
+          {% endif %}
+        {% endif %}
+
+        {# SERVIÇO #}
+        {% if grupo.item.tipo_servico %}
+          {% if production_area == "balancinho" or production_area == "vendedor" %}
+            <div class="info-bloco">
+              <strong>SERVICO:</strong> {{ grupo.item.tipo_servico }}
+            </div>
+          {% endif %}
+        {% endif %}
+
+        {# MARCA #}
+        {% if grupo.item.marca %}
+          {% if production_area == "balancinho" or production_area == "vendedor" %}
+            <div class="info-bloco">
+              <strong>MARCA:</strong> {{ grupo.item.marca }}
+            </div>
+          {% endif %}
+        {% endif %}
+
+        {# COR SINTÉTICO #}
+        {% if grupo.item.cor %}
+          {% if production_area == "balancinho" or production_area == "vendedor" %}
+            <div class="info-bloco">
+              <strong>COR SINTETICO:</strong> {{ grupo.item.cor }}
+            </div>
+          {% endif %}
+        {% endif %}
+
+        {# COR SOLADO #}
+        {% if grupo.item.cor_palmilha %}
+          {% if production_area == "solado" or production_area == "vendedor" %}
+            <div class="info-bloco">
+              <strong>COR SOLADO:</strong> {{ grupo.item.cor_palmilha }}
+            </div>
+          {% endif %}
+        {% endif %}
+
+        {# OBS #}
+        {% if grupo.item.obs %}
+          <div class="info-bloco">
+            <strong>OBS:</strong> {{ grupo.item.obs }}
           </div>
-          <div>
-            {% if production_area == "balancinho" or production_area == "vendedor" %}
-              <p><strong>COR SINTETICO:</strong> {{ grupo.item.cor|default:"" }}</p>
-            {% endif %}
-            {% if production_area == "solado" or production_area == "vendedor" %}
-              <p><strong>COR SOLADO:</strong> {{ grupo.item.cor_palmilha|default:"" }}</p>
-            {% endif %}
-          </div>
-          <div>
-            {% if grupo.item.obs %}
-              <p><strong>OBS:</strong> {{ grupo.item.obs }}</p>
-            {% endif %}
-          </div>
-        </span>
+        {% endif %}
       </div>
 
       <!-- GRID DE TAMANHOS E QUANTIDADES -->
