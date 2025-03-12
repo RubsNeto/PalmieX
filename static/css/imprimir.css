@@ -42,19 +42,18 @@ h1{
 }
 
 .item-nome {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem; /* Espaço horizontal/vertical entre blocos */
+  display: flex;        /* Ativa layout flex */
+  flex-wrap: wrap;      /* Permite quebra para próxima linha se faltar espaço */
+  align-items: center;  /* Alinha verticalmente */
+  gap: 1rem;            /* Espaço entre os blocos */
 }
 
-/* Cada info-bloco mostra "LABEL: VALOR" lado a lado */
+/* Cada info-bloco mantém rótulo e valor juntos */
 .info-bloco {
-  width: calc(25% - 1rem); /* 4 colunas por linha */
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem; /* Espaço entre <strong> e valor */
-  font-size: 1.4em; /* Ajuste conforme necessário */
+  display: inline-flex;    /* Mantém rótulo e valor na mesma linha */
+  white-space: nowrap;     /* Não deixa quebrar dentro do bloco */
+  margin-right: 1rem;      /* Espaço à direita (opcional) */
+  font-size: 1.4em;
 }
 
 .item-nome > div {
