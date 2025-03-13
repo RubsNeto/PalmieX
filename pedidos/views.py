@@ -247,30 +247,30 @@ def producao(request):
     if production_area == "solado":
         pedidos = pedidos.annotate(
             order_status=Case(
-                When(status_solado="Cliente em Espera", then=Value(1)),
+                When(status_solado="Cliente em Loja", then=Value(1)),
                 When(status_solado="Em Produção", then=Value(2)),
                 When(status_solado="Pendente", then=Value(3)),
-                When(status_solado="Pedido Pronto", then=Value(4)),
-                When(status_solado="Pedido Finalizado", then=Value(5)),
-                When(status_solado="Reposição Pendente", then=Value(6)),
-                default=Value(7),
+                When(Q(status_solado="Pedido Finalizado") | Q(status_solado="Cancelado"), then=Value(4)),
+                When(status_solado="Reposição Pendente", then=Value(5)),
+                default=Value(6),
                 output_field=IntegerField(),
             )
-        ).order_by("order_status", "-data")
+        ).order_by("order_status", "data")
+
 
     elif production_area == "balancinho":
         pedidos = pedidos.annotate(
             order_status=Case(
-                When(status_balancinho="Cliente em Espera", then=Value(1)),
+                When(status_balancinho="Cliente em Loja", then=Value(1)),
                 When(status_balancinho="Em Produção", then=Value(2)),
                 When(status_balancinho="Pendente", then=Value(3)),
-                When(status_balancinho="Pedido Pronto", then=Value(4)),
-                When(status_balancinho="Pedido Finalizado", then=Value(5)),
-                When(status_balancinho="Reposição Pendente", then=Value(6)),
-                default=Value(7),
+                When(Q(status_balancinho="Pedido Finalizado") | Q(status_balancinho="Cancelado"), then=Value(4)),
+                When(status_balancinho="Reposição Pendente", then=Value(5)),
+                default=Value(6),
                 output_field=IntegerField(),
             )
-        ).order_by("order_status", "-data")
+        ).order_by("order_status", "data")
+
 
     elif production_area == "vendedor":
         # Para o vendedor, usamos duas anotações e depois a função Least
@@ -289,8 +289,8 @@ def producao(request):
                 When(status_balancinho="Pedido Pronto", then=Value(1)),
                 When(status_balancinho="Em Produção", then=Value(2)),
                 When(status_balancinho="Pendente", then=Value(3)),
-                When(status_balancinho="Pedido Finalizado", then=Value(4)),
-                When(status_balancinho="Reposição Pendente", then=Value(5)),
+                When(status_balancinho="Reposição Pendente", then=Value(4)),
+                When(status_balancinho="Pedido Finalizado", then=Value(5)),
                 default=Value(6),
                 output_field=IntegerField(),
             )
