@@ -84,29 +84,13 @@ function handleBalancinhoChange(event) {
         });
 }
 
+
 // Busca o código do produto pelo NOME e preenche a "refPalmilha"
 function handlePalmilhaChange(event) {
     const nomeProduto = event.target.value.trim();
     if (!nomeProduto) return;
 
-    fetch(`/buscar-produto-por-nome/?nome=${encodeURIComponent(nomeProduto)}`)
-        .then(resp => resp.json())
-        .then(data => {
-            if (data.erro) {
-                console.warn('Produto não encontrado ou outro problema:', data.erro);
-                return;
-            }
-            const pedidoItem = event.target.closest('.pedido-item');
-            if (!pedidoItem) return;
-
-            const refPalm = pedidoItem.querySelector('.refPalmilha');
-            if (refPalm) {
-                refPalm.value = data.codigo; 
-            }
-        })
-        .catch(err => {
-            console.error('Erro ao buscar código do produto:', err);
-        });
+   
 }
 
 
@@ -170,37 +154,10 @@ function configureReferenceAutocomplete(input, datalistId, materialClass) {
             return;
         }
 
-        fetch(`/autocomplete-referencia/?q=${encodeURIComponent(texto)}`)
-            .then(response => response.json())
-            .then(referencias => {
-                const dl = document.getElementById(datalistId);
-                dl.innerHTML = '';
-                referencias.forEach(ref => {
-                    const option = document.createElement('option');
-                    option.value = ref;
-                    dl.appendChild(option);
-                });
-            })
-            .catch(err => console.error('Erro no autocomplete:', err));
+        
     });
 
-    input.addEventListener('change', function () {
-        const referencia = this.value.trim();
-        if (!referencia) return;
-
-        fetch(`/buscar-material-por-referencia/?codigo=${encodeURIComponent(referencia)}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.nome) {
-                    const pedidoItem = input.closest('.pedido-item');
-                    const materialInput = pedidoItem.querySelector(materialClass);
-                    if (materialInput) {
-                        materialInput.value = data.nome;
-                    }
-                }
-            })
-            .catch(err => console.error('Erro ao buscar material:', err));
-    });
+    
 }
 
 function ativarAutocompleteEmTodasAsReferencias() {
@@ -579,24 +536,6 @@ function adicionarEventosPedido(pedidoItem) {
     }
 
 
-    //Preenche automatico o material da palmilha
-    const PalmilhareferenciaInput = pedidoItem.querySelector('.refPalmilha');
-    const PalmilhamaterialInput = pedidoItem.querySelector('.matPalmilha');
-    if (PalmilhareferenciaInput && PalmilhamaterialInput) {
-        PalmilhareferenciaInput.addEventListener('input', function() {
-            const Palmilhareferencia = this.value;
-            fetch(`/buscar-produto/?codigo=${encodeURIComponent(Palmilhareferencia)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.nome) {
-                        PalmilhamaterialInput.value = data.nome;
-                    }
-                })
-                .catch(err => {
-                    console.error("Erro ao buscar material:", err);
-                });
-        });
-    }
 }
 
 
