@@ -192,6 +192,9 @@ def buscar_produto_por_nome(request):
 
 @login_required
 def producao(request):
+    
+    if request.user.username == "rv-rubens":
+        production_area = "vendedor"
     search_query = request.GET.get('q', '').strip()
     data_search = request.GET.get('data', '').strip()
 
