@@ -332,7 +332,11 @@ def imprimir_pedido(request, pedido_id):
     else:
         production_area = 'solado'
     
-    # A partir daqui, production_area já está definida
+    # Sobrescreve production_area para "balancinho" apenas na view de impressão, se o usuário for "rv-couros"
+    if request.user.username == "rv-rubens":
+        production_area = "balancinho"
+    
+    # Agrupamento dos itens conforme production_area
     if production_area == "solado":
         grouped_items = {}
         last_key = None

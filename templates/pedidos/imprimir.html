@@ -8,6 +8,12 @@
 {% endblock extra_css %}
 
 {% block content %}
+
+ {% if production_area == "balancinho"%}
+<div>
+  eaeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+</div>
+ {%endif%}
 <div class="pedido-imprimir">
   {% if pedido.cliente %}
     <h1>CLIENTE: {{ pedido.cliente }}</h1>
@@ -134,6 +140,7 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
+
     let globalTotal = 0;
     document.querySelectorAll(".pedido-item").forEach(function(item) {
       let materialTotal = 0;
