@@ -297,9 +297,9 @@ document.addEventListener('DOMContentLoaded', function() {
       alert("ID do pedido não encontrado.");
       return;
     }
-
+  
     const csrftoken = getCookie('csrftoken');
-
+  
     fetch('/atualizar-status-pedido/', {
       method: 'POST',
       headers: { 
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(data => {
       alert(data.mensagem);
-
+  
       // Atualiza a linha do pedido na tabela
       const pedidoRow = document.querySelector(`.pedido-resumo[data-pedido-id="${pedidoId}"]`);
       if (pedidoRow) {
@@ -335,10 +335,22 @@ document.addEventListener('DOMContentLoaded', function() {
             balancinhoCell.textContent = novoStatus;
             balancinhoCell.parentElement.style.color = obterCorPorStatus(novoStatus, 'balancinho');
           }
+        } else if (area === 'vendedor') {
+          // Para vendedores, atualiza ambos status
+          const soladoCell = pedidoRow.querySelector("td.status-solado span");
+          const balancinhoCell = pedidoRow.querySelector("td.status-balancinho span");
+          if (soladoCell) {
+            soladoCell.textContent = novoStatus;
+            soladoCell.parentElement.style.color = obterCorPorStatus(novoStatus, 'solado');
+          }
+          if (balancinhoCell) {
+            balancinhoCell.textContent = novoStatus;
+            balancinhoCell.parentElement.style.color = obterCorPorStatus(novoStatus, 'balancinho');
+          }
         }
       }
-
-      // Se houver um modal aberto para status, atualize-o também
+  
+      // Atualiza o status no modal, se ele estiver aberto
       const statusModal = document.getElementById('status-pedido-modal');
       if (statusModal) {
         statusModal.textContent = novoStatus;
@@ -350,6 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
       alert(err.erro || 'Erro ao atualizar o status do pedido.');
     });
   }
+  
 
   botoesAlterarStatus.forEach(button => {
     button.addEventListener('click', function() {

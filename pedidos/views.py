@@ -16,6 +16,8 @@ from .models import Vendedor, Produto, Pedido, PedidoItem, Referencia
 import json
 from django.utils import timezone
 import logging
+from django.contrib import messages
+from django.shortcuts import redirect, get_object_or_404
 
 # Configuração do logger
 logger = logging.getLogger(__name__)
@@ -507,7 +509,7 @@ def realizar_pedido(request):
         status_balancinho = body.get('status_balancinho', 'Pendente').strip()
         status_solado = body.get('status_solado', 'Pendente').strip()
 
-        # Verifica o tipo de pedido enviado
+        # Valida o tipo de pedido enviado
         tipo_pedido = body.get('tipo_pedido', 'ambos').strip()
         if tipo_pedido == 'balancinho':
             # Pedido apenas para balancinho: o status do solado já é finalizado
@@ -773,7 +775,6 @@ def editar_pedido(request, pedido_id):
 
 @require_POST
 @login_required
-@permission_required(2)
 def atualizar_status_pedido(request):
     try:
         body = json.loads(request.body or '{}')
@@ -787,25 +788,40 @@ def atualizar_status_pedido(request):
 
         pedido = get_object_or_404(Pedido, id=pedido_id)
 
-        user_area = getattr(request.user, 'perfil', None)
-        if user_area:
+        user_area_obj = getattr(request.user, 'perfil', None)
+        if user_area_obj:
             user_area = request.user.perfil.production_area
         else:
             return JsonResponse({'erro': 'Área de produção não definida para o usuário.'}, status=400)
 
-        if user_area == 'solado':
+        # Se o usuário for vendedor, atualize ambos os status
+        if user_area == 'vendedor':
+            if novo_status == "Pedido Finalizado":
+                # Verifica se ambos os status estão como "Pedido Pronto"
+                if (pedido.status_balancinho == "Pedido Pronto" and 
+                    pedido.status_solado == "Pedido Pronto"):
+                    pedido.status_solado = novo_status
+                    pedido.status_balancinho = novo_status
+                else:
+                    return JsonResponse({
+                        'erro': 'Só pode finalizar quando ambos setores estiverem como "Pedido Pronto"'
+                    }, status=400)
+            else:
+                pedido.status_solado = novo_status
+                pedido.status_balancinho = novo_status
+
+        elif user_area == 'solado':
             pedido.status_solado = novo_status
         elif user_area == 'balancinho':
             pedido.status_balancinho = novo_status
         else:
             return JsonResponse({'erro': 'Área de produção desconhecida.'}, status=400)
 
-        # Se for Reposição Pendente, captura a descrição enviada
+        # Se for "Reposição Pendente", captura a descrição enviada
         if novo_status == "Reposição Pendente":
             descricao = body.get('descricao_reposicao', '').strip()
             pedido.descricao_reposicao = descricao
-
-            print(f"Pedido {pedido_id} em reposição pendente: {descricao} total: {pedido.descricao_reposicao}")
+            logger.info(f"Pedido {pedido_id} em reposição pendente: {descricao}")
 
         if novo_status in ['Pedido Finalizado', 'Cancelado']:
             pedido.data_finalizado = timezone.now()
@@ -822,7 +838,7 @@ def atualizar_status_pedido(request):
         return JsonResponse({'erro': 'Pedido não encontrado.'}, status=404)
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
-
+    
 
 
 #------------------------------- Finalizados --------------------------------

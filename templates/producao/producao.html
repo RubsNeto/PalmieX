@@ -75,6 +75,7 @@
                   </td>
               {% endif %}
 
+              
               <td class="botoes">
                 <div class="coluna-esquerda">
                   {% if user.permission_level == 1 or user.permission_level == 3%}
@@ -87,6 +88,12 @@
                     <button type="button" class="imprimir-pedido" data-pedido-id="{{ pedido.id }}" title="Imprimir">
                       <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
                     </button>
+
+                  {% if user.permission_level == 1%}
+                  <button type="button" class="alterar-status PedidoConcluido" data-pedido-id="{{ pedido.id }}"  data-area="{{ vendedor }}" data-novo-status="Pedido Finalizado" title="Concluído">
+                    <img class="concluido" src="{% static 'img/concluido.svg' %}" alt="Concluído">
+                  </button>
+              {%endif%}
                   {% endif %}
 
                   {% if user.permission_level == 2 or user.permission_level == 4%}
@@ -107,6 +114,7 @@
                       <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
                     </button>
                   {% endif %}
+                    
                 </div>
               </td>
               {% if user.permission_level == 2 or user.permission_level == 4%}
@@ -122,6 +130,7 @@
                 </button>
               </td>
               {% endif %}
+              
             </tr>
           {% endfor %}
         </tbody>
