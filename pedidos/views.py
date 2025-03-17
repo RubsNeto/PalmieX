@@ -798,8 +798,8 @@ def atualizar_status_pedido(request):
         if user_area == 'vendedor':
             if novo_status == "Pedido Finalizado":
                 # Verifica se ambos os status estão como "Pedido Pronto"
-                if (pedido.status_balancinho == "Pedido Pronto" and 
-                    pedido.status_solado == "Pedido Pronto"):
+                if ((pedido.status_balancinho == "Pedido Pronto" or pedido.status_balancinho == "Pedido Finalizado" ) and 
+                    (pedido.status_solado == "Pedido Pronto" or pedido.status_solado == "Pedido Pronto")):
                     pedido.status_solado = novo_status
                     pedido.status_balancinho = novo_status
                 else:
