@@ -38,7 +38,7 @@ def realiza_pedidos(request):
 
 def imprimir_pedido_txt(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
-    
+
     conteudo_txt = f"""
 CLIENTE: {pedido.cliente}
 VENDEDOR: {pedido.vendedor.nome}
@@ -194,7 +194,7 @@ def buscar_produto_por_nome(request):
 
 @login_required
 def producao(request):
-    
+
     if request.user.username == "rv-rubens":
         production_area = "vendedor"
     search_query = request.GET.get('q', '').strip()
@@ -329,18 +329,18 @@ def producao(request):
 def imprimir_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     tamanhos_padrao = list(range(15, 44))
-    
+
     # Definindo a área de produção do usuário
     production_area_obj = getattr(request.user, 'perfil', None)
     if production_area_obj:
         production_area = request.user.perfil.production_area
     else:
         production_area = 'solado'
-    
+
     # Sobrescreve production_area para "balancinho" apenas na view de impressão, se o usuário for "rv-couros"
     if request.user.username == "rv-rubens":
         production_area = "balancinho"
-    
+
     # Agrupamento dos itens conforme production_area
     if production_area == "solado":
         grouped_items = {}
@@ -381,7 +381,7 @@ def imprimir_pedido(request, pedido_id):
             grouped_items[chave]['tamanhos'][item.tamanho] = (
                 grouped_items[chave]['tamanhos'].get(item.tamanho, 0) + item.quantidade
             )
-    
+
     # Verifica se existe algum pedido com tamanhos de 15 a 21
     tem_tamanhos_15_21 = False
     for grupo in grouped_items.values():
@@ -397,7 +397,7 @@ def imprimir_pedido(request, pedido_id):
         tamanhos = list(range(22, 44))
     else:
         tamanhos = list(range(15, 44))
-    
+
     for grupo in grouped_items.values():
         grupo['tamanhos_lista'] = [(t, grupo['tamanhos'].get(t, '')) for t in tamanhos]
 
@@ -798,8 +798,8 @@ def atualizar_status_pedido(request):
         if user_area == 'vendedor':
             if novo_status == "Pedido Finalizado":
                 # Verifica se ambos os status estão como "Pedido Pronto"
-                if ((pedido.status_balancinho == "Pedido Pronto" or pedido.status_balancinho == "Pedido Finalizado" ) and 
-                    (pedido.status_solado == "Pedido Pronto" or pedido.status_solado == "Pedido Pronto")):
+                if ((pedido.status_balancinho == "Pedido Pronto" or pedido.status_balancinho == "Pedido Finalizado" ) and
+                    (pedido.status_solado == "Pedido Pronto" or pedido.status_solado == "Pedido Finalizado")):
                     pedido.status_solado = novo_status
                     pedido.status_balancinho = novo_status
                 else:
@@ -838,7 +838,7 @@ def atualizar_status_pedido(request):
         return JsonResponse({'erro': 'Pedido não encontrado.'}, status=404)
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
-    
+
 
 
 #------------------------------- Finalizados --------------------------------
