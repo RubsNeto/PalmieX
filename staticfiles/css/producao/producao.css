@@ -452,7 +452,7 @@ textarea.motivo-cancelamento,
   padding: 20px;
   border: 1px solid var(--modal-border-color);
   border-radius: 12px;
-  width: 80%;
+  width: 90%;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.3s ease-in-out;
 }
