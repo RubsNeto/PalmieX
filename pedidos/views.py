@@ -798,14 +798,9 @@ def atualizar_status_pedido(request):
         # Se o usuário for vendedor, atualize ambos os status
         if user_area == 'vendedor':
             if novo_status == "Pedido Finalizado":
-<<<<<<< HEAD
                 # Verifica se ambos os status estão como "Pedido Pronto"
                 if ((pedido.status_balancinho == "Pedido Pronto" or pedido.status_balancinho == "Pedido Finalizado" ) and
                     (pedido.status_solado == "Pedido Pronto" or pedido.status_solado == "Pedido Finalizado")):
-=======
-                if ((pedido.status_balancinho in ["Pedido Pronto", "Pedido Finalizado"]) and 
-                    (pedido.status_solado in ["Pedido Pronto", "Pedido Finalizado"])):
->>>>>>> a36fb92be6eacae03d4c644479e483d997efb5e9
                     pedido.status_solado = novo_status
                     pedido.status_balancinho = novo_status
                 else:
@@ -845,10 +840,6 @@ def atualizar_status_pedido(request):
         return JsonResponse({'erro': 'Pedido não encontrado.'}, status=404)
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
-<<<<<<< HEAD
-
-=======
->>>>>>> a36fb92be6eacae03d4c644479e483d997efb5e9
 
 
 #------------------------------- Finalizados --------------------------------
