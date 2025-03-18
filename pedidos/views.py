@@ -267,11 +267,12 @@ def producao(request):
         pedidos = pedidos.annotate(
             order_status=Case(
                 When(status_balancinho="Cliente em Loja", then=Value(1)),
-                When(status_balancinho="Em Produção", then=Value(2)),
-                When(status_balancinho="Pendente", then=Value(3)),
-                When(Q(status_balancinho="Pedido Finalizado") | Q(status_balancinho="Cancelado"), then=Value(4)),
-                When(status_balancinho="Reposição Pendente", then=Value(5)),
-                default=Value(6),
+                When(Q(status_balancinho="Em Costura") | Q(status_balancinho="Em Produção"), then=Value(2)),
+                When(status_balancinho="Cortando", then=Value(3)),
+                When(status_balancinho="Pendente", then=Value(4)),
+                When(Q(status_balancinho="Pedido Finalizado") | Q(status_balancinho="Cancelado"), then=Value(5)),
+                When(status_balancinho="Reposição Pendente", then=Value(6)),
+                default=Value(7),
                 output_field=IntegerField(),
             )
         ).order_by("order_status", "data")
@@ -773,6 +774,7 @@ def editar_pedido(request, pedido_id):
 
 
 
+
 @require_POST
 @login_required
 def atualizar_status_pedido(request):
@@ -797,15 +799,18 @@ def atualizar_status_pedido(request):
         # Se o usuário for vendedor, atualize ambos os status
         if user_area == 'vendedor':
             if novo_status == "Pedido Finalizado":
+<<<<<<< HEAD
                 # Verifica se ambos os status estão como "Pedido Pronto"
                 if ((pedido.status_balancinho == "Pedido Pronto" or pedido.status_balancinho == "Pedido Finalizado" ) and
                     (pedido.status_solado == "Pedido Pronto" or pedido.status_solado == "Pedido Finalizado")):
+=======
+                if ((pedido.status_balancinho in ["Pedido Pronto", "Pedido Finalizado"]) and 
+                    (pedido.status_solado in ["Pedido Pronto", "Pedido Finalizado"])):
+>>>>>>> a36fb92be6eacae03d4c644479e483d997efb5e9
                     pedido.status_solado = novo_status
                     pedido.status_balancinho = novo_status
                 else:
-                    return JsonResponse({
-                        'erro': 'Só pode finalizar quando ambos setores estiverem como "Pedido Pronto"'
-                    }, status=400)
+                    return JsonResponse({'erro': 'Só pode finalizar quando ambos setores estiverem como "Pedido Pronto"'}, status=400)
             else:
                 pedido.status_solado = novo_status
                 pedido.status_balancinho = novo_status
@@ -821,16 +826,19 @@ def atualizar_status_pedido(request):
         if novo_status == "Reposição Pendente":
             descricao = body.get('descricao_reposicao', '').strip()
             pedido.descricao_reposicao = descricao
-            logger.info(f"Pedido {pedido_id} em reposição pendente: {descricao}")
 
+        # Se o status for "Cortando" ou "Em Costura", permitir atualização direta
+        if novo_status in ["Cortando", "Em Costura"]:
+            pedido.status_solado = novo_status
+            pedido.status_balancinho = novo_status
+
+        # Se for "Pedido Finalizado" ou "Cancelado", registra a data
         if novo_status in ['Pedido Finalizado', 'Cancelado']:
             pedido.data_finalizado = timezone.now()
 
         pedido.save()
 
-        return JsonResponse({
-            'mensagem': f"Status do pedido atualizado para '{novo_status}' na área '{user_area}'."
-        })
+        return JsonResponse({'mensagem': f"Status do pedido atualizado para '{novo_status}' na área '{user_area}'."})
 
     except json.JSONDecodeError:
         return JsonResponse({'erro': 'JSON inválido.'}, status=400)
@@ -838,7 +846,10 @@ def atualizar_status_pedido(request):
         return JsonResponse({'erro': 'Pedido não encontrado.'}, status=404)
     except Exception as e:
         return JsonResponse({'erro': f'Ocorreu um erro: {str(e)}'}, status=500)
+<<<<<<< HEAD
 
+=======
+>>>>>>> a36fb92be6eacae03d4c644479e483d997efb5e9
 
 
 #------------------------------- Finalizados --------------------------------

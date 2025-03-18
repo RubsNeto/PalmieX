@@ -25,6 +25,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return '#f3a600';  // amarelo
       } else if (status === 'Em Produção') {
         return '#17a2b8';  // azul
+      } else if (status === 'Cortando') {
+        return '#17a2b8';  // azul 
+      }else if (status === 'Em Costura') {
+        return '#e42355';  // azul 
       } else if (status === 'Pedido Finalizado') {
         return '#00b244';  // verde
       } else if (status === 'Cliente em Espera') {
