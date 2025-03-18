@@ -94,7 +94,6 @@ QUANTIDADE: {item.quantidade}
     """
     return HttpResponse(html_content)
 
-
 @login_required
 def imprimir_pedido_direto(request, pedido_id):
     # Exemplo: se você quer que o usuário selecione a impressora,
