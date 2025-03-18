@@ -43,6 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  
+
   // Atualiza as cores dos status já presentes no DOM
   function atualizarCoresStatus() {
     // Atualiza os status da coluna "Balancinho"
@@ -103,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
           const produtosAgrupados = {};
           data.itens.forEach(item => {
-            const chave = `${item.codigo}-${item.nome}`;
+            const chave = `${item.codigo}-${item.nome}-${item.cor}`;
             if (!produtosAgrupados[chave]) {
               produtosAgrupados[chave] = {
                 codigo: item.codigo,
@@ -208,8 +210,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         : ''
                     }
                     </div>
-                    
-
                   </span> 
                   <div class="obs">
                     ${produto.obs ? `<p><strong>Obs:</strong> ${produto.obs}</p>` : ''}
