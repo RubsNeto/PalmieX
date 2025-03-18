@@ -104,6 +104,10 @@
                       <img class="producao" src="{% static 'img/producao.svg' %}" alt="Produção">
                       </button>
 
+                      <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Reposição Pendente" title="Reposição">
+                        <img class="rep" src="{% static 'img/empty.svg' %}" alt="Reposição">
+                        </button>
+
                       <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Pedido Pronto" title="Separado">
                         <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
                       </button>
