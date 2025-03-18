@@ -11,6 +11,8 @@ class Pedido(models.Model):
         ('Em Produção', 'Em Produção'),
         ('Pedido Finalizado', 'Pedido Finalizado'),
         ('Cliente em Espera', 'Cliente em Espera'),
+        ('Cortando', 'Cortando'),
+        ('Em Costura', 'Em Costura'),
         ('Cancelado', 'Cancelado'),
         ('Pedido Pronto', 'Pedido Pronto'),
         ('Reposição Pendente', 'Reposição Pendente')

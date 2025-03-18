@@ -78,10 +78,12 @@
               
               <td class="botoes">
                 <div class="coluna-esquerda">
+
+                  <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
+                    <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
+                  </button>
+
                   {% if user.permission_level == 1 or user.permission_level == 3%}
-                    <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
-                      <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
-                    </button>
                     <button type="button" class="cancelar-gerente cancelar-pedido" data-pedido-id="{{ pedido.id }}" title="Cancelar">
                       <img class="cancelar" src="{% static 'img/trash.svg' %}" alt="Cancelar">
                     </button>
@@ -89,27 +91,34 @@
                       <img class="detalhes" src="{% static 'img/imprimir.svg' %}" alt="Imprimir">
                     </button>
 
-                  {% if user.permission_level == 1%}
-                  <button type="button" class="alterar-status PedidoConcluido" data-pedido-id="{{ pedido.id }}"  data-area="{{ vendedor }}" data-novo-status="Pedido Finalizado" title="Concluído">
-                    <img class="concluido" src="{% static 'img/concluido.svg' %}" alt="Concluído">
-                  </button>
-              {%endif%}
-                  {% endif %}
-
-                  {% if user.permission_level == 2 or user.permission_level == 4%}
-                    <button type="button" class="ver-detalhes" data-pedido-id="{{ pedido.id }}" title="Detalhes">
-                      <img class="detalhes" src="{% static 'img/detalhes.svg' %}" alt="Detalhes">
+                    <button type="button" class="alterar-status PedidoConcluido" data-pedido-id="{{ pedido.id }}"  data-area="{{ vendedor }}" data-novo-status="Pedido Finalizado" title="Concluído">
+                      <img class="concluido" src="{% static 'img/concluido.svg' %}" alt="Concluído">
                     </button>
-                    <!-- Botões de alteração de status; a view atualizará somente o campo da área do usuário -->
+                  {%endif%}
+
+                  
+
+                  {% if production_area == "solado" %}
+                    <!-- Botões de alteração de status; a view atualizará somente o campo da área do usuário-->
                     <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Em Produção" title="Produção">
                       <img class="producao" src="{% static 'img/producao.svg' %}" alt="Produção">
+                      </button>
+
+                      <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Pedido Pronto" title="Separado">
+                        <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
+                      </button>
+                  {% endif %}
+
+                  {% if production_area == "balancinho"%}
+                    <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}" data-novo-status="Cortando" title="Cortando">
+                      <img class="corte" src="{% static 'img/cut.svg' %}" alt="Cortando">
                     </button>
 
-                    {% if production_area == "solado" or production_area == "vendedor" %}
-                      <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Reposição Pendente" title="Reposição">
-                        <img class="rep" src="{% static 'img/empty.svg' %}" alt="Reposição">
-                      </button>
-                    {% endif %}
+                    <!-- Botão para mudar status para "Em Costura" -->
+                    <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}" data-novo-status="Em Costura" title="Em Costura">
+                      <img class="costura" src="{% static 'img/costura.svg' %}" alt="Em Costura">
+                    </button>
+
                     <button type="button" class="alterar-status" data-pedido-id="{{ pedido.id }}" data-area="{{ production_area }}"  data-novo-status="Pedido Pronto" title="Separado">
                       <img class="sep" src="{% static 'img/separado.svg' %}" alt="Separado">
                     </button>
