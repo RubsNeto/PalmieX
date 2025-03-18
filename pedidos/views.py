@@ -796,7 +796,7 @@ def atualizar_status_pedido(request):
             return JsonResponse({'erro': 'Área de produção não definida para o usuário.'}, status=400)
 
         # Se o usuário for vendedor, atualize ambos os status
-        if user_area == 'vendedor':
+        if user_area == "vendedor":
             if novo_status == "Pedido Finalizado":
                 # Verifica se ambos os status estão como "Pedido Pronto"
                 if ((pedido.status_balancinho == "Pedido Pronto" or pedido.status_balancinho == "Pedido Finalizado" ) and
