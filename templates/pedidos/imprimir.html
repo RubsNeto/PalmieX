@@ -10,9 +10,6 @@
 {% block content %}
 
  {% if production_area == "balancinho"%}
-<div>
-  eaeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-</div>
  {%endif%}
 <div class="pedido-imprimir">
   {% if pedido.cliente %}
@@ -40,7 +37,13 @@
     <div class="pedido-item">
       <!-- CONTAINER PRINCIPAL PARA OS CAMPOS (SINTETICO, REFERENCIA, ETC.) -->
       <div class="item-nome">
-
+        {# REFERÊNCIA #}
+        {% if grupo.item.ref_palmilha %}
+          <div class="info-bloco">
+            <strong>REFERENCIA:</strong> {{ grupo.item.ref_palmilha }}
+          </div>
+        {% endif %}
+        
         {# SINTÉTICO #}
         {% if grupo.item.mat_balancinho %}
           {% if production_area == "balancinho" or production_area == "vendedor" %}
@@ -50,12 +53,15 @@
           {% endif %}
         {% endif %}
 
-        {# REFERÊNCIA #}
-        {% if grupo.item.ref_palmilha %}
+          {# COR SINTÉTICO #}
+        {% if grupo.item.cor %}
+        {% if production_area == "balancinho" or production_area == "vendedor" %}
           <div class="info-bloco">
-            <strong>REFERENCIA:</strong> {{ grupo.item.ref_palmilha }}
+            <strong>COR SINTETICO:</strong> {{ grupo.item.cor }}
           </div>
         {% endif %}
+      {% endif %}
+
 
         {# SOLADO #}
         {% if grupo.item.mat_palmilha %}
@@ -89,15 +95,6 @@
           {% if production_area == "balancinho" or production_area == "vendedor" %}
             <div class="info-bloco">
               <strong>MARCA:</strong> {{ grupo.item.marca }}
-            </div>
-          {% endif %}
-        {% endif %}
-
-        {# COR SINTÉTICO #}
-        {% if grupo.item.cor %}
-          {% if production_area == "balancinho" or production_area == "vendedor" %}
-            <div class="info-bloco">
-              <strong>COR SINTETICO:</strong> {{ grupo.item.cor }}
             </div>
           {% endif %}
         {% endif %}
