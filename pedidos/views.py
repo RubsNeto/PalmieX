@@ -821,11 +821,6 @@ def atualizar_status_pedido(request):
             descricao = body.get('descricao_reposicao', '').strip()
             pedido.descricao_reposicao = descricao
 
-        # Se o status for "Cortando" ou "Em Costura", permitir atualização direta
-        if novo_status in ["Cortando", "Em Costura"]:
-            pedido.status_solado = novo_status
-            pedido.status_balancinho = novo_status
-
         # Se for "Pedido Finalizado" ou "Cancelado", registra a data
         if novo_status in ['Pedido Finalizado', 'Cancelado']:
             pedido.data_finalizado = timezone.now()
